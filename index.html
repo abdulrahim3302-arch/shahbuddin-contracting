@@ -9,7 +9,7 @@
 <link rel="icon" href="assets/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="assets/favicon-180.png">
 <meta name="theme-color" content="#1E5C82">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -21,7 +21,7 @@
   <div class="nav-inner">
     <a href="#home" class="nav-logo">
       <img src="assets/logo.png" alt="Shahbuddin Contracting logo" />
-      <span class="nav-logo-text">Shahbuddin Contracting<span>W.L.L. &middot; Bahrain</span></span>
+      <span class="nav-logo-text">Shahbuddin<span>Contracting Co. W.L.L.</span></span>
     </a>
     <div class="nav-links">
       <a href="#home">Home</a>
@@ -29,8 +29,7 @@
       <a href="#services">Services</a>
       <a href="#projects">Projects</a>
       <a href="#process">Our Process</a>
-      <a href="#contact">Contact</a>
-      <a href="#contact" class="nav-quote">Get A Quote</a>
+      <a href="#contact" class="nav-quote">Contact</a>
     </div>
     <button class="hamburger" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
@@ -42,32 +41,36 @@
   <a href="#services" onclick="toggleMenu()">Services</a>
   <a href="#projects" onclick="toggleMenu()">Projects</a>
   <a href="#process" onclick="toggleMenu()">Our Process</a>
-  <a href="#contact" onclick="toggleMenu()">Contact</a>
-  <a href="#contact" class="mobile-quote" onclick="toggleMenu()">Get A Quote</a>
+  <a href="#contact" class="mobile-quote" onclick="toggleMenu()">Contact</a>
 </div>
 
 <main id="main">
 
 <!-- ─── HERO ─── -->
 <section class="hero" id="home">
-  <div class="hero-grid-bg" aria-hidden="true"></div>
-  <div class="container hero-inner">
-    <div class="hero-eyebrow">Bahrain &middot; General Construction &amp; Maintenance</div>
-    <h1>We Build <span class="accent">What&rsquo;s Next.</span></h1>
+  <div class="hero-media">
+    <video class="hero-bg-video" autoplay muted loop playsinline poster="video/poster-v3.jpg">
+      <source src="hero-construction-v3.webm" type="video/webm">
+      <source src="hero-construction-v3.mp4" type="video/mp4">
+    </video>
+    <div class="hero-scrim" aria-hidden="true"></div>
+  </div>
+
+  <span class="hero-video-tag">AI-Generated Concept Visualization</span>
+
+  <div class="hero-content">
+    <h1>We Build <em>What&rsquo;s Next.</em></h1>
+    <div class="hero-divider"><span></span>Shahbuddin Contracting Co. W.L.L.</div>
     <p class="hero-sub">Building construction and general maintenance services across the Kingdom of Bahrain &mdash; from first excavation to final handover.</p>
     <div class="hero-btns">
-      <a href="#projects" class="btn-primary">View Projects</a>
-      <a href="#contact" class="btn-secondary">Get A Quote</a>
-    </div>
-
-    <div class="hero-anim-wrap hero-video-wrap">
-      <span class="hero-anim-badge">AI-Generated Concept Visualization</span>
-      <video class="hero-construction-video" autoplay muted loop playsinline poster="video/poster-v3.jpg">
-        <source src="hero-construction-v3.webm" type="video/webm">
-        <source src="hero-construction-v3.mp4" type="video/mp4">
-      </video>
+      <a href="#projects" class="btn-ghost">View Projects</a>
+      <a href="#contact" class="btn-ghost">Get A Quote</a>
     </div>
   </div>
+
+  <a href="#about" class="scroll-cue" aria-label="Scroll to About section">
+    <span></span>Scroll
+  </a>
 </section>
 
 <!-- ─── STRIP ─── -->
