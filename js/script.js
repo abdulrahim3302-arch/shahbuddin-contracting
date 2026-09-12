@@ -29,6 +29,14 @@ window.addEventListener('scroll', () => {
 
 // Scroll reveal
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Stagger grid children on reveal (pure CSS var — no animation library dependency)
+document.querySelectorAll('.services-grid, .why-grid, .projects-grid, .process-row').forEach(grid => {
+  grid.querySelectorAll(':scope > .reveal').forEach((el, i) => {
+    el.style.setProperty('--reveal-delay', (i * 0.08) + 's');
+  });
+});
+
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -117,4 +125,91 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   }
 
   runCycle();
+})();
+
+// ─── SMOOTH SCROLL + SCROLL-DRIVEN ANIMATION ───
+// Lenis (momentum smooth scroll) + GSAP/ScrollTrigger, loaded via CDN.
+// Everything here is additive: if the CDN fails to load, or the visitor
+// prefers reduced motion, the page still works — all content is visible
+// by default and only gets animated on top of that, never hidden by it.
+(function scrollExperience() {
+  if (prefersReducedMotion) return;
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Momentum smooth scroll
+  let lenis;
+  if (typeof Lenis !== 'undefined') {
+    lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  // Hero: staggered word entrance
+  const heroWords = document.querySelectorAll('.hero-stack .word');
+  if (heroWords.length) {
+    gsap.set(heroWords, { yPercent: 130, opacity: 0 });
+    gsap.to(heroWords, {
+      yPercent: 0, opacity: 1, duration: 1.1, ease: 'power4.out',
+      stagger: 0.09, delay: 0.3
+    });
+  }
+
+  // Hero + image-break: subtle parallax on the photo
+  gsap.utils.toArray('.hero-bg-photo').forEach((img) => {
+    gsap.fromTo(img, { yPercent: -6 }, {
+      yPercent: 6, ease: 'none',
+      scrollTrigger: { trigger: img.closest('.hero'), start: 'top top', end: 'bottom top', scrub: true }
+    });
+  });
+  gsap.utils.toArray('.image-break img').forEach((img) => {
+    gsap.fromTo(img, { yPercent: -10 }, {
+      yPercent: 10, ease: 'none',
+      scrollTrigger: { trigger: img.closest('.image-break'), start: 'top bottom', end: 'bottom top', scrub: true }
+    });
+  });
+
+  // Stat band: count-up numbers, once, when scrolled into view
+  document.querySelectorAll('[data-count-to]').forEach((el) => {
+    const target = parseFloat(el.getAttribute('data-count-to'));
+    const suffix = el.getAttribute('data-suffix') || '';
+    const pad = parseInt(el.getAttribute('data-pad') || '0', 10);
+    const counter = { val: 0 };
+    ScrollTrigger.create({
+      trigger: el, start: 'top 85%', once: true,
+      onEnter: () => {
+        gsap.to(counter, {
+          val: target, duration: 1.6, ease: 'power2.out',
+          onUpdate: () => {
+            const n = Math.round(counter.val);
+            el.textContent = (pad ? String(n).padStart(pad, '0') : String(n)) + suffix;
+          }
+        });
+      }
+    });
+  });
+
+  // Persistent scroll rail: section counter + progress fill.
+  // Plain scroll listener (same approach as the nav active-link logic above) —
+  // simpler and more predictable here than chaining per-section ScrollTriggers.
+  const railCount = document.getElementById('scrollRailCount');
+  const railFill = document.getElementById('scrollRailFill');
+  const railEls = ['home', 'about', 'services', 'projects', 'process', 'why', 'contact']
+    .map(id => document.getElementById(id)).filter(Boolean);
+  if (railCount || railFill) {
+    ScrollTrigger.create({
+      trigger: document.body, start: 'top top', end: 'bottom bottom',
+      onUpdate: (self) => {
+        if (railFill) railFill.style.height = (self.progress * 100) + '%';
+        if (railCount) {
+          const mid = window.scrollY + window.innerHeight / 2;
+          let idx = 0;
+          railEls.forEach((el, i) => { if (mid >= el.offsetTop) idx = i; });
+          railCount.textContent = String(idx).padStart(2, '0');
+        }
+      }
+    });
+  }
 })();
