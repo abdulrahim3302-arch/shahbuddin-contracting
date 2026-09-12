@@ -31,11 +31,44 @@ window.addEventListener('scroll', () => {
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Stagger grid children on reveal (pure CSS var — no animation library dependency)
-document.querySelectorAll('.services-grid, .why-grid, .projects-grid, .process-row').forEach(grid => {
+document.querySelectorAll('.services-grid, .projects-list, .process-row, .circle-track').forEach(grid => {
   grid.querySelectorAll(':scope > .reveal').forEach((el, i) => {
     el.style.setProperty('--reveal-delay', (i * 0.08) + 's');
   });
 });
+
+// Project rows: cursor-following circular preview (no fabricated photos — honest placeholder)
+(function projectCursorPreview() {
+  const preview = document.getElementById('projectCursorPreview');
+  const rows = document.querySelectorAll('#projectsList .project-row');
+  if (!preview || !rows.length) return;
+  rows.forEach(row => {
+    row.addEventListener('mouseenter', () => preview.classList.add('active'));
+    row.addEventListener('mouseleave', () => preview.classList.remove('active'));
+    row.addEventListener('mousemove', (e) => {
+      preview.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%) scale(1)`;
+    });
+  });
+})();
+
+// Why-Us manifesto list: highlight the row nearest the viewport's reading line as you scroll
+(function manifestoScrollSpy() {
+  const rows = document.querySelectorAll('#manifestoList .manifesto-row');
+  if (!rows.length) return;
+  function updateActive() {
+    const line = window.innerHeight * 0.45;
+    let closest = null, closestDist = Infinity;
+    rows.forEach(row => {
+      const r = row.getBoundingClientRect();
+      const dist = Math.abs((r.top + r.height / 2) - line);
+      if (dist < closestDist) { closestDist = dist; closest = row; }
+    });
+    rows.forEach(row => row.classList.toggle('is-active', row === closest));
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  window.addEventListener('resize', updateActive);
+  updateActive();
+})();
 
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
