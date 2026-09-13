@@ -331,12 +331,61 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
     });
   });
 
+  // ─── ON SITE: horizontal scroll driven by vertical scroll ───
+  // The pin wrapper is ~340vh tall. As it scrolls, the track translates left by
+  // exactly its overflow width, so the whole gallery reads as one horizontal move.
+  (function horizontalGallery() {
+    const pin = document.getElementById('hscrollPin');
+    const track = document.getElementById('hscrollTrack');
+    const bar = document.getElementById('hscrollBar');
+    if (!pin || !track) return;
+
+    // gsap.matchMedia re-evaluates on resize/rotate, so the pinned horizontal
+    // scroll is built when the viewport is wide enough and cleanly torn down
+    // when it isn't. A one-off matchMedia check here would leave the gallery
+    // dead for anyone who loads narrow and then widens the window.
+    gsap.matchMedia().add('(min-width: 901px)', () => {
+      const getDistance = () => Math.max(0, track.scrollWidth - window.innerWidth);
+      const tween = gsap.to(track, {
+        x: () => -getDistance(),
+        ease: 'none',
+        scrollTrigger: {
+          trigger: pin,
+          start: 'top top',
+          end: () => '+=' + getDistance(),
+          scrub: 0.6,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => { if (bar) bar.style.width = (self.progress * 100) + '%'; }
+        }
+      });
+      // Cleanup when the query stops matching (e.g. resize down to mobile)
+      return () => { tween.scrollTrigger && tween.scrollTrigger.kill(); tween.kill(); gsap.set(track, { clearProps: 'x' }); };
+    });
+  })();
+
+  // ─── MASK "PULL UP" REVEALS ───
+  // Headings and figures rise out of a clipping mask instead of plain fading —
+  // transform + clip-path only, so it stays on the compositor.
+  (function maskReveals() {
+    const targets = document.querySelectorAll('[data-mask]');
+    targets.forEach(el => {
+      gsap.fromTo(el,
+        { yPercent: 18, opacity: 0, clipPath: 'inset(100% 0% 0% 0%)' },
+        {
+          yPercent: 0, opacity: 1, clipPath: 'inset(0% 0% 0% 0%)',
+          duration: 1.05, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 88%', once: true }
+        }
+      );
+    });
+  })();
+
   // Persistent scroll rail: section counter + progress fill.
   // Plain scroll listener (same approach as the nav active-link logic above) —
   // simpler and more predictable here than chaining per-section ScrollTriggers.
   const railCount = document.getElementById('scrollRailCount');
   const railFill = document.getElementById('scrollRailFill');
-  const railEls = ['home', 'about', 'services', 'projects', 'process', 'why', 'contact']
+  const railEls = ['home', 'about', 'services', 'projects', 'process', 'why', 'onsite', 'contact']
     .map(id => document.getElementById(id)).filter(Boolean);
   if (railCount || railFill) {
     ScrollTrigger.create({

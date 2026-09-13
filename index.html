@@ -18,7 +18,7 @@
 <link rel="apple-touch-icon" href="assets/favicon-180.png">
 <meta name="theme-color" content="#16151A">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=11">
+<link rel="stylesheet" href="css/style.css?v=12">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.16/dist/lenis.min.js"></script>
@@ -74,7 +74,7 @@
 <div class="scroll-rail" id="scrollRail" aria-hidden="true">
   <span class="scroll-rail-count" id="scrollRailCount">00</span>
   <span class="scroll-rail-track"><span class="scroll-rail-fill" id="scrollRailFill"></span></span>
-  <span class="scroll-rail-total" id="scrollRailTotal">06</span>
+  <span class="scroll-rail-total" id="scrollRailTotal">07</span>
 </div>
 
 <main id="main">
@@ -133,7 +133,7 @@
 <section class="about reveal" id="about">
   <div class="container about-grid">
     <div class="about-figure">
-      <div class="about-diagram">
+      <div class="about-diagram" data-mask>
         <img src="assets/photos/about-construction.jpg" alt="Structural works on a construction site" loading="lazy" decoding="async" width="2000" height="1333" />
       </div>
       <div class="about-badge">
@@ -143,7 +143,7 @@
     </div>
     <div class="about-copy">
       <div class="section-label">About Us</div>
-      <h2 class="section-title">A Contractor Built Around Accountability</h2>
+      <h2 class="section-title" data-mask>A Contractor Built Around Accountability</h2>
       <p>Shahbuddin Contracting Co. W.L.L. is a Bahrain-based construction company delivering building construction and general maintenance services across the Kingdom. Our teams handle civil works, structural works, and interior finishing under one roof, supported by a network of vetted specialist partners.</p>
       <p>We work directly with clients and design teams from early planning through to final handover, keeping budgets, schedules, and quality under close, consistent oversight at every stage of the build.</p>
     </div>
@@ -156,7 +156,7 @@
     <div class="section-head-row reveal">
       <div>
         <div class="section-label">What We Do</div>
-        <h2 class="section-title">Services</h2>
+        <h2 class="section-title" data-mask>Services</h2>
       </div>
       <p class="section-desc">Full-service construction and maintenance capability, delivered by an in-house team and trusted specialist partners.</p>
     </div>
@@ -218,7 +218,7 @@
   <div class="image-break-scrim" aria-hidden="true"></div>
   <div class="image-break-caption">
     <span class="image-break-eyebrow">Precision &middot; Discipline &middot; Craft</span>
-    <span class="image-break-line">Built to Last, Not Just to Finish.</span>
+    <span class="image-break-line" data-mask>Built to Last, Not Just to Finish.</span>
   </div>
 </section>
 
@@ -228,7 +228,7 @@
     <div class="section-head-row reveal">
       <div>
         <div class="section-label">Our Work</div>
-        <h2 class="section-title">Projects</h2>
+        <h2 class="section-title" data-mask>Projects</h2>
       </div>
       <p class="section-desc">A showcase of our project portfolio. Photography and details for each project are added from site records.</p>
     </div>
@@ -248,7 +248,7 @@
     <div class="section-head-row reveal">
       <div>
         <div class="section-label">Our Process</div>
-        <h2 class="section-title">How We Build</h2>
+        <h2 class="section-title" data-mask>How We Build</h2>
       </div>
       <p class="section-desc">Scroll to move through the disciplined sequence applied consistently across every project.</p>
     </div>
@@ -363,7 +363,7 @@
     <div class="section-head-row reveal">
       <div>
         <div class="section-label">Why Shahbuddin</div>
-        <h2 class="section-title">Built On Discipline</h2>
+        <h2 class="section-title" data-mask>Built On Discipline</h2>
       </div>
     </div>
     <div class="manifesto-list" id="manifestoList">
@@ -401,18 +401,47 @@
   </div>
 </section>
 
-<!-- ─── CIRCLE GALLERY ─── -->
-<section class="circle-gallery">
-  <div class="container">
-    <div class="section-label reveal">On Site</div>
-    <h2 class="section-title reveal">Craft in Motion</h2>
-  </div>
-  <div class="circle-track">
-    <div class="circle-item reveal" style="--offset:6px;"><img loading="lazy" decoding="async" src="assets/photos/about-construction.jpg" alt="Construction site works" /></div>
-    <div class="circle-item reveal" style="--offset:-22px;"><img src="assets/photos/detail-structure.jpg" alt="Structural facade detail" loading="lazy" decoding="async" width="2000" height="1333" /></div>
-    <div class="circle-item reveal" style="--offset:18px;"><img loading="lazy" decoding="async" src="assets/photos/hero-facade.jpg" alt="Modern building facade" /></div>
-    <div class="circle-item reveal" style="--offset:-14px;"><img loading="lazy" decoding="async" src="assets/photos/dusk-building.jpg" alt="Building exterior at dusk" /></div>
-    <div class="circle-item reveal" style="--offset:24px;"><img loading="lazy" decoding="async" src="assets/photos/about-construction.jpg" alt="Construction site works" /></div>
+<!-- ─── ON SITE: pinned horizontal scroll gallery ─── -->
+<section class="hscroll" id="onsite">
+  <div class="hscroll-pin" id="hscrollPin">
+    <div class="hscroll-viewport">
+      <div class="hscroll-track" id="hscrollTrack">
+
+        <div class="hs-panel hs-panel-intro">
+          <div class="section-label">On Site</div>
+          <h2 class="section-title" data-mask>Craft in<br>Motion</h2>
+          <p class="hs-intro-desc">A closer look at the standard we hold on every site &mdash; from structure through to finish.</p>
+          <span class="hs-hint" aria-hidden="true">Scroll &rarr;</span>
+        </div>
+
+        <figure class="hs-panel hs-fig hs-tall">
+          <img loading="lazy" decoding="async" src="assets/photos/about-construction.jpg" alt="Reinforcement and slab works in progress on site" width="2000" height="1333" />
+          <figcaption><span class="hs-num">01</span>Structural Works</figcaption>
+        </figure>
+
+        <figure class="hs-panel hs-fig hs-wide">
+          <img loading="lazy" decoding="async" src="assets/photos/detail-structure.jpg" alt="Facade detail on a completed structure" width="2000" height="1333" />
+          <figcaption><span class="hs-num">02</span>Facade &amp; Detail</figcaption>
+        </figure>
+
+        <figure class="hs-panel hs-fig hs-mid">
+          <img loading="lazy" decoding="async" src="assets/photos/hero-facade.jpg" alt="Completed residential building facade" width="2400" height="3200" />
+          <figcaption><span class="hs-num">03</span>Building Construction</figcaption>
+        </figure>
+
+        <figure class="hs-panel hs-fig hs-tall">
+          <img loading="lazy" decoding="async" src="assets/photos/dusk-building.jpg" alt="Finished building exterior at dusk" width="2400" height="2400" />
+          <figcaption><span class="hs-num">04</span>Finishing &amp; Handover</figcaption>
+        </figure>
+
+        <div class="hs-panel hs-panel-end">
+          <h3 data-mask>Let&rsquo;s build<br><em>together.</em></h3>
+          <a href="#contact" class="btn-secondary hs-end-btn">Start a Project</a>
+        </div>
+
+      </div>
+    </div>
+    <div class="hscroll-progress" aria-hidden="true"><span id="hscrollBar"></span></div>
   </div>
 </section>
 
@@ -422,7 +451,7 @@
   <div class="contact-bg-grid" aria-hidden="true"></div>
   <div class="container contact-inner">
     <div class="section-label">Get In Touch</div>
-    <h2>Let&rsquo;s Build Together.</h2>
+    <h2 data-mask>Let&rsquo;s Build Together.</h2>
     <div class="contact-grid">
       <div class="contact-cell">
         <div class="c-label">Phone</div>
@@ -506,6 +535,6 @@
   </div>
 </footer>
 
-<script src="js/script.js?v=9"></script>
+<script src="js/script.js?v=13"></script>
 </body>
 </html>
