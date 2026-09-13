@@ -1,3 +1,27 @@
+// Preloader — short, numbered, never blocks longer than ~1.1s
+(function preloader() {
+  const pre = document.getElementById('preloader');
+  const countEl = document.getElementById('preloaderCount');
+  if (!pre) return;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function hide() {
+    document.body.classList.remove('is-loading');
+    pre.classList.add('is-hidden');
+    setTimeout(() => pre.remove(), 700);
+  }
+  if (reduced) { hide(); return; }
+  let n = 1;
+  const tick = setInterval(() => {
+    n++;
+    if (countEl) countEl.textContent = String(Math.min(n, 8)).padStart(2, '0');
+  }, 110);
+  window.addEventListener('load', () => {
+    clearInterval(tick);
+    setTimeout(hide, 350);
+  });
+  setTimeout(() => { clearInterval(tick); hide(); }, 1600);
+})();
+
 // Navbar scroll effect
 const navbar = document.getElementById('navbar');
 if (navbar) {
@@ -30,25 +54,116 @@ window.addEventListener('scroll', () => {
 // Scroll reveal
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Stagger grid children on reveal (pure CSS var — no animation library dependency)
-document.querySelectorAll('.services-grid, .projects-list, .process-row, .circle-track').forEach(grid => {
-  grid.querySelectorAll(':scope > .reveal').forEach((el, i) => {
-    el.style.setProperty('--reveal-delay', (i * 0.08) + 's');
+// Stagger grid children on reveal (pure CSS var — no animation library dependency).
+// Called after dynamic sections render so generated rows get delays too.
+function applyStagger() {
+  document.querySelectorAll('.services-list-col, .projects-list, .circle-track').forEach(grid => {
+    grid.querySelectorAll(':scope > .reveal').forEach((el, i) => {
+      el.style.setProperty('--reveal-delay', (i * 0.08) + 's');
+    });
   });
-});
+}
 
-// Project rows: cursor-following circular preview (no fabricated photos — honest placeholder)
+// ─── PROJECTS ───
+// EDIT HERE to add real projects. Each entry renders one row.
+// Set `image` to a real photo path (e.g. 'assets/photos/my-project.jpg') and the
+// hover preview will show that photo; leave it empty ('') and the row keeps an
+// honest "photo to be added" placeholder instead of inventing imagery.
+const PROJECTS = [
+  { title: '', category: '', location: '', year: '', image: '', description: '' },
+  { title: '', category: '', location: '', year: '', image: '', description: '' },
+  { title: '', category: '', location: '', year: '', image: '', description: '' },
+  { title: '', category: '', location: '', year: '', image: '', description: '' },
+  { title: '', category: '', location: '', year: '', image: '', description: '' },
+  { title: '', category: '', location: '', year: '', image: '', description: '' }
+];
+
+(function renderProjects() {
+  const list = document.getElementById('projectsList');
+  if (!list) return;
+  list.innerHTML = PROJECTS.map((p, i) => {
+    const idx = String(i + 1).padStart(2, '0');
+    const title = p.title || '[ Project Name ]';
+    const cat = p.category || '[ Project Type ]';
+    const loc = [p.location, p.year].filter(Boolean).join(' · ') || '[ Location ]';
+    return `<article class="project-row reveal" data-preview-img="${p.image || ''}">
+      <span class="pr-index">${idx}</span>
+      <div class="pr-name"><h3>${title}</h3><span class="pr-type">${cat}</span></div>
+      <span class="pr-loc">${loc}</span>
+      <span class="pr-arrow" aria-hidden="true">&rarr;</span>
+    </article>`;
+  }).join('');
+  applyStagger();
+})();
+
+// Project rows: cursor-following circular preview
 (function projectCursorPreview() {
   const preview = document.getElementById('projectCursorPreview');
   const rows = document.querySelectorAll('#projectsList .project-row');
   if (!preview || !rows.length) return;
+  const label = preview.querySelector('span');
+  const baseLabel = label ? label.innerHTML : '';
+  const imgEl = document.createElement('img');
+  imgEl.className = 'pcp-img';
+  imgEl.alt = '';
+  preview.appendChild(imgEl);
+
   rows.forEach(row => {
-    row.addEventListener('mouseenter', () => preview.classList.add('active'));
+    const src = row.getAttribute('data-preview-img');
+    row.addEventListener('mouseenter', () => {
+      if (src) {
+        imgEl.src = src;
+        preview.classList.add('has-img');
+      } else {
+        preview.classList.remove('has-img');
+        if (label) label.innerHTML = baseLabel;
+      }
+      preview.classList.add('active');
+    });
     row.addEventListener('mouseleave', () => preview.classList.remove('active'));
     row.addEventListener('mousemove', (e) => {
       preview.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%) scale(1)`;
     });
   });
+})();
+
+// Services: hover-reveal preview image (desktop) / tap-to-expand accordion (touch)
+(function servicesInteractive() {
+  const rows = document.querySelectorAll('.service-row');
+  const previewImg = document.getElementById('servicePreviewImg');
+  if (!rows.length) return;
+  const hasHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  function activate(row) {
+    rows.forEach(r => r.classList.remove('is-active'));
+    row.classList.add('is-active');
+    if (previewImg) {
+      const src = row.getAttribute('data-img');
+      if (src && previewImg.getAttribute('src') !== src) {
+        previewImg.classList.remove('is-shown');
+        const next = new Image();
+        next.onload = () => { previewImg.src = src; previewImg.classList.add('is-shown'); };
+        next.src = src;
+      } else {
+        previewImg.classList.add('is-shown');
+      }
+    }
+  }
+
+  rows.forEach(row => {
+    if (hasHover) {
+      row.addEventListener('mouseenter', () => activate(row));
+      row.addEventListener('focus', () => activate(row));
+    } else {
+      row.addEventListener('click', () => {
+        const already = row.classList.contains('is-active');
+        rows.forEach(r => r.classList.remove('is-active'));
+        if (!already) row.classList.add('is-active');
+      });
+    }
+  });
+
+  if (previewImg) requestAnimationFrame(() => previewImg.classList.add('is-shown'));
 })();
 
 // Why-Us manifesto list: highlight the row nearest the viewport's reading line as you scroll
@@ -80,84 +195,62 @@ const revealObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.12 });
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-// ─── HERO CONSTRUCTION ANIMATION SEQUENCER ───
-// Cycles the SVG building through stages: empty -> foundation -> frame
-// (floor-by-floor) -> blockwork -> lit -> reset. Pure CSS transitions
-// driven by class toggles; timings tuned for a readable, non-frantic loop.
-(function heroAnimation() {
+// ─── PROCESS: scroll-driven construction sequence ───
+// Scrubbed by the pinned #processPinWrap section: scrolling advances the
+// building through its 8 real stages instead of auto-looping on a timer.
+(function processSequence() {
   const wrap = document.getElementById('heroAnim');
+  const numEl = document.getElementById('processBigNum');
+  const titleEl = document.getElementById('processBigTitle');
+  const descEl = document.getElementById('processBigDesc');
+  const dots = document.querySelectorAll('#processDots .pdot');
   if (!wrap) return;
-  const caption = document.getElementById('heroAnimCaption');
   const svg = wrap.querySelector('.building-svg');
   if (!svg) return;
 
-  const STAGE_LABELS = {
-    empty: 'Empty Site',
-    foundation: 'Foundation',
-    frame: 'Structural Frame',
-    blockwork: 'Blockwork',
-    lit: 'Completed & Illuminated'
-  };
+  // 8 stages from the company's stated process, mapped onto the diagram's
+  // 5 drawable layers (several finishing stages share the completed shell).
+  const STEPS = [
+    { title: 'Planning',   desc: 'Scope, drawings, and site logistics are agreed before any work begins.',        layers: [] },
+    { title: 'Excavation', desc: 'The plot is cleared and excavated to the required depth and level.',            layers: ['empty'] },
+    { title: 'Foundation', desc: 'Reinforcement and formwork are set, then the foundation is cast.',              layers: ['empty', 'foundation'] },
+    { title: 'Structure',  desc: 'Columns and slabs rise floor by floor to form the structural frame.',           layers: ['empty', 'foundation', 'frame'] },
+    { title: 'Blockwork',  desc: 'Block walls fill the frame, defining rooms and window openings.',               layers: ['empty', 'foundation', 'frame', 'blockwork'] },
+    { title: 'Plastering', desc: 'Surfaces are plastered to a smooth, consistent finish inside and out.',         layers: ['empty', 'foundation', 'frame', 'blockwork'] },
+    { title: 'Finishing',  desc: 'Tiling, carpentry, gypsum, and painting are carried through to completion.',    layers: ['empty', 'foundation', 'frame', 'blockwork'] },
+    { title: 'Completion', desc: 'Final checks, handover, and ongoing maintenance support after occupancy.',      layers: ['empty', 'foundation', 'frame', 'blockwork'], lit: true }
+  ];
 
-  function setCaption(stage) {
-    if (caption) caption.textContent = STAGE_LABELS[stage] || '';
-  }
-
-  function clearAll() {
+  function applyStep(i) {
+    const step = STEPS[i];
+    if (!step) return;
     svg.querySelectorAll('[data-appear-stage]').forEach(el => {
-      el.classList.remove('visible');
-      el.style.transitionDelay = '';
+      const on = step.layers.indexOf(el.getAttribute('data-appear-stage')) !== -1;
+      el.classList.toggle('visible', on);
     });
-    wrap.classList.remove('stage-lit');
+    wrap.classList.toggle('stage-lit', !!step.lit);
+    if (numEl) numEl.textContent = String(i + 1).padStart(2, '0');
+    if (titleEl) titleEl.textContent = step.title;
+    if (descEl) descEl.textContent = step.desc;
+    dots.forEach((d, di) => d.classList.toggle('is-active', di === i));
   }
 
-  function revealStage(stageName, staggerByFloor) {
-    const els = svg.querySelectorAll(`[data-appear-stage="${stageName}"]`);
-    els.forEach(el => {
-      if (staggerByFloor) {
-        const floor = parseFloat(el.getAttribute('data-floor')) || 0;
-        el.style.transitionDelay = (floor * 0.22) + 's';
-      }
-      // force reflow so the delay applies before adding the class
-      void el.offsetWidth;
-      el.classList.add('visible');
-    });
-  }
-
-  if (prefersReducedMotion) {
-    // Show the completed, illuminated state as a static image.
-    ['empty', 'foundation', 'frame', 'blockwork'].forEach(s => revealStage(s, false));
-    wrap.classList.add('stage-lit');
-    setCaption('lit');
+  // Reduced motion / no-GSAP: show the finished building, list stays readable.
+  if (prefersReducedMotion || typeof ScrollTrigger === 'undefined') {
+    applyStep(STEPS.length - 1);
     return;
   }
 
-  const TIMINGS = [
-    { stage: 'empty', hold: 2200 },
-    { stage: 'foundation', hold: 2200 },
-    { stage: 'frame', hold: 3600, stagger: true },
-    { stage: 'blockwork', hold: 2400, stagger: true },
-    { stage: 'lit', hold: 4200 }
-  ];
-
-  function runCycle() {
-    clearAll();
-    let t = 0;
-    TIMINGS.forEach(({ stage, hold, stagger }) => {
-      setTimeout(() => {
-        if (stage === 'lit') {
-          wrap.classList.add('stage-lit');
-        } else {
-          revealStage(stage, !!stagger);
-        }
-        setCaption(stage);
-      }, t);
-      t += hold;
-    });
-    setTimeout(runCycle, t + 900);
-  }
-
-  runCycle();
+  applyStep(0);
+  ScrollTrigger.create({
+    trigger: '#processPinWrap',
+    start: 'top top',
+    end: 'bottom bottom',
+    onUpdate: (self) => {
+      const i = Math.min(STEPS.length - 1, Math.floor(self.progress * STEPS.length));
+      applyStep(i);
+    }
+  });
 })();
 
 // ─── SMOOTH SCROLL + SCROLL-DRIVEN ANIMATION ───
@@ -178,6 +271,20 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => lenis.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
+    window.__lenis = lenis;
+
+    // Lenis owns the scroll position, so in-page anchors must be routed through
+    // it — otherwise native anchor jumps fight the smooth-scroll loop.
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      const id = a.getAttribute('href');
+      if (!id || id === '#') return;
+      a.addEventListener('click', (e) => {
+        const target = document.querySelector(id);
+        if (!target) return;
+        e.preventDefault();
+        lenis.scrollTo(target, { offset: -80, duration: 1.2 });
+      });
+    });
   }
 
   // Hero: staggered word entrance
@@ -245,4 +352,50 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
       }
     });
   }
+})();
+
+// ─── CONTACT FORM ───
+// This is a static site with no backend, so the form composes a pre-filled
+// email in the visitor's own mail client rather than pretending to send.
+// If a form endpoint (Formspree/Netlify/etc.) is added later, POST here instead.
+(function contactForm() {
+  const form = document.getElementById('contactForm');
+  const note = document.getElementById('cfNote');
+  if (!form) return;
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    const d = new FormData(form);
+    const get = (k) => (d.get(k) || '').toString().trim();
+    const subject = `Project enquiry — ${get('name')}${get('company') ? ' (' + get('company') + ')' : ''}`;
+    const body = [
+      `Name: ${get('name')}`,
+      `Company: ${get('company') || '—'}`,
+      `Email: ${get('email')}`,
+      `Phone: ${get('phone') || '—'}`,
+      `Project Type: ${get('projectType') || '—'}`,
+      '',
+      get('message')
+    ].join('\n');
+    window.location.href = `mailto:Shahbuddin3917@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    if (note) note.textContent = 'Opening your email app with the enquiry ready to send…';
+  });
+})();
+
+// ─── MICRO-INTERACTIONS: magnetic buttons ───
+(function magneticButtons() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  document.querySelectorAll('.btn-primary, .btn-secondary, .btn-ghost, [data-magnetic]').forEach(btn => {
+    btn.addEventListener('mousemove', (e) => {
+      const r = btn.getBoundingClientRect();
+      const mx = e.clientX - r.left - r.width / 2;
+      const my = e.clientY - r.top - r.height / 2;
+      btn.style.transform = `translate(${mx * 0.18}px, ${my * 0.28}px)`;
+    });
+    btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+  });
 })();

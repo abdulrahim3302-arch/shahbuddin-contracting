@@ -3,28 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shahbuddin Contracting Co. W.L.L. | Building Construction, Bahrain</title>
-<meta name="description" content="Shahbuddin Contracting Co. W.L.L. — building construction and general maintenance services across Bahrain. Concept site.">
-<meta name="robots" content="noindex, follow">
+<title>Shahbuddin Contracting Co. W.L.L. | Building Construction Bahrain</title>
+<meta name="description" content="Shahbuddin Contracting Co. W.L.L. delivers building construction, villa construction, civil works, structural works, gypsum &amp; ceiling, and general maintenance across the Kingdom of Bahrain.">
+<meta name="keywords" content="building construction Bahrain, villa construction Bahrain, civil works, structural works, gypsum ceiling contractor, general maintenance Bahrain, Shahbuddin Contracting">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://scc-website-dun.vercel.app/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Shahbuddin Contracting Co. W.L.L. | Building Construction Bahrain">
+<meta property="og:description" content="Building construction, civil works, structural works, gypsum &amp; ceiling, and general maintenance across the Kingdom of Bahrain — since 2016.">
+<meta property="og:image" content="https://scc-website-dun.vercel.app/assets/photos/hero-facade.jpg">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="assets/favicon-180.png">
-<meta name="theme-color" content="#1E5C82">
+<meta name="theme-color" content="#16151A">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=8">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.16/dist/lenis.min.js"></script>
 </head>
-<body>
+<body class="is-loading">
 
 <a class="skip-link" href="#main">Skip to content</a>
+
+<div class="preloader" id="preloader" aria-hidden="true">
+  <span class="preloader-count" id="preloaderCount">01</span>
+  <span class="preloader-name">Shahbuddin Contracting</span>
+</div>
 
 <!-- ─── NAVBAR ─── -->
 <nav class="navbar" id="navbar">
   <div class="nav-inner">
     <a href="#home" class="nav-logo">
       <svg class="nav-logo-mark" viewBox="0 0 100 100" aria-hidden="true">
-        <rect x="20" y="20" width="60" height="60" transform="rotate(45 50 50)" fill="#12233A"/>
+        <rect x="20" y="20" width="60" height="60" transform="rotate(45 50 50)" fill="#16151A"/>
         <text x="50" y="57" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="22" letter-spacing="1" fill="#F4F7FA">SCC</text>
       </svg>
       <span class="nav-logo-text">Shahbuddin<span>Contracting Co. W.L.L.</span></span>
@@ -61,7 +74,7 @@
 <!-- ─── HERO ─── -->
 <section class="hero" id="home">
   <div class="hero-media">
-    <img class="hero-bg-photo" src="assets/photos/hero-facade.jpg" alt="Modern building facade" />
+    <img class="hero-bg-photo" src="assets/photos/hero-facade.jpg" alt="Modern building facade" fetchpriority="high" decoding="async" width="2400" height="3200" />
     <div class="hero-scrim" aria-hidden="true"></div>
   </div>
 
@@ -108,7 +121,7 @@
   <div class="container about-grid">
     <div class="about-figure">
       <div class="about-diagram">
-        <img src="assets/photos/about-construction.jpg" alt="Structural works on a construction site" />
+        <img src="assets/photos/about-construction.jpg" alt="Structural works on a construction site" loading="lazy" decoding="async" width="2000" height="1333" />
       </div>
       <div class="about-badge">
         <div class="num">2016</div>
@@ -134,38 +147,53 @@
       </div>
       <p class="section-desc">Full-service construction and maintenance capability, delivered by an in-house team and trusted specialist partners.</p>
     </div>
-    <div class="services-grid">
-      <div class="service-tile reveal"><span class="s-idx">01</span>
-        <div class="s-icon"><svg viewBox="0 0 40 40"><rect x="6" y="16" width="28" height="18" rx="1"/><path d="M12 16V9h16v7"/><path d="M17 25h6"/></svg></div>
-        <h3>Building Construction</h3><p>Full-scale construction of residential and commercial buildings, from foundation to finish.</p>
+    <div class="services-interactive" id="servicesInteractive">
+      <div class="services-list-col">
+        <div class="service-row is-active reveal" data-img="assets/photos/about-construction.jpg" tabindex="0">
+          <span class="sv-index">01</span>
+          <h3>Building Construction</h3>
+          <p class="sv-desc">Full-scale construction of residential and commercial buildings, from foundation to finish.</p>
+        </div>
+        <div class="service-row reveal" data-img="assets/photos/detail-structure.jpg" tabindex="0">
+          <span class="sv-index">02</span>
+          <h3>Villa Construction</h3>
+          <p class="sv-desc">Private villa builds managed end-to-end, with close client and design-team collaboration.</p>
+        </div>
+        <div class="service-row reveal" data-img="assets/photos/hero-facade.jpg" tabindex="0">
+          <span class="sv-index">03</span>
+          <h3>General Maintenance</h3>
+          <p class="sv-desc">Ongoing building maintenance covering civil, MEP, and finishing trades after handover.</p>
+        </div>
+        <div class="service-row reveal" data-img="assets/photos/dusk-building.jpg" tabindex="0">
+          <span class="sv-index">04</span>
+          <h3>Civil Works</h3>
+          <p class="sv-desc">Groundworks, block work, and civil construction executed to a consistent site standard.</p>
+        </div>
+        <div class="service-row reveal" data-img="assets/photos/about-construction.jpg" tabindex="0">
+          <span class="sv-index">05</span>
+          <h3>Structural Works</h3>
+          <p class="sv-desc">Structural concrete and steelwork, engineered and executed for long-term integrity.</p>
+        </div>
+        <div class="service-row reveal" data-img="assets/photos/detail-structure.jpg" tabindex="0">
+          <span class="sv-index">06</span>
+          <h3>Finishing Works</h3>
+          <p class="sv-desc">Tiling, carpentry, and detailed finishing carried through to a consistent standard.</p>
+        </div>
+        <div class="service-row reveal" data-img="assets/photos/hero-facade.jpg" tabindex="0">
+          <span class="sv-index">07</span>
+          <h3>Gypsum &amp; Ceiling</h3>
+          <p class="sv-desc">Gypsum partitions and ceiling systems, installed with clean, precise detailing.</p>
+        </div>
+        <div class="service-row reveal" data-img="assets/photos/dusk-building.jpg" tabindex="0">
+          <span class="sv-index">08</span>
+          <h3>Painting &amp; Decoration</h3>
+          <p class="sv-desc">Interior and exterior painting and decorative finishing for a polished result.</p>
+        </div>
       </div>
-      <div class="service-tile reveal"><span class="s-idx">02</span>
-        <div class="s-icon"><svg viewBox="0 0 40 40"><path d="M8 34V16l12-9 12 9v18"/><path d="M17 34V22h6v12"/></svg></div>
-        <h3>Villa Construction</h3><p>Private villa builds managed end-to-end, with close client and design-team collaboration.</p>
-      </div>
-      <div class="service-tile reveal"><span class="s-idx">03</span>
-        <div class="s-icon"><svg viewBox="0 0 40 40"><path d="M20 6v6M20 28v6M6 20h6M28 20h6"/><circle cx="20" cy="20" r="7"/></svg></div>
-        <h3>General Maintenance</h3><p>Ongoing building maintenance covering civil, MEP, and finishing trades after handover.</p>
-      </div>
-      <div class="service-tile reveal"><span class="s-idx">04</span>
-        <div class="s-icon"><svg viewBox="0 0 40 40"><rect x="5" y="18" width="30" height="16" rx="1"/><path d="M10 18V10h20v8"/></svg></div>
-        <h3>Civil Works</h3><p>Groundworks, block work, and civil construction executed to a consistent site standard.</p>
-      </div>
-      <div class="service-tile reveal"><span class="s-idx">05</span>
-        <div class="s-icon"><svg viewBox="0 0 40 40"><line x1="10" y1="34" x2="10" y2="10"/><line x1="20" y1="34" x2="20" y2="6"/><line x1="30" y1="34" x2="30" y2="14"/><line x1="6" y1="34" x2="34" y2="34"/></svg></div>
-        <h3>Structural Works</h3><p>Structural concrete and steelwork, engineered and executed for long-term integrity.</p>
-      </div>
-      <div class="service-tile reveal"><span class="s-idx">06</span>
-        <div class="s-icon"><svg viewBox="0 0 40 40"><rect x="8" y="8" width="24" height="24" rx="1"/><path d="M8 20h24"/><path d="M20 8v24"/></svg></div>
-        <h3>Finishing Works</h3><p>Tiling, carpentry, and detailed finishing carried through to a consistent standard.</p>
-      </div>
-      <div class="service-tile reveal"><span class="s-idx">07</span>
-        <div class="s-icon"><svg viewBox="0 0 40 40"><path d="M6 30h28"/><path d="M6 30c0-10 6-18 14-18s14 8 14 18"/><path d="M14 30v-8M20 30v-11M26 30v-8"/></svg></div>
-        <h3>Gypsum &amp; Ceiling</h3><p>Gypsum partitions and ceiling systems, installed with clean, precise detailing.</p>
-      </div>
-      <div class="service-tile reveal"><span class="s-idx">08</span>
-        <div class="s-icon"><svg viewBox="0 0 40 40"><path d="M8 32L28 12"/><path d="M23 7l10 10-4 4-10-10z"/><path d="M6 34l4-6 2 2-6 4z"/></svg></div>
-        <h3>Painting &amp; Decoration</h3><p>Interior and exterior painting and decorative finishing for a polished result.</p>
+      <div class="services-preview-col" aria-hidden="true">
+        <div class="services-preview-frame">
+          <img id="servicePreviewImg" src="assets/photos/about-construction.jpg" alt="" loading="lazy" decoding="async" width="2000" height="1333" />
+        </div>
       </div>
     </div>
   </div>
@@ -173,7 +201,7 @@
 
 <!-- ─── IMAGE BREAK ─── -->
 <section class="image-break reveal">
-  <img src="assets/photos/detail-structure.jpg" alt="Structural facade detail" />
+  <img src="assets/photos/detail-structure.jpg" alt="Structural facade detail" loading="lazy" decoding="async" width="2000" height="1333" />
   <div class="image-break-scrim" aria-hidden="true"></div>
   <div class="image-break-caption">
     <span class="image-break-eyebrow">Precision &middot; Discipline &middot; Craft</span>
@@ -189,45 +217,10 @@
         <div class="section-label">Our Work</div>
         <h2 class="section-title">Projects</h2>
       </div>
-      <p class="section-desc">A showcase of our project portfolio. Photography and video for each project will be added here directly from site.</p>
+      <p class="section-desc">A showcase of our project portfolio. Photography and details for each project are added from site records.</p>
     </div>
-    <div class="projects-list" id="projectsList">
-      <article class="project-row reveal" data-preview-img="">
-        <span class="pr-index">01</span>
-        <div class="pr-name"><h3>[ Project Name ]</h3><span class="pr-type">[ Project Type ]</span></div>
-        <span class="pr-loc">[ Location ]</span>
-        <span class="pr-arrow" aria-hidden="true">&rarr;</span>
-      </article>
-      <article class="project-row reveal" data-preview-img="">
-        <span class="pr-index">02</span>
-        <div class="pr-name"><h3>[ Project Name ]</h3><span class="pr-type">[ Project Type ]</span></div>
-        <span class="pr-loc">[ Location ]</span>
-        <span class="pr-arrow" aria-hidden="true">&rarr;</span>
-      </article>
-      <article class="project-row reveal" data-preview-img="">
-        <span class="pr-index">03</span>
-        <div class="pr-name"><h3>[ Project Name ]</h3><span class="pr-type">[ Project Type ]</span></div>
-        <span class="pr-loc">[ Location ]</span>
-        <span class="pr-arrow" aria-hidden="true">&rarr;</span>
-      </article>
-      <article class="project-row reveal" data-preview-img="">
-        <span class="pr-index">04</span>
-        <div class="pr-name"><h3>[ Project Name ]</h3><span class="pr-type">[ Project Type ]</span></div>
-        <span class="pr-loc">[ Location ]</span>
-        <span class="pr-arrow" aria-hidden="true">&rarr;</span>
-      </article>
-      <article class="project-row reveal" data-preview-img="">
-        <span class="pr-index">05</span>
-        <div class="pr-name"><h3>[ Project Name ]</h3><span class="pr-type">[ Project Type ]</span></div>
-        <span class="pr-loc">[ Location ]</span>
-        <span class="pr-arrow" aria-hidden="true">&rarr;</span>
-      </article>
-      <article class="project-row reveal" data-preview-img="">
-        <span class="pr-index">06</span>
-        <div class="pr-name"><h3>[ Project Name ]</h3><span class="pr-type">[ Project Type ]</span></div>
-        <span class="pr-loc">[ Location ]</span>
-        <span class="pr-arrow" aria-hidden="true">&rarr;</span>
-      </article>
+    <div class="projects-list" id="projectsList" data-generated>
+      <!-- Rendered from the PROJECTS array in js/script.js — edit there to add real projects. -->
     </div>
     <div class="project-cursor-preview" id="projectCursorPreview" aria-hidden="true">
       <span>Photo To Be<br>Added</span>
@@ -244,10 +237,30 @@
         <div class="section-label">Our Process</div>
         <h2 class="section-title">How We Build</h2>
       </div>
-      <p class="section-desc">The same disciplined sequence shown in the schematic below, applied consistently across every project.</p>
+      <p class="section-desc">Scroll to move through the disciplined sequence applied consistently across every project.</p>
     </div>
+  </div>
 
-    <div class="hero-anim-wrap" id="heroAnim" style="margin-bottom:56px;">
+  <div class="process-pin-wrap" id="processPinWrap">
+    <div class="process-sticky">
+      <div class="container process-sticky-inner">
+        <div class="process-text-col">
+          <span class="process-big-num" id="processBigNum">01</span>
+          <h3 class="process-big-title" id="processBigTitle">Planning</h3>
+          <p class="process-big-desc" id="processBigDesc">Scope, drawings, and site logistics are agreed before any work begins.</p>
+          <div class="process-dots" id="processDots">
+            <span class="pdot is-active" data-step="0"></span>
+            <span class="pdot" data-step="1"></span>
+            <span class="pdot" data-step="2"></span>
+            <span class="pdot" data-step="3"></span>
+            <span class="pdot" data-step="4"></span>
+            <span class="pdot" data-step="5"></span>
+            <span class="pdot" data-step="6"></span>
+            <span class="pdot" data-step="7"></span>
+          </div>
+        </div>
+        <div class="process-visual-col">
+    <div class="hero-anim-wrap" id="heroAnim">
       <span class="hero-anim-badge">Architectural Schematic &middot; Illustrative</span>
       <svg class="building-svg" viewBox="0 0 960 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated architectural diagram of a five-storey building rising from an empty site to a completed, illuminated structure">
         <line class="b-ground" x1="40" y1="430" x2="920" y2="430" data-appear-stage="empty"/>
@@ -324,18 +337,9 @@
         <rect class="b-block" x="557" y="184" width="71" height="42" data-floor="4" data-appear-stage="blockwork"/>
         <rect class="b-window" x="576.8" y="195.3" width="31.5" height="19.3" data-floor="4" data-appear-stage="blockwork"/>
       </svg>
-      <span class="hero-anim-caption" id="heroAnimCaption">Empty Site</span>
     </div>
-
-    <div class="process-row">
-      <div class="process-step reveal"><div class="process-dot">01</div><h4>Planning</h4></div>
-      <div class="process-step reveal"><div class="process-dot">02</div><h4>Excavation</h4></div>
-      <div class="process-step reveal"><div class="process-dot">03</div><h4>Foundation</h4></div>
-      <div class="process-step reveal"><div class="process-dot">04</div><h4>Structure</h4></div>
-      <div class="process-step reveal"><div class="process-dot">05</div><h4>Blockwork</h4></div>
-      <div class="process-step reveal"><div class="process-dot">06</div><h4>Plastering</h4></div>
-      <div class="process-step reveal"><div class="process-dot">07</div><h4>Finishing</h4></div>
-      <div class="process-step reveal"><div class="process-dot">08</div><h4>Completion</h4></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -391,17 +395,17 @@
     <h2 class="section-title reveal">Craft in Motion</h2>
   </div>
   <div class="circle-track">
-    <div class="circle-item reveal" style="--offset:6px;"><img src="assets/photos/about-construction.jpg" alt="Construction site works" /></div>
-    <div class="circle-item reveal" style="--offset:-22px;"><img src="assets/photos/detail-structure.jpg" alt="Structural facade detail" /></div>
-    <div class="circle-item reveal" style="--offset:18px;"><img src="assets/photos/hero-facade.jpg" alt="Modern building facade" /></div>
-    <div class="circle-item reveal" style="--offset:-14px;"><img src="assets/photos/dusk-building.jpg" alt="Building exterior at dusk" /></div>
-    <div class="circle-item reveal" style="--offset:24px;"><img src="assets/photos/about-construction.jpg" alt="Construction site works" /></div>
+    <div class="circle-item reveal" style="--offset:6px;"><img loading="lazy" decoding="async" src="assets/photos/about-construction.jpg" alt="Construction site works" /></div>
+    <div class="circle-item reveal" style="--offset:-22px;"><img src="assets/photos/detail-structure.jpg" alt="Structural facade detail" loading="lazy" decoding="async" width="2000" height="1333" /></div>
+    <div class="circle-item reveal" style="--offset:18px;"><img loading="lazy" decoding="async" src="assets/photos/hero-facade.jpg" alt="Modern building facade" /></div>
+    <div class="circle-item reveal" style="--offset:-14px;"><img loading="lazy" decoding="async" src="assets/photos/dusk-building.jpg" alt="Building exterior at dusk" /></div>
+    <div class="circle-item reveal" style="--offset:24px;"><img loading="lazy" decoding="async" src="assets/photos/about-construction.jpg" alt="Construction site works" /></div>
   </div>
 </section>
 
 <!-- ─── CONTACT ─── -->
 <section class="contact" id="contact">
-  <img class="contact-bg-photo" src="assets/photos/dusk-building.jpg" alt="" aria-hidden="true" />
+  <img class="contact-bg-photo" src="assets/photos/dusk-building.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" width="2400" height="2400" />
   <div class="contact-bg-grid" aria-hidden="true"></div>
   <div class="container contact-inner">
     <div class="section-label">Get In Touch</div>
@@ -424,12 +428,35 @@
         <p>CR No. 104437-1 &middot; P.O. Box 13354</p>
       </div>
     </div>
+    <form class="contact-form" id="contactForm" novalidate>
+      <div class="cf-grid">
+        <label class="cf-field"><span>Name</span><input type="text" name="name" required autocomplete="name"></label>
+        <label class="cf-field"><span>Company</span><input type="text" name="company" autocomplete="organization"></label>
+        <label class="cf-field"><span>Email</span><input type="email" name="email" required autocomplete="email"></label>
+        <label class="cf-field"><span>Phone</span><input type="tel" name="phone" autocomplete="tel"></label>
+        <label class="cf-field cf-span"><span>Project Type</span>
+          <select name="projectType">
+            <option value="">Select&hellip;</option>
+            <option>Building Construction</option>
+            <option>Villa Construction</option>
+            <option>General Maintenance</option>
+            <option>Civil Works</option>
+            <option>Structural Works</option>
+            <option>Finishing Works</option>
+            <option>Gypsum &amp; Ceiling</option>
+            <option>Painting &amp; Decoration</option>
+          </select>
+        </label>
+        <label class="cf-field cf-span"><span>Message</span><textarea name="message" rows="4" required></textarea></label>
+      </div>
+      <button type="submit" class="btn-primary cf-submit" data-magnetic>Send Enquiry</button>
+      <p class="cf-note" id="cfNote" role="status" aria-live="polite"></p>
+    </form>
+
     <div class="contact-map-wrap">
       <iframe title="Shahbuddin Contracting Co. location" src="https://www.google.com/maps?q=Building+946+Road+4233+Block+242+Shop+105+Arad+Bahrain&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
-    <a href="https://www.google.com/maps/dir/?api=1&destination=Building+946+Road+4233+Block+242+Shop+105+Arad+Bahrain" target="_blank" rel="noopener" class="btn-secondary" style="border-color:rgba(255,255,255,0.3); color:#fff; margin-bottom:20px; display:inline-flex;">Get Directions</a>
-    <br>
-    <a href="tel:+97338188359" class="btn-primary">Request A Quote</a>
+    <a href="https://www.google.com/maps/dir/?api=1&destination=Building+946+Road+4233+Block+242+Shop+105+Arad+Bahrain" target="_blank" rel="noopener" class="btn-secondary" style="border-color:rgba(255,255,255,0.3); color:#fff; display:inline-flex;">Get Directions</a>
   </div>
 </section>
 
@@ -440,7 +467,7 @@
     <div class="footer-col footer-brand">
       <svg class="footer-logo-mark" viewBox="0 0 100 100" aria-hidden="true">
         <rect x="20" y="20" width="60" height="60" transform="rotate(45 50 50)" fill="#F4F7FA"/>
-        <text x="50" y="57" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="22" letter-spacing="1" fill="#12233A">SCC</text>
+        <text x="50" y="57" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="22" letter-spacing="1" fill="#16151A">SCC</text>
       </svg>
       <p>Building construction and general maintenance services across the Kingdom of Bahrain.</p>
     </div>
@@ -466,6 +493,6 @@
   </div>
 </footer>
 
-<script src="js/script.js?v=6"></script>
+<script src="js/script.js?v=8"></script>
 </body>
 </html>
