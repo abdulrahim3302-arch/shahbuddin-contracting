@@ -18,7 +18,7 @@
 <link rel="apple-touch-icon" href="assets/favicon-180.png">
 <meta name="theme-color" content="#16151A">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=8">
+<link rel="stylesheet" href="css/style.css?v=11">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.16/dist/lenis.min.js"></script>
@@ -35,19 +35,27 @@
 <!-- ─── NAVBAR ─── -->
 <nav class="navbar" id="navbar">
   <div class="nav-inner">
-    <a href="#home" class="nav-logo">
-      <svg class="nav-logo-mark" viewBox="0 0 100 100" aria-hidden="true">
-        <rect x="20" y="20" width="60" height="60" transform="rotate(45 50 50)" fill="#16151A"/>
-        <text x="50" y="57" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="22" letter-spacing="1" fill="#F4F7FA">SCC</text>
+    <a href="#home" class="nav-emblem" aria-label="Shahbuddin Contracting — home">
+      <svg class="emblem-ring" viewBox="0 0 120 120" aria-hidden="true">
+        <defs>
+          <path id="emblemCircle" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0" />
+        </defs>
+        <text class="emblem-text">
+          <!-- textLength is locked to the circle's circumference (2·π·46 ≈ 289)
+               so the ring always closes exactly and never overlaps itself. -->
+          <textPath href="#emblemCircle" startOffset="0" textLength="289" lengthAdjust="spacingAndGlyphs">SHAHBUDDIN CONTRACTING · SHAHBUDDIN CONTRACTING ·</textPath>
+        </text>
       </svg>
-      <span class="nav-logo-text">Shahbuddin<span>Contracting Co. W.L.L.</span></span>
+      <svg class="emblem-core" viewBox="0 0 100 100" aria-hidden="true">
+        <rect x="26" y="26" width="48" height="48" transform="rotate(45 50 50)" fill="currentColor"/>
+        <text x="50" y="56" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="19" letter-spacing="0.5" class="emblem-core-text">SCC</text>
+      </svg>
     </a>
     <div class="nav-links">
-      <a href="#home">Home</a>
-      <a href="#about">About Us</a>
+      <a href="#about">About</a>
       <a href="#services">Services</a>
       <a href="#projects">Projects</a>
-      <a href="#process">Our Process</a>
+      <a href="#process">Process</a>
       <a href="#contact" class="nav-quote">Contact</a>
     </div>
     <button class="hamburger" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
@@ -80,19 +88,24 @@
 
   <div class="hero-content">
     <h1 class="hero-stack">
-      <span class="line line-1"><span class="word">We</span> <span class="word">Build</span></span>
-      <em class="line line-2"><span class="word">What&rsquo;s</span> <span class="word">Next</span></em>
+      <span class="line line-1"><span class="word">Shahbuddin</span></span>
+      <span class="line line-2"><span class="word">Contracting</span></span>
+      <em class="line line-script"><span class="word">Bahrain</span></em>
     </h1>
-    <p class="hero-sub reveal" style="--reveal-delay:0.5s;">Building construction and general maintenance services across the Kingdom of Bahrain &mdash; from first excavation to final handover.</p>
-    <div class="hero-btns reveal" style="--reveal-delay:0.68s;">
+    <div class="hero-split reveal" style="--reveal-delay:0.55s;">
+      <span>Building Construction</span>
+      <span class="hero-split-rule" aria-hidden="true"></span>
+      <span>General Maintenance</span>
+    </div>
+    <div class="hero-btns reveal" style="--reveal-delay:0.7s;">
       <a href="#projects" class="btn-ghost">View Projects</a>
       <a href="#contact" class="btn-ghost">Get A Quote</a>
     </div>
   </div>
 
   <div class="hero-foot reveal" style="--reveal-delay:0.8s;">
-    <span class="hero-foot-mark">Shahbuddin Contracting Co. W.L.L.</span>
-    <span class="hero-foot-loc">Bahrain &middot; Est. 2016</span>
+    <span class="hero-foot-mark">Est. 2016 &middot; CR 104437-1</span>
+    <span class="hero-foot-loc">Arad, Kingdom of Bahrain</span>
   </div>
 </section>
 
@@ -493,6 +506,6 @@
   </div>
 </footer>
 
-<script src="js/script.js?v=8"></script>
+<script src="js/script.js?v=9"></script>
 </body>
 </html>
