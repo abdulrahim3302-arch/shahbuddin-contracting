@@ -345,19 +345,29 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
     const center = dome.querySelector('.dome-center');
     const dropLine = dome.querySelector('.dome-drop-line');
 
-    gsap.set(dome, { y: '58vh', scale: 0.88, transformOrigin: '50% 100%' });
+    const heroContent = wrap.querySelector('.hero-content');
+
+    // yPercent is relative to the element's OWN height (120vh), so yPercent:100
+    // always pushes it fully clear of the fold no matter the viewport size —
+    // unlike a fixed vh guess, which under-hid it on shorter viewports.
+    gsap.set(dome, { yPercent: 100, scale: 0.88, transformOrigin: '50% 100%' });
     gsap.set(curve, { rotation: -3, transformOrigin: '50% 100%' });
     gsap.set([center, dropLine], { opacity: 0, y: 14 });
 
     const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: wrap, start: 'top top', end: '+=85%', pin: true, scrub: 0.6
+        trigger: wrap, start: 'top top', end: '+=120%', pin: true, scrub: 0.6
       }
     });
-    tl.to(dome, { y: 0, scale: 1, duration: 1, ease: 'none' }, 0)
+    tl.to(dome, { yPercent: 0, scale: 1, duration: 1, ease: 'none' }, 0)
       .to(curve, { rotation: 0, duration: 1, ease: 'none' }, 0)
       .to(center, { opacity: 1, y: 0, duration: 0.3, ease: 'none' }, 0.55)
       .to(dropLine, { opacity: 1, y: 0, duration: 0.3, ease: 'none' }, 0.7);
+
+    // Hero copy recedes as the dome covers it: slight lift + fade/dim.
+    if (heroContent) {
+      tl.to(heroContent, { y: -40, opacity: 0.15, duration: 1, ease: 'none' }, 0);
+    }
   })();
 
   // ─── ON SITE: horizontal scroll driven by vertical scroll ───
