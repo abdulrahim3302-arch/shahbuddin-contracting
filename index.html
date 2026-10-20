@@ -18,7 +18,7 @@
 <link rel="apple-touch-icon" href="assets/favicon-180.png">
 <meta name="theme-color" content="#16151A">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=12">
+<link rel="stylesheet" href="css/style.css?v=15">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.16/dist/lenis.min.js"></script>
@@ -80,10 +80,17 @@
 <main id="main">
 
 <!-- ─── HERO ─── -->
+<!-- hero-dome-wrap has no overflow clip, so the dome (a sibling of .hero,
+     not a child) can extend past the hero's own bottom edge without being
+     cut off by the hero's own overflow:hidden (needed for its photo/scrim). -->
+<div class="hero-dome-wrap" id="heroDomeWrap">
 <section class="hero" id="home">
   <div class="hero-media">
     <img class="hero-bg-photo" src="assets/photos/hero-facade.jpg" alt="Modern building facade" fetchpriority="high" decoding="async" width="2400" height="3200" />
     <div class="hero-scrim" aria-hidden="true"></div>
+    <span class="hero-hotspot" style="top:28%; left:22%;" aria-hidden="true"></span>
+    <span class="hero-hotspot" style="top:52%; left:68%;" aria-hidden="true"></span>
+    <span class="hero-hotspot" style="top:74%; left:40%;" aria-hidden="true"></span>
   </div>
 
   <div class="hero-content">
@@ -106,6 +113,51 @@
   <div class="hero-foot reveal" style="--reveal-delay:0.8s;">
     <span class="hero-foot-mark">Est. 2016 &middot; CR 104437-1</span>
     <span class="hero-foot-loc">Arad, Kingdom of Bahrain</span>
+  </div>
+</section>
+
+<!-- dome-center-wrap handles static horizontal centering only, and is never
+     touched by GSAP; domeShape (inner) is the sole GSAP target for y/scale,
+     with no CSS transform of its own to avoid any decompose ambiguity. -->
+<div class="dome-center-wrap" aria-hidden="true">
+  <div class="dome-shape" id="domeShape">
+    <svg class="dome-curve" viewBox="0 0 1000 340">
+      <defs><path id="domeArc" d="M 40 300 A 460 460 0 0 1 960 300" /></defs>
+      <text class="dome-curve-label">
+        <textPath href="#domeArc" startOffset="50%" text-anchor="middle">THREE REASONS TO CHOOSE SCC</textPath>
+      </text>
+    </svg>
+    <div class="dome-center">
+      <span>Bahrain</span>
+      <svg class="dome-mini-mark" viewBox="0 0 100 100" aria-hidden="true"><rect x="26" y="26" width="48" height="48" transform="rotate(45 50 50)" fill="currentColor"/></svg>
+      <span>Est. 2016</span>
+    </div>
+    <span class="dome-drop-line"></span>
+  </div>
+</div>
+</div><!-- /hero-dome-wrap -->
+
+<!-- ─── THREE REASONS (dome transition continues into this) ─── -->
+<section class="reasons" id="reasons">
+  <div class="container reasons-grid">
+    <article class="reason-block reveal">
+      <span class="reason-num">01</span>
+      <div class="reason-img"><img src="assets/photos/about-construction.jpg" alt="Structural works on site" loading="lazy" decoding="async" width="2000" height="1333" /></div>
+      <h3>Single Point of Accountability</h3>
+      <p>Every trade on site answers to one project lead, so nothing falls between contractors.</p>
+    </article>
+    <article class="reason-block reveal">
+      <span class="reason-num">02</span>
+      <div class="reason-img"><img src="assets/photos/detail-structure.jpg" alt="Facade and finish detail" loading="lazy" decoding="async" width="2000" height="1333" /></div>
+      <h3>Consistent Quality Control</h3>
+      <p>Work is checked against the same standard at every stage, not just at handover.</p>
+    </article>
+    <article class="reason-block reveal">
+      <span class="reason-num">03</span>
+      <div class="reason-img"><img src="assets/photos/dusk-building.jpg" alt="Completed building exterior" loading="lazy" decoding="async" width="2400" height="2400" /></div>
+      <h3>On-Time, Budget-Managed Delivery</h3>
+      <p>Schedules and budgets are tracked closely from tender through to handover.</p>
+    </article>
   </div>
 </section>
 
@@ -535,6 +587,6 @@
   </div>
 </footer>
 
-<script src="js/script.js?v=13"></script>
+<script src="js/script.js?v=15"></script>
 </body>
 </html>

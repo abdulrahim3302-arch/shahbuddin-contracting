@@ -331,6 +331,35 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
     });
   });
 
+  // ─── DOME TRANSITION: hero stays pinned while a dome rises over it ───
+  // Base CSS already renders the dome in its fully-risen resting position
+  // (the correct static fallback). Here we push it down further with an
+  // additional GSAP `y` and animate that back to 0 as the user scrolls —
+  // GSAP decomposes the CSS translateX(-50%) and layers y/scale on top of
+  // it rather than overwriting it, so centering survives untouched.
+  (function domeTransition() {
+    const wrap = document.getElementById('heroDomeWrap');
+    const dome = document.getElementById('domeShape');
+    if (!wrap || !dome) return;
+    const curve = dome.querySelector('.dome-curve');
+    const center = dome.querySelector('.dome-center');
+    const dropLine = dome.querySelector('.dome-drop-line');
+
+    gsap.set(dome, { y: '58vh', scale: 0.88, transformOrigin: '50% 100%' });
+    gsap.set(curve, { rotation: -3, transformOrigin: '50% 100%' });
+    gsap.set([center, dropLine], { opacity: 0, y: 14 });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: wrap, start: 'top top', end: '+=85%', pin: true, scrub: 0.6
+      }
+    });
+    tl.to(dome, { y: 0, scale: 1, duration: 1, ease: 'none' }, 0)
+      .to(curve, { rotation: 0, duration: 1, ease: 'none' }, 0)
+      .to(center, { opacity: 1, y: 0, duration: 0.3, ease: 'none' }, 0.55)
+      .to(dropLine, { opacity: 1, y: 0, duration: 0.3, ease: 'none' }, 0.7);
+  })();
+
   // ─── ON SITE: horizontal scroll driven by vertical scroll ───
   // The pin wrapper is ~340vh tall. As it scrolls, the track translates left by
   // exactly its overflow width, so the whole gallery reads as one horizontal move.

@@ -257,6 +257,80 @@ body.is-loading { overflow: hidden; }
 [data-draw] { stroke-dasharray: var(--len, 400); stroke-dashoffset: var(--len, 400); }
 [data-draw].visible { stroke-dashoffset: 0; }
 
+/* ─── HERO HOTSPOTS: small pulsing dots over the hero photo ─── */
+.hero-hotspot {
+  position: absolute; width: 9px; height: 9px; border-radius: 50%;
+  background: var(--white); z-index: 2; pointer-events: none;
+}
+.hero-hotspot::before {
+  content: ''; position: absolute; inset: -8px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.6); animation: hotspotPulse 2.6s ease-out infinite;
+}
+.hero-hotspot:nth-child(2)::before { animation-delay: 0.6s; }
+.hero-hotspot:nth-child(3)::before { animation-delay: 1.2s; }
+@keyframes hotspotPulse {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+@media (max-width: 768px) { .hero-hotspot { display: none; } }
+@media (prefers-reduced-motion: reduce) { .hero-hotspot::before { animation: none; opacity: 0; } }
+
+/* ─── DOME TRANSITION ─── */
+.hero-dome-wrap { position: relative; }
+/* A large semicircle rises from the foot of the hero while the hero is
+   pinned, then settles to fill the viewport; the Three Reasons section right
+   after it shares the same background, so the seam disappears. */
+/* Base/resting state = fully risen (covers the viewport). This is also the
+   correct no-JS and prefers-reduced-motion fallback: static, final state,
+   nothing to wait for. JS (when motion is allowed) starts it pushed further
+   down via an additional GSAP `y`, then animates that back to 0 on scroll —
+   GSAP decomposes the existing translateX(-50%) and layers its own y/scale
+   on top of it rather than fighting it. */
+.dome-center-wrap {
+  position: absolute; left: 50%; bottom: -10%; z-index: 3;
+  width: 148vw; max-width: 2200px;
+  transform: translateX(-50%);
+}
+.dome-shape {
+  width: 100%; height: 120vh;
+  background: var(--offwhite); border-radius: 50% 50% 0 0;
+  display: flex; flex-direction: column; align-items: center;
+  padding-top: 86px;
+}
+.dome-curve { width: min(640px, 70vw); height: auto; overflow: visible; }
+.dome-curve-label {
+  font-family: var(--font-display); font-size: 25px; font-weight: 500;
+  letter-spacing: 4px; text-transform: uppercase; fill: var(--text);
+}
+.dome-center {
+  margin-top: 6px; display: flex; align-items: center; gap: 16px;
+  font-size: 11px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted);
+}
+.dome-mini-mark { width: 22px; height: 22px; color: var(--sky-deep); }
+.dome-drop-line { width: 1px; height: 64px; background: var(--border); margin-top: 22px; }
+@media (max-width: 768px) {
+  .dome-center-wrap { width: 200vw; bottom: -58%; }
+  .dome-shape { padding-top: 56px; }
+  .dome-curve { width: 86vw; }
+  .dome-curve-label { font-size: 16px; letter-spacing: 2px; }
+  .dome-center { font-size: 9.5px; letter-spacing: 2px; gap: 10px; }
+  .dome-drop-line { height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) {
+}
+
+/* ─── THREE REASONS ─── */
+.reasons { background: var(--offwhite); padding: 60px 0 120px; position: relative; z-index: 2; }
+.reasons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+.reason-block { display: flex; flex-direction: column; }
+.reason-num { font-family: var(--font-display); font-style: italic; font-size: 15px; color: var(--text-faint); margin-bottom: 14px; }
+.reason-img { aspect-ratio: 4/3; overflow: hidden; margin-bottom: 20px; background: var(--offwhite-2); }
+.reason-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s cubic-bezier(0.22,1,0.36,1); }
+.reason-block:hover .reason-img img { transform: scale(1.05); }
+.reason-block h3 { font-family: var(--font-display); font-weight: 500; font-size: 21px; color: var(--text); margin-bottom: 10px; }
+.reason-block p { font-size: 13.5px; color: var(--text-muted); line-height: 1.65; }
+@media (max-width: 860px) { .reasons-grid { grid-template-columns: 1fr; gap: 48px; } }
+
 /* ─── TICKER ─── */
 .strip { background: var(--sky-deep); padding: 16px 0; overflow: hidden; }
 .strip-track { display: flex; width: max-content; animation: stripScroll 30s linear infinite; }
