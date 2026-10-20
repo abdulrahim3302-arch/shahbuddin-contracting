@@ -96,6 +96,40 @@ const PROJECTS = [
   applyStagger();
 })();
 
+// ─── PROCESS STAGES ───
+// EDIT HERE to update the construction stages shown in the horizontal
+// Process section. `video` is optional — set it to a real file and the
+// panel will autoplay it (muted/looped) while in view; left blank, the
+// panel just shows the poster image.
+const PROCESS_STAGES = [
+  { title: 'Earthworks', desc: 'The plot is cleared, excavated, and levelled to the depth required for the foundation.', poster: 'assets/photos/about-construction.jpg', video: '' },
+  { title: 'Blinding', desc: 'A thin layer of lean concrete is laid to give the foundation a clean, level base to build on.', poster: 'assets/photos/detail-structure.jpg', video: '' },
+  { title: 'Foundations', desc: 'Reinforcement is fixed and the foundation is cast to carry the full structural load.', poster: 'assets/photos/hero-facade.jpg', video: '' },
+  { title: 'Columns', desc: 'Vertical columns rise floor by floor, forming the structural grid of the building.', poster: 'assets/photos/dusk-building.jpg', video: '' },
+  { title: 'Slabs', desc: 'Each floor slab is cast in turn, locking the columns together at every level.', poster: 'assets/photos/about-construction.jpg', video: '' },
+  { title: 'Block & Plaster', desc: 'Block walls fill the frame and are plastered to a smooth, consistent finish.', poster: 'assets/photos/detail-structure.jpg', video: '' },
+  { title: 'Finishing', desc: 'Tiling, carpentry, gypsum, and painting are carried through to final handover.', poster: 'assets/photos/hero-facade.jpg', video: '' }
+];
+
+(function renderProcessStages() {
+  const track = document.getElementById('processHscrollTrack');
+  if (!track) return;
+  track.innerHTML = PROCESS_STAGES.map((s, i) => {
+    const idx = String(i + 1).padStart(2, '0');
+    const media = s.video
+      ? `<video class="process-panel-media-el" muted loop playsinline preload="none" poster="${s.poster}"><source src="${s.video}" type="video/mp4"></video>`
+      : `<img src="${s.poster}" alt="${s.title} stage" loading="lazy" decoding="async" />`;
+    return `<article class="hs-panel">
+      <div class="process-panel">
+        <span class="process-panel-num">${idx} / ${String(PROCESS_STAGES.length).padStart(2, '0')}</span>
+        <h3>${s.title}</h3>
+        <p>${s.desc}</p>
+        <div class="process-panel-media">${media}</div>
+      </div>
+    </article>`;
+  }).join('');
+})();
+
 // Project rows: cursor-following circular preview
 (function projectCursorPreview() {
   const preview = document.getElementById('projectCursorPreview');
@@ -370,19 +404,120 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
     }
   })();
 
-  // ─── ON SITE: horizontal scroll driven by vertical scroll ───
-  // The pin wrapper is ~340vh tall. As it scrolls, the track translates left by
-  // exactly its overflow width, so the whole gallery reads as one horizontal move.
-  (function horizontalGallery() {
-    const pin = document.getElementById('hscrollPin');
-    const track = document.getElementById('hscrollTrack');
-    const bar = document.getElementById('hscrollBar');
-    if (!pin || !track) return;
+  // ─── SLIDESHOW: auto-advancing, pauses on hover, arrows + progress line ───
+  (function slideshow() {
+    const section = document.getElementById('slideshow');
+    if (!section) return;
+    const headline = document.getElementById('slideHeadline');
+    const desc = document.getElementById('slideDesc');
+    const tagline = document.getElementById('slideTagline');
+    const current = document.getElementById('slideCurrent');
+    const fill = document.getElementById('slideProgressFill');
+    const imgA = document.getElementById('slideImgA');
+    const imgB = document.getElementById('slideImgB');
+    const prevBtn = document.getElementById('slidePrev');
+    const nextBtn = document.getElementById('slideNext');
+    if (!headline || !imgA || !imgB) return;
 
-    // gsap.matchMedia re-evaluates on resize/rotate, so the pinned horizontal
-    // scroll is built when the viewport is wide enough and cleanly torn down
-    // when it isn't. A one-off matchMedia check here would leave the gallery
-    // dead for anyone who loads narrow and then widens the window.
+    const SLIDES = [
+      { headline: 'Real-Life Location', image: 'assets/photos/hero-facade.jpg', desc: 'Based in Bahrain, every project is run by a team that knows the site, the suppliers, and the regulations first-hand.', tagline: 'Built On Site, Not Outsourced' },
+      { headline: 'Built To Stay', image: 'assets/photos/about-construction.jpg', desc: 'Structural work is engineered and executed for long-term integrity, not just to pass handover.', tagline: 'Structure First, Finish Second' },
+      { headline: 'One Accountable Team', image: 'assets/photos/detail-structure.jpg', desc: 'Civil, structural, and finishing trades are coordinated under a single point of responsibility.', tagline: 'One Contractor, Every Trade' }
+    ];
+    const DURATION = 5000;
+    let index = 0, imgToggle = true, timer = null, progressTween = null;
+
+    function render(i, animateHeadline) {
+      const s = SLIDES[i];
+      const nextImg = imgToggle ? imgB : imgA;
+      const prevImg = imgToggle ? imgA : imgB;
+      nextImg.src = s.image;
+      nextImg.classList.add('is-active');
+      prevImg.classList.remove('is-active');
+      imgToggle = !imgToggle;
+      if (current) current.textContent = String(i + 1);
+      if (desc) desc.textContent = s.desc;
+      if (tagline) tagline.textContent = s.tagline;
+      if (animateHeadline && !prefersReducedMotion) {
+        gsap.fromTo(headline, { yPercent: 100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.6, ease: 'power3.out' });
+      }
+      headline.textContent = s.headline;
+    }
+
+    function startProgress() {
+      if (progressTween) progressTween.kill();
+      if (!fill) return;
+      gsap.set(fill, { width: '0%' });
+      progressTween = gsap.to(fill, { width: '100%', duration: DURATION / 1000, ease: 'none' });
+    }
+
+    function goTo(i, animateHeadline) {
+      index = (i + SLIDES.length) % SLIDES.length;
+      render(index, animateHeadline);
+      startProgress();
+    }
+
+    function next() { goTo(index + 1, true); }
+    function prev() { goTo(index - 1, true); }
+
+    render(0, false);
+
+    if (!prefersReducedMotion) {
+      startProgress();
+      timer = setInterval(next, DURATION);
+      section.addEventListener('mouseenter', () => {
+        clearInterval(timer);
+        if (progressTween) progressTween.pause();
+      });
+      section.addEventListener('mouseleave', () => {
+        if (progressTween) progressTween.resume();
+        timer = setInterval(next, DURATION);
+      });
+    } else if (fill) {
+      fill.style.width = '100%';
+    }
+
+    if (nextBtn) nextBtn.addEventListener('click', () => { clearInterval(timer); next(); if (!prefersReducedMotion) timer = setInterval(next, DURATION); });
+    if (prevBtn) prevBtn.addEventListener('click', () => { clearInterval(timer); prev(); if (!prefersReducedMotion) timer = setInterval(next, DURATION); });
+  })();
+
+  // ─── FULL-BLEED IMAGE TAKEOVER: small frame scales to fill the viewport ───
+  (function imageTakeover() {
+    const pin = document.getElementById('takeoverPin');
+    const frame = document.getElementById('takeoverFrame');
+    if (!pin || !frame) return;
+    gsap.to(frame, {
+      width: '100vw', aspectRatio: 'auto', height: '100vh',
+      ease: 'none',
+      scrollTrigger: { trigger: pin, start: 'top bottom', end: 'bottom top', scrub: 0.6 }
+    });
+  })();
+
+  // ─── PROCESS: autoplay each stage's video only while its panel is in view ───
+  (function processVideoAutoplay() {
+    const videos = document.querySelectorAll('.process-panel-media-el');
+    if (!videos.length) return;
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.play().catch(() => {});
+        else entry.target.pause();
+      });
+    }, { threshold: 0.4 });
+    videos.forEach(v => io.observe(v));
+  })();
+
+  // ─── ON SITE: horizontal scroll driven by vertical scroll ───
+  // Shared driver: pins `pinId`, and as the user scrolls through it, translates
+  // `trackId` left by exactly its own overflow width. Used by both the On Site
+  // gallery and the Process section below. gsap.matchMedia re-evaluates on
+  // resize/rotate, so it builds only when wide enough and tears down cleanly
+  // when it isn't — a one-off width check would leave the gallery dead for
+  // anyone who loads narrow and later widens the window.
+  function buildHorizontalScroll(pinId, trackId, barId) {
+    const pin = document.getElementById(pinId);
+    const track = document.getElementById(trackId);
+    const bar = barId && document.getElementById(barId);
+    if (!pin || !track) return;
     gsap.matchMedia().add('(min-width: 901px)', () => {
       const getDistance = () => Math.max(0, track.scrollWidth - window.innerWidth);
       const tween = gsap.to(track, {
@@ -397,10 +532,11 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
           onUpdate: (self) => { if (bar) bar.style.width = (self.progress * 100) + '%'; }
         }
       });
-      // Cleanup when the query stops matching (e.g. resize down to mobile)
       return () => { tween.scrollTrigger && tween.scrollTrigger.kill(); tween.kill(); gsap.set(track, { clearProps: 'x' }); };
     });
-  })();
+  }
+  buildHorizontalScroll('hscrollPin', 'hscrollTrack', 'hscrollBar');
+  buildHorizontalScroll('processHscrollPin', 'processHscrollTrack', 'processHscrollBar');
 
   // ─── MASK "PULL UP" REVEALS ───
   // Headings and figures rise out of a clipping mask instead of plain fading —
@@ -424,7 +560,9 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   // simpler and more predictable here than chaining per-section ScrollTriggers.
   const railCount = document.getElementById('scrollRailCount');
   const railFill = document.getElementById('scrollRailFill');
-  const railEls = ['home', 'about', 'services', 'projects', 'process', 'why', 'onsite', 'contact']
+  // Order matches document order (process now sits right after the dome,
+  // before about/services/projects) so the counter climbs monotonically.
+  const railEls = ['home', 'process', 'about', 'services', 'projects', 'why', 'onsite', 'contact']
     .map(id => document.getElementById(id)).filter(Boolean);
   if (railCount || railFill) {
     ScrollTrigger.create({

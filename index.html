@@ -18,7 +18,7 @@
 <link rel="apple-touch-icon" href="assets/favicon-180.png">
 <meta name="theme-color" content="#16151A">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=15">
+<link rel="stylesheet" href="css/style.css?v=17">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.16/dist/lenis.min.js"></script>
@@ -137,27 +137,60 @@
 </div>
 </div><!-- /hero-dome-wrap -->
 
-<!-- ─── THREE REASONS (dome transition continues into this) ─── -->
-<section class="reasons" id="reasons">
-  <div class="container reasons-grid">
-    <article class="reason-block reveal">
-      <span class="reason-num">01</span>
-      <div class="reason-img"><img src="assets/photos/about-construction.jpg" alt="Structural works on site" loading="lazy" decoding="async" width="2000" height="1333" /></div>
-      <h3>Single Point of Accountability</h3>
-      <p>Every trade on site answers to one project lead, so nothing falls between contractors.</p>
-    </article>
-    <article class="reason-block reveal">
-      <span class="reason-num">02</span>
-      <div class="reason-img"><img src="assets/photos/detail-structure.jpg" alt="Facade and finish detail" loading="lazy" decoding="async" width="2000" height="1333" /></div>
-      <h3>Consistent Quality Control</h3>
-      <p>Work is checked against the same standard at every stage, not just at handover.</p>
-    </article>
-    <article class="reason-block reveal">
-      <span class="reason-num">03</span>
-      <div class="reason-img"><img src="assets/photos/dusk-building.jpg" alt="Completed building exterior" loading="lazy" decoding="async" width="2400" height="2400" /></div>
-      <h3>On-Time, Budget-Managed Delivery</h3>
-      <p>Schedules and budgets are tracked closely from tender through to handover.</p>
-    </article>
+<!-- ─── SLIDESHOW (inside the dome) ─── -->
+<section class="slideshow" id="slideshow">
+  <div class="slideshow-inner">
+    <h2 class="slideshow-headline" id="slideHeadline" aria-live="polite">Real-Life Location</h2>
+    <div class="slideshow-frame">
+      <img class="slideshow-img is-active" id="slideImgA" src="assets/photos/hero-facade.jpg" alt="" loading="lazy" decoding="async" />
+      <img class="slideshow-img" id="slideImgB" src="assets/photos/about-construction.jpg" alt="" loading="lazy" decoding="async" />
+    </div>
+    <div class="slideshow-controls">
+      <button class="slide-arrow" id="slidePrev" aria-label="Previous slide">&larr;</button>
+      <span class="slide-index" id="slideCurrent">1</span>
+      <span class="slide-progress-track"><span class="slide-progress-fill" id="slideProgressFill"></span></span>
+      <span class="slide-index slide-index-total" id="slideTotal">3</span>
+      <button class="slide-arrow" id="slideNext" aria-label="Next slide">&rarr;</button>
+    </div>
+    <p class="slideshow-desc" id="slideDesc">Based in Bahrain, every project is run by a team that knows the site, the suppliers, and the regulations first-hand.</p>
+    <span class="slideshow-tagline" id="slideTagline">Built On Site, Not Outsourced</span>
+  </div>
+</section>
+
+<!-- ─── FULL-BLEED IMAGE TAKEOVER ─── -->
+<section class="dome-takeover" id="domeTakeover">
+  <div class="takeover-pin" id="takeoverPin">
+    <div class="takeover-frame" id="takeoverFrame">
+      <img src="assets/photos/dusk-building.jpg" alt="Completed building exterior at dusk" loading="lazy" decoding="async" />
+    </div>
+  </div>
+</section>
+
+<!-- ─── QUOTE ─── -->
+<section class="quote-section">
+  <div class="quote-media">
+    <img src="assets/photos/detail-structure.jpg" alt="" loading="lazy" decoding="async" />
+    <div class="quote-scrim" aria-hidden="true"></div>
+  </div>
+  <div class="quote-content">
+    <span class="quote-mark" aria-hidden="true">&ldquo;</span>
+    <blockquote class="quote-text" data-mask>We don&rsquo;t just build structures. We build trust, one project at a time.</blockquote>
+    <cite class="quote-attribution">Founder &middot; Shahbuddin Contracting</cite>
+  </div>
+</section>
+<div class="quote-cream-band">
+  <span class="cream-decor" aria-hidden="true"></span>
+</div>
+
+<!-- ─── OUR PROCESS: horizontal pinned scroll ─── -->
+<section class="hscroll process-hscroll" id="process">
+  <div class="hscroll-pin" id="processHscrollPin">
+    <div class="hscroll-viewport">
+      <div class="hscroll-track" id="processHscrollTrack" data-generated>
+        <!-- Rendered from PROCESS_STAGES in js/script.js — edit there to update stages. -->
+      </div>
+    </div>
+    <div class="hscroll-progress" aria-hidden="true"><span id="processHscrollBar"></span></div>
   </div>
 </section>
 
@@ -294,120 +327,7 @@
   </div>
 </section>
 
-<!-- ─── PROCESS ─── -->
-<section class="process" id="process">
-  <div class="container">
-    <div class="section-head-row reveal">
-      <div>
-        <div class="section-label">Our Process</div>
-        <h2 class="section-title" data-mask>How We Build</h2>
-      </div>
-      <p class="section-desc">Scroll to move through the disciplined sequence applied consistently across every project.</p>
-    </div>
-  </div>
 
-  <div class="process-pin-wrap" id="processPinWrap">
-    <div class="process-sticky">
-      <div class="container process-sticky-inner">
-        <div class="process-text-col">
-          <span class="process-big-num" id="processBigNum">01</span>
-          <h3 class="process-big-title" id="processBigTitle">Planning</h3>
-          <p class="process-big-desc" id="processBigDesc">Scope, drawings, and site logistics are agreed before any work begins.</p>
-          <div class="process-dots" id="processDots">
-            <span class="pdot is-active" data-step="0"></span>
-            <span class="pdot" data-step="1"></span>
-            <span class="pdot" data-step="2"></span>
-            <span class="pdot" data-step="3"></span>
-            <span class="pdot" data-step="4"></span>
-            <span class="pdot" data-step="5"></span>
-            <span class="pdot" data-step="6"></span>
-            <span class="pdot" data-step="7"></span>
-          </div>
-        </div>
-        <div class="process-visual-col">
-    <div class="hero-anim-wrap" id="heroAnim">
-      <span class="hero-anim-badge">Architectural Schematic &middot; Illustrative</span>
-      <svg class="building-svg" viewBox="0 0 960 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated architectural diagram of a five-storey building rising from an empty site to a completed, illuminated structure">
-        <line class="b-ground" x1="40" y1="430" x2="920" y2="430" data-appear-stage="empty"/>
-        <rect class="b-plot-marker" x="324" y="410" width="312" height="20" fill="none" data-appear-stage="empty"/>
-        <rect class="b-foundation" data-draw style="--len:636" x="330" y="412" width="300" height="18" data-appear-stage="foundation"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="0" x1="330" y1="412" x2="330" y2="366" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="0" x1="405" y1="412" x2="405" y2="366" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="0" x1="480" y1="412" x2="480" y2="366" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="0" x1="555" y1="412" x2="555" y2="366" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="0" x1="630" y1="412" x2="630" y2="366" data-appear-stage="frame"/>
-        <line class="b-slab" data-draw style="--len:300" data-floor="0" x1="330" y1="366" x2="630" y2="366" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="1" x1="330" y1="366" x2="330" y2="320" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="1" x1="405" y1="366" x2="405" y2="320" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="1" x1="480" y1="366" x2="480" y2="320" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="1" x1="555" y1="366" x2="555" y2="320" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="1" x1="630" y1="366" x2="630" y2="320" data-appear-stage="frame"/>
-        <line class="b-slab" data-draw style="--len:300" data-floor="1" x1="330" y1="320" x2="630" y2="320" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="2" x1="330" y1="320" x2="330" y2="274" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="2" x1="405" y1="320" x2="405" y2="274" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="2" x1="480" y1="320" x2="480" y2="274" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="2" x1="555" y1="320" x2="555" y2="274" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="2" x1="630" y1="320" x2="630" y2="274" data-appear-stage="frame"/>
-        <line class="b-slab" data-draw style="--len:300" data-floor="2" x1="330" y1="274" x2="630" y2="274" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="3" x1="330" y1="274" x2="330" y2="228" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="3" x1="405" y1="274" x2="405" y2="228" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="3" x1="480" y1="274" x2="480" y2="228" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="3" x1="555" y1="274" x2="555" y2="228" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="3" x1="630" y1="274" x2="630" y2="228" data-appear-stage="frame"/>
-        <line class="b-slab" data-draw style="--len:300" data-floor="3" x1="330" y1="228" x2="630" y2="228" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="4" x1="330" y1="228" x2="330" y2="182" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="4" x1="405" y1="228" x2="405" y2="182" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="4" x1="480" y1="228" x2="480" y2="182" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="4" x1="555" y1="228" x2="555" y2="182" data-appear-stage="frame"/>
-        <line class="b-column" data-draw style="--len:46" data-floor="4" x1="630" y1="228" x2="630" y2="182" data-appear-stage="frame"/>
-        <line class="b-roofline" data-draw style="--len:300" data-floor="4" x1="330" y1="182" x2="630" y2="182" data-appear-stage="frame"/>
-        <rect class="b-block" x="332" y="368" width="71" height="42" data-floor="0" data-appear-stage="blockwork"/>
-        <rect class="b-window" x="351.8" y="379.3" width="31.5" height="19.3" data-floor="0" data-appear-stage="blockwork"/>
-        <rect class="b-block" x="407" y="368" width="71" height="42" data-floor="0" data-appear-stage="blockwork"/>
-        <rect class="b-window" x="426.8" y="379.3" width="31.5" height="19.3" data-floor="0" data-appear-stage="blockwork"/>
-        <rect class="b-block" x="482" y="368" width="71" height="42" data-floor="0" data-appear-stage="blockwork"/>
-        <rect class="b-window" x="501.8" y="379.3" width="31.5" height="19.3" data-floor="0" data-appear-stage="blockwork"/>
-        <rect class="b-block" x="557" y="368" width="71" height="42" data-floor="0" data-appear-stage="blockwork"/>
-        <rect class="b-window" x="576.8" y="379.3" width="31.5" height="19.3" data-floor="0" data-appear-stage="blockwork"/>
-        <rect class="b-block" x="332" y="322" width="71" height="42" data-floor="1" data-appear-stage="blockwork"/>
-        <rect class="b-window" x="351.8" y="333.3" width="31.5" height="19.3" data-floor="1" data-appear-stage="blockwork"/>
-        <rect class="b-block" x="407" y="322" width="71" height="42" data-floor="1" data-appear-stage="blockwork"/>
-        <rect class="b-window" x="426.8" y="333.3" width="31.5" height="19.3" data-floor="1" data-appear-stage="blockwork"/>
-        <rect class="b-block" x="482" y="322" width="71" height="42" data-floor="1" data-appear-stage="blockwork"/>
-        <rect class="b-window" x="501.8" y="333.3" width="31.5" height="19.3" data-floor="1" data-appear-stage="blockwork"/>
-        <rect class="b-block" x="557" y="322" width="71" height="42" data-floor="1" data-appear-stage="blockwork"/>
-        <rect class="b-window" x="576.8" y="333.3" width="31.5" height="19.3" data-floor="1" data-appear-stage="blockwork"/>
-        <rect class="b-block" x="332" y="276" width="71" height="42" data-floor="2" data-appear-stage="blockwork"/>
-        <rect class="b-window" x="351.8" y="287.3" width="31.5" height="19.3" data-floor="2" data-appear-stage="blockwork"/>
-        <rect class="b-block" x="407" y="276" width="71" height="42" data-floor="2" data-appear-stage="blockwork"/>
-        <rect class="b-window" x="426.8" y="287.3" width="31.5" height="19.3" data-floor="2" data-appear-stage="blockwork"/>
-        <rect class="b-block" x="482" y="276" width="71" height="42" data-floor="2" data-appear-stage="blockwork"/>
-        <rect class="b-window" x="501.8" y="287.3" width="31.5" height="19.3" data-floor="2" data-appear-stage="blockwork"/>
-        <rect class="b-block" x="557" y="276" width="71" height="42" data-floor="2" data-appear-stage="blockwork"/>
-        <rect class="b-window" x="576.8" y="287.3" width="31.5" height="19.3" data-floor="2" data-appear-stage="blockwork"/>
-        <rect class="b-block" x="332" y="230" width="71" height="42" data-floor="3" data-appear-stage="blockwork"/>
-        <rect class="b-window" x="351.8" y="241.3" width="31.5" height="19.3" data-floor="3" data-appear-stage="blockwork"/>
-        <rect class="b-block" x="407" y="230" width="71" height="42" data-floor="3" data-appear-stage="blockwork"/>
-        <rect class="b-window" x="426.8" y="241.3" width="31.5" height="19.3" data-floor="3" data-appear-stage="blockwork"/>
-        <rect class="b-block" x="482" y="230" width="71" height="42" data-floor="3" data-appear-stage="blockwork"/>
-        <rect class="b-window" x="501.8" y="241.3" width="31.5" height="19.3" data-floor="3" data-appear-stage="blockwork"/>
-        <rect class="b-block" x="557" y="230" width="71" height="42" data-floor="3" data-appear-stage="blockwork"/>
-        <rect class="b-window" x="576.8" y="241.3" width="31.5" height="19.3" data-floor="3" data-appear-stage="blockwork"/>
-        <rect class="b-block" x="332" y="184" width="71" height="42" data-floor="4" data-appear-stage="blockwork"/>
-        <rect class="b-window" x="351.8" y="195.3" width="31.5" height="19.3" data-floor="4" data-appear-stage="blockwork"/>
-        <rect class="b-block" x="407" y="184" width="71" height="42" data-floor="4" data-appear-stage="blockwork"/>
-        <rect class="b-window" x="426.8" y="195.3" width="31.5" height="19.3" data-floor="4" data-appear-stage="blockwork"/>
-        <rect class="b-block" x="482" y="184" width="71" height="42" data-floor="4" data-appear-stage="blockwork"/>
-        <rect class="b-window" x="501.8" y="195.3" width="31.5" height="19.3" data-floor="4" data-appear-stage="blockwork"/>
-        <rect class="b-block" x="557" y="184" width="71" height="42" data-floor="4" data-appear-stage="blockwork"/>
-        <rect class="b-window" x="576.8" y="195.3" width="31.5" height="19.3" data-floor="4" data-appear-stage="blockwork"/>
-      </svg>
-    </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- ─── WHY US ─── -->
 <section class="why" id="why">
@@ -587,6 +507,6 @@
   </div>
 </footer>
 
-<script src="js/script.js?v=16"></script>
+<script src="js/script.js?v=17"></script>
 </body>
 </html>
