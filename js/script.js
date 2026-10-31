@@ -22,18 +22,47 @@
   setTimeout(() => { clearInterval(tick); hide(); }, 1600);
 })();
 
-// Navbar scroll effect
+// Adaptive nav: the bar is always transparent; each corner samples what is
+// painted behind it and flips its text tone so it stays legible on any
+// section. Sections declare their background with data-nav="dark"; anything
+// without it is treated as light.
 const navbar = document.getElementById('navbar');
-if (navbar) {
-  window.addEventListener('scroll', () => {
-    navbar.classList.toggle('scrolled', window.scrollY > 40);
-  }, { passive: true });
-}
+(function adaptiveNav() {
+  if (!navbar) return;
+  const IGNORE = '#navbar, .scroll-rail, .preloader, .mobile-overlay, .project-cursor-preview, .skip-link';
+  function bgAt(x, y) {
+    const stack = document.elementsFromPoint(x, y);
+    for (const el of stack) {
+      if (el.closest(IGNORE)) continue;
+      const host = el.closest('[data-nav]');
+      return host && host.getAttribute('data-nav') === 'dark' ? 'dark' : 'light';
+    }
+    return 'light';
+  }
+  function sample() {
+    navbar.setAttribute('data-left-bg', bgAt(70, 56));
+    navbar.setAttribute('data-right-bg', bgAt(window.innerWidth - 70, 56));
+  }
+  // Sample on scroll/resize/load (so it is never stale) and on a light frame
+  // loop (so it also follows scrubbed animations that keep moving after the
+  // wheel stops, e.g. the dome still settling).
+  let last = 0;
+  function tick(t) {
+    if (t - last > 90) { last = t; sample(); }
+    requestAnimationFrame(tick);
+  }
+  window.addEventListener('scroll', sample, { passive: true });
+  window.addEventListener('resize', sample);
+  window.addEventListener('load', sample);
+  sample();
+  requestAnimationFrame(tick);
+})();
 
 // Mobile menu
 function toggleMenu() {
   const menu = document.getElementById('mobileMenu');
   if (menu) menu.classList.toggle('open');
+  if (navbar) navbar.classList.toggle('menu-open', !!(menu && menu.classList.contains('open')));
 }
 
 // Active nav link on scroll
@@ -385,7 +414,7 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
     // always pushes it fully clear of the fold no matter the viewport size —
     // unlike a fixed vh guess, which under-hid it on shorter viewports.
     gsap.set(dome, { yPercent: 100, scale: 0.88, transformOrigin: '50% 100%' });
-    gsap.set(curve, { rotation: -3, transformOrigin: '50% 100%' });
+    gsap.set(curve, { scale: 0.4, rotation: -2, transformOrigin: '50% 0%' });
     gsap.set([center, dropLine], { opacity: 0, y: 14 });
 
     const tl = gsap.timeline({
@@ -394,7 +423,7 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
       }
     });
     tl.to(dome, { yPercent: 0, scale: 1, duration: 1, ease: 'none' }, 0)
-      .to(curve, { rotation: 0, duration: 1, ease: 'none' }, 0)
+      .to(curve, { scale: 1, rotation: 0, duration: 1, ease: 'none' }, 0)
       .to(center, { opacity: 1, y: 0, duration: 0.3, ease: 'none' }, 0.55)
       .to(dropLine, { opacity: 1, y: 0, duration: 0.3, ease: 'none' }, 0.7);
 
@@ -427,6 +456,18 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
     const DURATION = 5000;
     let index = 0, imgToggle = true, timer = null, progressTween = null;
 
+    // The headline is a masked line: its text lives in an inner span that slides
+    // up out of the clip and the next one slides in. Animating the h2 itself would
+    // drag the whole box (and its clip) across the image below.
+    function setHeadlineText(text) {
+      headline.innerHTML = '';
+      const inner = document.createElement('span');
+      inner.className = 'sh-inner';
+      inner.textContent = text;
+      headline.appendChild(inner);
+      return inner;
+    }
+
     function render(i, animateHeadline) {
       const s = SLIDES[i];
       const nextImg = imgToggle ? imgB : imgA;
@@ -438,10 +479,19 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
       if (current) current.textContent = String(i + 1);
       if (desc) desc.textContent = s.desc;
       if (tagline) tagline.textContent = s.tagline;
-      if (animateHeadline && !prefersReducedMotion) {
-        gsap.fromTo(headline, { yPercent: 100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.6, ease: 'power3.out' });
+      const oldInner = headline.querySelector('.sh-inner');
+      if (animateHeadline && !prefersReducedMotion && oldInner) {
+        gsap.killTweensOf(oldInner);
+        gsap.to(oldInner, {
+          yPercent: -105, duration: 0.35, ease: 'power2.in',
+          onComplete: () => {
+            const inner = setHeadlineText(s.headline);
+            gsap.fromTo(inner, { yPercent: 105 }, { yPercent: 0, duration: 0.55, ease: 'power3.out' });
+          }
+        });
+      } else {
+        setHeadlineText(s.headline);
       }
-      headline.textContent = s.headline;
     }
 
     function startProgress() {

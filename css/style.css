@@ -54,25 +54,21 @@ body.is-loading { overflow: hidden; }
 }
 
 /* ─── NAVBAR ─── */
+/* Always transparent — it blends into whatever is behind it. JS samples the
+   background under each corner (data-left-bg / data-right-bg = light|dark)
+   and the text tone flips to stay legible; no bar, no blur, no shadow. */
 .navbar {
   position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  background: transparent;
-  border-bottom: 1px solid transparent;
-  transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+  background: transparent; pointer-events: none;
 }
-.navbar.scrolled {
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--border); box-shadow: 0 2px 24px rgba(20,50,70,0.05);
-}
+.navbar a, .navbar button { pointer-events: auto; }
 .nav-inner { display: flex; align-items: flex-start; justify-content: space-between; height: auto; max-width: none; margin: 0; padding: 26px 40px; }
 /* Rotating emblem: text ring orbits a fixed centre mark */
 .nav-emblem {
   position: relative; width: 92px; height: 92px; flex-shrink: 0; text-decoration: none;
   display: flex; align-items: center; justify-content: center; color: var(--white);
-  transition: color 0.4s ease;
+  transition: color 0.35s ease;
 }
-.navbar.scrolled .nav-emblem { color: var(--text); }
 .emblem-ring {
   position: absolute; inset: 0; width: 100%; height: 100%;
   animation: emblemSpin 22s linear infinite; transform-origin: 50% 50%;
@@ -83,10 +79,10 @@ body.is-loading { overflow: hidden; }
   letter-spacing: 2.1px; text-transform: uppercase; fill: currentColor;
 }
 .emblem-core { position: relative; z-index: 1; width: 46px; height: 46px; }
-/* The diamond is filled with currentColor, so the wordmark inverts against it:
-   dark text on the light (over-hero) diamond, light text once the nav goes solid. */
-.emblem-core-text { fill: #16151A; }
-.navbar.scrolled .emblem-core-text { fill: var(--offwhite); }
+/* The diamond is filled with currentColor, so the wordmark inverts against it. */
+.emblem-core-text { fill: #16151A; transition: fill 0.35s ease; }
+.navbar[data-left-bg="light"] .nav-emblem { color: var(--text); }
+.navbar[data-left-bg="light"] .emblem-core-text { fill: var(--offwhite); }
 .nav-emblem:hover .emblem-ring { animation-duration: 8s; }
 @media (prefers-reduced-motion: reduce) { .emblem-ring { animation: none; } }
 
@@ -94,19 +90,23 @@ body.is-loading { overflow: hidden; }
 .nav-links { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
 .nav-links a {
   text-decoration: none; font-size: 10.5px; font-weight: 500; color: rgba(255,255,255,0.88);
-  padding: 2px 0; letter-spacing: 2.2px; text-transform: uppercase; transition: color 0.25s ease, letter-spacing 0.3s ease; position: relative;
+  padding: 2px 0; letter-spacing: 2.2px; text-transform: uppercase;
+  transition: color 0.35s ease, letter-spacing 0.3s ease; position: relative;
 }
-.nav-links a:hover { letter-spacing: 3px; }
-.navbar.scrolled .nav-links a { color: var(--text-muted); }
-.nav-links a:hover { color: var(--white); }
-.navbar.scrolled .nav-links a:hover { color: var(--sky-deep); }
+.nav-links a:hover { letter-spacing: 3px; color: var(--white); }
 .nav-links a.active { color: var(--white); }
-.navbar.scrolled .nav-links a.active { color: var(--sky-deep); font-weight: 600; }
-.nav-quote { margin-top: 8px; padding-top: 8px !important; border-top: 1px solid rgba(255,255,255,0.35); }
-.navbar.scrolled .nav-quote { border-top-color: var(--border); }
+.nav-quote { margin-top: 8px; padding-top: 8px !important; border-top: 1px solid rgba(255,255,255,0.35); transition: border-color 0.35s ease; }
 .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 8px; }
-.hamburger span { display: block; width: 24px; height: 1.5px; background: var(--white); transition: all 0.3s ease; }
-.navbar.scrolled .hamburger span { background: var(--text); }
+.hamburger span { display: block; width: 24px; height: 1.5px; background: var(--white); transition: background 0.35s ease; }
+.navbar[data-right-bg="light"] .nav-links a { color: rgba(22,21,26,0.72); }
+.navbar[data-right-bg="light"] .nav-links a:hover,
+.navbar[data-right-bg="light"] .nav-links a.active { color: var(--text); }
+.navbar[data-right-bg="light"] .nav-quote { border-top-color: rgba(22,21,26,0.22); }
+.navbar[data-right-bg="light"] .hamburger span { background: var(--text); }
+/* Mobile menu open: overlay is white, so force dark controls on top of it */
+.navbar.menu-open .nav-emblem { color: var(--text); }
+.navbar.menu-open .emblem-core-text { fill: var(--offwhite); }
+.navbar.menu-open .hamburger span { background: var(--text); }
 .mobile-overlay {
   display: none; position: fixed; inset: 0; z-index: 999; background: var(--white);
   padding-top: 100px; flex-direction: column; align-items: center; gap: 4px;
@@ -286,37 +286,50 @@ body.is-loading { overflow: hidden; }
    down via an additional GSAP `y`, then animates that back to 0 on scroll —
    GSAP decomposes the existing translateX(-50%) and layers its own y/scale
    on top of it rather than fighting it. */
+/* --dome-pad: space above the headline inside the dome.
+   --dome-tail: height of the row + drop line under the headline.
+   The slideshow pulls itself up by exactly the dome's leftover empty space
+   (see .slideshow margin-top) so no dead gap sits under "Est. 2016". */
+:root { --dome-pad: 165px; --dome-tail: 86px; }
 .dome-center-wrap {
   position: absolute; left: 50%; bottom: -10%; z-index: 3;
   width: 148vw; max-width: 2200px;
   transform: translateX(-50%);
+  pointer-events: none; /* the wrapper's invisible box must never block the hero's buttons */
 }
 .dome-shape {
-  width: 100%; height: 120vh;
+  width: 100%; height: 120vh; pointer-events: auto;
   background: var(--offwhite); border-radius: 50% 50% 0 0;
   display: flex; flex-direction: column; align-items: center;
-  padding-top: 86px;
+  padding-top: var(--dome-pad);
 }
-.dome-curve { width: min(640px, 70vw); height: auto; overflow: visible; }
+/* Two concentric-ish arcs of giant type, drawn inside a 1000-unit-wide viewBox
+   that is exactly one viewport wide, so the text always sits well inside the
+   dome's curve and scales with the screen. JS grows it from small to full size
+   as the dome rises. */
+.dome-curve { width: 100vw; height: auto; overflow: visible; flex-shrink: 0; }
 .dome-curve-label {
-  font-family: var(--font-display); font-size: 25px; font-weight: 500;
+  font-family: var(--font-display); font-size: 88px; font-weight: 500;
   letter-spacing: 4px; text-transform: uppercase; fill: var(--text);
 }
 .dome-center {
-  margin-top: 6px; display: flex; align-items: center; gap: 16px;
+  margin-top: -4vw; display: flex; align-items: center; gap: 16px;
   font-size: 11px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted);
 }
 .dome-mini-mark { width: 22px; height: 22px; color: var(--sky-deep); }
-.dome-drop-line { width: 1px; height: 64px; background: var(--border); margin-top: 22px; }
+.dome-drop-line { width: 1px; height: 48px; background: rgba(22,21,26,0.38); margin-top: 16px; }
 @media (max-width: 768px) {
-  .dome-center-wrap { width: 200vw; bottom: -58%; }
-  .dome-shape { padding-top: 56px; }
-  .dome-curve { width: 86vw; }
-  .dome-curve-label { font-size: 16px; letter-spacing: 2px; }
+  :root { --dome-pad: 150px; --dome-tail: 70px; }
+  .dome-center-wrap { width: 200vw; }
   .dome-center { font-size: 9.5px; letter-spacing: 2px; gap: 10px; }
   .dome-drop-line { height: 36px; }
 }
+/* Reduced motion: the hero stays visible and the dome sits below it as a
+   static arch, with the section following it directly. */
 @media (prefers-reduced-motion: reduce) {
+  .dome-center-wrap { position: relative; left: auto; bottom: auto; transform: none; width: 100%; max-width: none; }
+  .dome-shape { height: auto; padding-bottom: 24px; border-radius: 50% 50% 0 0 / 90px 90px 0 0; }
+  .slideshow { margin-top: 0 !important; }
 }
 
 /* ─── THREE REASONS ─── */
@@ -332,7 +345,15 @@ body.is-loading { overflow: hidden; }
 @media (max-width: 860px) { .reasons-grid { grid-template-columns: 1fr; gap: 48px; } }
 
 /* ─── SLIDESHOW (inside the dome) ─── */
-.slideshow { background: var(--offwhite); padding: 100px 0 90px; position: relative; z-index: 2; }
+/* Pull up by the dome's leftover empty height: at the end of the pin the dome
+   fills the viewport, its content ends at (-10vh + pad + 21vw + tail). Pulling
+   the section's top edge up to exactly that point leaves its own 50px top
+   padding as the gap under the drop line. Same background as the dome, so
+   there is no seam. */
+.slideshow {
+  background: var(--offwhite); padding: 50px 0 90px; position: relative; z-index: 4;
+  margin-top: calc(-1 * max(0px, 110vh - var(--dome-pad) - 21vw - var(--dome-tail)));
+}
 .slideshow-inner { max-width: 900px; margin: 0 auto; padding: 0 24px; text-align: center; }
 .slideshow-headline {
   font-family: var(--font-display); font-weight: 600; text-transform: uppercase;
@@ -343,6 +364,7 @@ body.is-loading { overflow: hidden; }
   position: relative; width: min(26vw, 420px); min-width: 220px; aspect-ratio: 16/10;
   margin: 0 auto 34px; overflow: hidden; background: var(--offwhite-2);
 }
+.slideshow-headline .sh-inner { display: block; will-change: transform; }
 .slideshow-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.9s ease; }
 .slideshow-img.is-active { opacity: 1; }
 .slideshow-controls { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 28px; }
