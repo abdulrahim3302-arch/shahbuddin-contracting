@@ -17,6 +17,7 @@
   --dusk-muted: rgba(242,230,208,0.62);
   --dusk-line: rgba(242,230,208,0.24);
   --gold: #E0A858;
+  --sky: #6F7D91; /* matches the villa photo's sky; dome + slideshow sit on it */
   --font-body: 'Inter', system-ui, sans-serif;
 }
 
@@ -306,10 +307,10 @@ body.is-loading { overflow: hidden; }
 }
 .dome-shape {
   width: 100%; height: 120vh; pointer-events: auto;
-  background: var(--dusk); border-radius: 50% 50% 0 0;
+  background: var(--sky); border-radius: 50% 50% 0 0;
   /* thin gold rim + a soft sunset glow spilling up onto the hero, so the arc
      reads clearly even against the dark photo */
-  box-shadow: inset 0 1px 0 rgba(224,168,88,0.55), 0 -26px 80px rgba(224,168,88,0.16);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), 0 -26px 80px rgba(120,140,170,0.25);
   display: flex; flex-direction: column; align-items: center;
   padding-top: var(--dome-pad);
 }
@@ -361,22 +362,21 @@ body.is-loading { overflow: hidden; }
    padding as the gap under the drop line. Same background as the dome, so
    there is no seam. */
 .slideshow {
-  background: var(--dusk); padding: 50px 0 280px; position: relative; z-index: 4; overflow: hidden;
+  background: var(--sky); padding: 50px 0 280px; position: relative; z-index: 4; overflow: hidden;
   margin-top: calc(-1 * max(0px, 110vh - var(--dome-pad) - var(--dome-svg-h) - var(--dome-tail)));
 }
 /* Mirror of the quote photo's top edge. Same height variable + object-fit as
    the photo => identical crop and scale; flipped, its bottom row equals the
    photo's top row. The .25 black wash matches the photo's own scrim at its top. */
 .slideshow-sky {
-  position: absolute; left: 0; right: 0; bottom: 0; height: 460px; overflow: hidden; pointer-events: none; z-index: 0;
-  -webkit-mask-image: linear-gradient(to top, #000 0%, rgba(0,0,0,0.8) 25%, rgba(0,0,0,0.3) 62%, transparent 100%);
-          mask-image: linear-gradient(to top, #000 0%, rgba(0,0,0,0.8) 25%, rgba(0,0,0,0.3) 62%, transparent 100%);
+  position: absolute; left: 0; right: 0; bottom: 0; height: 300px; overflow: hidden; pointer-events: none; z-index: 0;
+  background: linear-gradient(to bottom, rgba(111,125,145,0) 0%, #6A829F 100%);
 }
-.slideshow-sky img {
+.slideshow-sky img { display: none;
   position: absolute; left: -4%; bottom: -70px; width: 108%; height: var(--quote-h);
-  object-fit: cover; transform: scaleY(-1); filter: blur(44px) saturate(1.05);
+  object-fit: cover; transform: scaleY(-1); filter: blur(44px);
 }
-.slideshow-sky::after { content: ''; position: absolute; inset: 0; background: rgba(20,19,16,0.12); }
+
 .slideshow-inner { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 0 24px; text-align: center; }
 .slideshow-headline {
   font-family: var(--font-display); font-weight: 600; text-transform: uppercase;
@@ -402,6 +402,7 @@ body.is-loading { overflow: hidden; }
 .slide-progress-track { width: 110px; height: 1px; background: var(--dusk-line); position: relative; }
 .slide-progress-fill { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: var(--gold); }
 .slideshow-desc { font-size: 14.5px; color: var(--dusk-muted); line-height: 1.7; max-width: 440px; margin: 0 auto 16px; font-weight: 300; }
+.dome-shape, .slideshow { --dusk-text: #FFFFFF; --dusk-muted: rgba(255,255,255,0.88); --dusk-line: rgba(255,255,255,0.4); --gold: #F4E3BF; --dusk-2: #5C6A7F; }
 .slideshow-tagline { display: block; font-size: 11px; font-weight: 600; letter-spacing: 2.4px; text-transform: uppercase; color: var(--gold); }
 @media (max-width: 768px) {
   .slideshow-headline { font-size: clamp(30px, 14vw, 56px); }
@@ -837,4 +838,10 @@ body.is-loading { overflow: hidden; }
   .contact-grid { grid-template-columns: 1fr; }
   .hero h1 { letter-spacing: -0.5px; }
   .section-head-row { flex-direction: column; align-items: flex-start; }
+}
+
+/* sky-coloured fade at the photo's top edge so the slate dome flows into the photo's sky */
+.quote-media::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 38%; z-index: 1; pointer-events: none;
+  background: linear-gradient(to bottom, #6A829F 0%, rgba(106,130,159,0.55) 35%, rgba(106,130,159,0) 100%);
 }
