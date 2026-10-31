@@ -290,7 +290,7 @@ body.is-loading { overflow: hidden; }
    --dome-tail: height of the row + drop line under the headline.
    The slideshow pulls itself up by exactly the dome's leftover empty space
    (see .slideshow margin-top) so no dead gap sits under "Est. 2016". */
-:root { --dome-pad: 165px; --dome-tail: 86px; }
+:root { --dome-pad: 140px; --dome-tail: 100px; --dome-svg-h: 14vw; }
 .dome-center-wrap {
   position: absolute; left: 50%; bottom: -10%; z-index: 3;
   width: 148vw; max-width: 2200px;
@@ -309,17 +309,17 @@ body.is-loading { overflow: hidden; }
    as the dome rises. */
 .dome-curve { width: 100vw; height: auto; overflow: visible; flex-shrink: 0; }
 .dome-curve-label {
-  font-family: var(--font-display); font-size: 88px; font-weight: 500;
-  letter-spacing: 4px; text-transform: uppercase; fill: var(--text);
+  font-family: 'Instrument Serif', var(--font-display); font-weight: 400;
+  letter-spacing: 0.05em; text-transform: uppercase; fill: var(--text);
 }
 .dome-center {
-  margin-top: -4vw; display: flex; align-items: center; gap: 16px;
+  margin-top: 14px; display: flex; align-items: center; gap: 16px;
   font-size: 11px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted);
 }
 .dome-mini-mark { width: 22px; height: 22px; color: var(--sky-deep); }
 .dome-drop-line { width: 1px; height: 48px; background: rgba(22,21,26,0.38); margin-top: 16px; }
 @media (max-width: 768px) {
-  :root { --dome-pad: 150px; --dome-tail: 70px; }
+  :root { --dome-pad: 130px; --dome-tail: 88px; }
   .dome-center-wrap { width: 200vw; }
   .dome-center { font-size: 9.5px; letter-spacing: 2px; gap: 10px; }
   .dome-drop-line { height: 36px; }
@@ -346,13 +346,13 @@ body.is-loading { overflow: hidden; }
 
 /* ─── SLIDESHOW (inside the dome) ─── */
 /* Pull up by the dome's leftover empty height: at the end of the pin the dome
-   fills the viewport, its content ends at (-10vh + pad + 21vw + tail). Pulling
+   fills the viewport, its content ends at (-10vh + pad + svg-height + tail). Pulling
    the section's top edge up to exactly that point leaves its own 50px top
    padding as the gap under the drop line. Same background as the dome, so
    there is no seam. */
 .slideshow {
   background: var(--offwhite); padding: 50px 0 90px; position: relative; z-index: 4;
-  margin-top: calc(-1 * max(0px, 110vh - var(--dome-pad) - 21vw - var(--dome-tail)));
+  margin-top: calc(-1 * max(0px, 110vh - var(--dome-pad) - var(--dome-svg-h) - var(--dome-tail)));
 }
 .slideshow-inner { max-width: 900px; margin: 0 auto; padding: 0 24px; text-align: center; }
 .slideshow-headline {
@@ -410,15 +410,44 @@ body.is-loading { overflow: hidden; }
   margin-bottom: 22px;
 }
 .quote-attribution { font-size: 11px; font-weight: 500; letter-spacing: 2.4px; text-transform: uppercase; color: rgba(255,255,255,0.7); font-style: normal; }
-.quote-cream-band { position: relative; height: 90px; background: #F5F3EE; }
-.cream-decor {
-  position: absolute; top: -34px; left: 56px; width: 92px; height: 92px;
-  background: var(--sky-deep); border-radius: 0 0 50% 50% / 0 0 70% 70%; opacity: 0.9;
+/* The photo ends at an overhanging element, like the reference's flowers —
+   here, crane-hung rebar bundles. The band is the cream strip below the photo;
+   the loads start inside the photo (cables fade in over it) and hang past its
+   lower edge, swaying gently out of phase. */
+.quote-cream-band {
+  position: relative; z-index: 5; background: #F5F3EE; min-height: 380px;
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 0 max(24px, 6vw) 56px;
 }
+.band-copy { max-width: 400px; text-align: right; }
+.band-eyebrow { display: block; font-size: 11px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--text-faint); margin-bottom: 14px; }
+.band-copy p { font-family: var(--font-display); font-size: clamp(20px, 2.2vw, 28px); line-height: 1.3; color: var(--text); }
+.hang-cluster { position: absolute; left: 0; top: 0; width: 100%; height: 0; pointer-events: none; }
+.hang-wrap { position: absolute; will-change: transform; }
+.hang {
+  display: block; width: 100%; height: auto; transform-origin: 50% 0;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 34%);
+          mask-image: linear-gradient(to bottom, transparent 0%, #000 34%);
+  animation: hangSway var(--sway-dur, 6s) ease-in-out var(--sway-delay, 0s) infinite alternate;
+}
+/* top = how far the cable reaches up into the photo; height sets the drop */
+.hang-wrap-1 { left: 7%;  top: -260px; width: 66px; }
+.hang-wrap-2 { left: 13%; top: -210px; width: 54px; }
+.hang-wrap-3 { left: 19%; top: -170px; width: 46px; }
+.hang-1 { --sway-dur: 6.4s; --sway-delay: -1.2s; }
+.hang-2 { --sway-dur: 5.2s; --sway-delay: -3.1s; }
+.hang-3 { --sway-dur: 7.1s; --sway-delay: -2.2s; }
+@keyframes hangSway { from { transform: rotate(-2.6deg); } to { transform: rotate(2.6deg); } }
 @media (max-width: 768px) {
   .quote-content { margin-left: 0; margin-right: auto; text-align: left; padding: 0 20px 60px; }
-  .cream-decor { left: 24px; width: 64px; height: 64px; }
+  .quote-cream-band { min-height: 300px; padding-bottom: 36px; }
+  .band-copy { max-width: 210px; }
+  .hang-wrap-1 { left: 5%;  top: -170px; width: 40px; }
+  .hang-wrap-2 { left: 14%; top: -140px; width: 33px; }
+  .hang-wrap-3 { left: 22%; top: -110px; width: 28px; }
 }
+@media (prefers-reduced-motion: reduce) { .hang { animation: none; } }
+
 
 /* ─── TICKER ─── */
 .strip { background: var(--sky-deep); padding: 16px 0; overflow: hidden; }

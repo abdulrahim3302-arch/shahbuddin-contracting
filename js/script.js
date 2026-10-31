@@ -58,6 +58,63 @@ const navbar = document.getElementById('navbar');
   requestAnimationFrame(tick);
 })();
 
+// ─── DOME HEADLINE: one line, set on an arc that follows the dome's own curve ───
+// The dome is an ellipse (148vw wide, capped at 2200px; 200vw on mobile) whose
+// curved top is 60vh tall. We measure the dome's real edge drop at the text's
+// end points and bend a circular arc to match, so the line stays parallel to
+// the edge and well inside it at any screen size. Font size is chosen so the
+// line spans ~90% of the viewport without squeezing glyphs past ~20%.
+(function domeText() {
+  const svg = document.getElementById('domeCurve');
+  const path = document.getElementById('domeArc');
+  const tp = document.getElementById('domeArcText');
+  if (!svg || !path || !tp) return;
+  const label = svg.querySelector('.dome-curve-label');
+
+  function layout() {
+    const W = window.innerWidth, Hv = window.innerHeight;
+    // A tab opened in the background can report a 0x0 viewport; bail and retry
+    // rather than writing NaN into the path.
+    if (!W || !Hv) return false;
+    const mobile = W <= 768;
+    const domeW = Math.min((mobile ? 2 : 1.48) * W, 2200);
+    const a = domeW / 2, b = 0.6 * Hv;                 // dome ellipse semi-axes
+    const span = W * 0.9;                              // target text length
+    const x0 = span / 2;                               // text half-length
+    const edgeDrop = (x) => b * (1 - Math.sqrt(Math.max(0, 1 - Math.pow(x / a, 2))));
+    const D = Math.max(8, edgeDrop(x0));               // edge drop at the text ends
+    const R = Math.max((x0 * x0 + D * D) / (2 * D), x0 * 1.06);
+
+    // Size the type: measure natural width per px of font, then aim for <=20% squeeze
+    tp.removeAttribute('textLength');
+    label.style.fontSize = '100px';
+    const k = tp.getComputedTextLength() / 100;        // natural length per 1px font-size
+    const fs = Math.min(W * (mobile ? 0.1 : 0.09), span / (0.8 * k));
+    label.style.fontSize = fs + 'px';
+    label.style.letterSpacing = (fs * 0.05) + 'px';
+
+    const y0 = fs * 0.95;                              // apex baseline
+    const xp = W * 0.53;                               // arc runs a little past the text
+    const yp = y0 + (R - Math.sqrt(R * R - xp * xp));
+    path.setAttribute('d', `M ${W / 2 - xp} ${yp} A ${R} ${R} 0 0 1 ${W / 2 + xp} ${yp}`);
+
+    const H = y0 + fs * 0.32;                          // box ends just under the apex line
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    document.documentElement.style.setProperty('--dome-svg-h', H + 'px');
+
+    const natural = k * fs + 0.05 * fs * 27;
+    tp.setAttribute('textLength', span);
+    tp.setAttribute('lengthAdjust', span < natural ? 'spacingAndGlyphs' : 'spacing');
+    return true;
+  }
+
+  // Retry each frame until the viewport has real dimensions (max ~2s)
+  (function boot(tries) { if (!layout() && tries < 120) requestAnimationFrame(() => boot(tries + 1)); })(0);
+  window.addEventListener('load', layout);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);  // re-measure once the serif loads
+  let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => { layout(); if (window.ScrollTrigger) ScrollTrigger.refresh(); }, 120); });
+})();
+
 // Mobile menu
 function toggleMenu() {
   const menu = document.getElementById('mobileMenu');
@@ -540,6 +597,18 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
       width: '100vw', aspectRatio: 'auto', height: '100vh',
       ease: 'none',
       scrollTrigger: { trigger: pin, start: 'top bottom', end: 'bottom top', scrub: 0.6 }
+    });
+  })();
+
+  // ─── QUOTE BAND: the crane loads are lowered into place, then keep swaying (CSS) ───
+  (function lowerLoads() {
+    const band = document.getElementById('quoteBand');
+    const loads = document.querySelectorAll('.hang-wrap');
+    if (!band || !loads.length) return;
+    gsap.set(loads, { yPercent: -108 });
+    gsap.to(loads, {
+      yPercent: 0, duration: 2.1, ease: 'power3.out', stagger: 0.28,
+      scrollTrigger: { trigger: band, start: 'top 82%', once: true }
     });
   })();
 

@@ -17,8 +17,8 @@
 <link rel="icon" href="assets/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="assets/favicon-180.png">
 <meta name="theme-color" content="#16151A">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=21">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=26">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.16/dist/lenis.min.js"></script>
@@ -121,13 +121,9 @@
      with no CSS transform of its own to avoid any decompose ambiguity. -->
 <div class="dome-center-wrap" aria-hidden="true">
   <div class="dome-shape" id="domeShape">
-    <svg class="dome-curve" viewBox="0 0 1000 250" aria-hidden="true">
-      <defs>
-        <path id="domeArc1" d="M -100 150 A 2000 2000 0 0 1 1100 150" />
-        <path id="domeArc2" d="M -100 280 A 2000 2000 0 0 1 1100 280" />
-      </defs>
-      <text class="dome-curve-label"><textPath href="#domeArc1" startOffset="50%" text-anchor="middle">THREE REASONS</textPath></text>
-      <text class="dome-curve-label"><textPath href="#domeArc2" startOffset="50%" text-anchor="middle">TO CHOOSE SCC</textPath></text>
+    <svg class="dome-curve" id="domeCurve" viewBox="0 0 1000 150" aria-hidden="true">
+      <defs><path id="domeArc" d="M -40 140 A 1200 1200 0 0 1 1040 140" /></defs>
+      <text class="dome-curve-label"><textPath id="domeArcText" href="#domeArc" startOffset="50%" text-anchor="middle">THREE REASONS TO CHOOSE SCC</textPath></text>
     </svg>
     <div class="dome-center">
       <span>Bahrain</span>
@@ -171,7 +167,7 @@
 <!-- ─── QUOTE ─── -->
 <section class="quote-section" data-nav="dark">
   <div class="quote-media">
-    <img src="assets/photos/detail-structure.jpg" alt="" loading="lazy" decoding="async" />
+    <img src="assets/generated/quote-villa.jpg" alt="" loading="lazy" decoding="async" width="1344" height="752" />
     <div class="quote-scrim" aria-hidden="true"></div>
   </div>
   <div class="quote-content">
@@ -180,8 +176,19 @@
     <cite class="quote-attribution">Founder &middot; Shahbuddin Contracting</cite>
   </div>
 </section>
-<div class="quote-cream-band">
-  <span class="cream-decor" aria-hidden="true"></span>
+<div class="quote-cream-band" id="quoteBand">
+  <!-- Three crane-hung rebar bundles overhang the photo's lower edge and sway
+       like the vines in the reference. Wrapper = lowered in by GSAP on scroll;
+       image = swings (CSS) about its top, so the two transforms never collide. -->
+  <div class="hang-cluster" aria-hidden="true">
+    <div class="hang-wrap hang-wrap-1"><img class="hang hang-1" src="assets/generated/rebar-a.png?v=2" alt="" loading="lazy" decoding="async" width="110" height="1000" /></div>
+    <div class="hang-wrap hang-wrap-2"><img class="hang hang-2" src="assets/generated/rebar-b.png?v=2" alt="" loading="lazy" decoding="async" width="96" height="1000" /></div>
+    <div class="hang-wrap hang-wrap-3"><img class="hang hang-3" src="assets/generated/rebar-c.png?v=2" alt="" loading="lazy" decoding="async" width="104" height="1000" /></div>
+  </div>
+  <div class="band-copy">
+    <span class="band-eyebrow">Our Process</span>
+    <p>Seven stages, one accountable team &mdash; from the first excavation to the final handover.</p>
+  </div>
 </div>
 
 <!-- ─── OUR PROCESS: horizontal pinned scroll ─── -->
@@ -509,6 +516,6 @@
   </div>
 </footer>
 
-<script src="js/script.js?v=21"></script>
+<script src="js/script.js?v=26"></script>
 </body>
 </html>
