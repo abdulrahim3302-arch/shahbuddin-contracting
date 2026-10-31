@@ -602,32 +602,58 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   })();
 
   // ─── ON SITE: horizontal scroll driven by vertical scroll ───
-  // Shared driver: pins `pinId`, and as the user scrolls through it, translates
-  // `trackId` left by exactly its own overflow width. Used by both the On Site
-  // gallery and the Process section below. gsap.matchMedia re-evaluates on
-  // resize/rotate, so it builds only when wide enough and tears down cleanly
-  // when it isn't — a one-off width check would leave the gallery dead for
-  // anyone who loads narrow and later widens the window.
+  // Shared driver for the two horizontal sections (On Site, Process).
+  //
+  // The section is pinned with CSS `position: sticky` inside a tall wrapper, so
+  // the wrapper's height IS the pin length. It used to be a fixed 340vh, which
+  // is far shorter than a 7-panel track needs: the page let go after ~44% of
+  // the track and scrolled on. Now the wrapper is sized from the real distance
+  // the track has to travel:
+  //     pin height = viewport + distance + a hold at the end
+  // The tween also reaches its final position at HOLD_AT of the way through and
+  // then sits still, so the scrub's smoothing lag can never leave the last
+  // panel half-shown when the pin releases.
+  //
+  // gsap.matchMedia re-evaluates on resize/rotate, so this builds only when
+  // wide enough and tears down cleanly when it isn't.
+  const HOLD_AT = 0.88;     // fraction of the scroll at which the track has fully arrived
+  const EXTRA_HOLD = 0.2;   // extra pinned scroll (as a fraction of distance) after it arrives
   function buildHorizontalScroll(pinId, trackId, barId) {
     const pin = document.getElementById(pinId);
     const track = document.getElementById(trackId);
     const bar = barId && document.getElementById(barId);
     if (!pin || !track) return;
     gsap.matchMedia().add('(min-width: 901px)', () => {
-      const getDistance = () => Math.max(0, track.scrollWidth - window.innerWidth);
+      // Measured from the last panel's real edge (+ the track's right padding),
+      // not scrollWidth, which can fall short of the final padding.
+      const getDistance = () => {
+        const last = track.lastElementChild;
+        if (!last) return 0;
+        const padR = parseFloat(getComputedStyle(track).paddingRight) || 0;
+        return Math.max(0, last.offsetLeft + last.offsetWidth + padR - window.innerWidth);
+      };
+      const sizePin = () => { pin.style.height = Math.round(window.innerHeight + getDistance() * (1 + EXTRA_HOLD)) + 'px'; };
+      sizePin();
+      ScrollTrigger.addEventListener('refreshInit', sizePin);   // re-size before every measurement
+
       const tween = gsap.to(track, {
         x: () => -getDistance(),
-        ease: 'none',
+        ease: (t) => Math.min(1, t / HOLD_AT),                 // linear, arrives at HOLD_AT, then holds
         scrollTrigger: {
           trigger: pin,
           start: 'top top',
-          end: () => '+=' + getDistance(),
-          scrub: 0.6,
+          end: () => '+=' + Math.round(getDistance() * (1 + EXTRA_HOLD)),
+          scrub: 0.5,
           invalidateOnRefresh: true,
-          onUpdate: (self) => { if (bar) bar.style.width = (self.progress * 100) + '%'; }
+          onUpdate: (self) => { if (bar) bar.style.width = (Math.min(1, self.progress / HOLD_AT) * 100) + '%'; }
         }
       });
-      return () => { tween.scrollTrigger && tween.scrollTrigger.kill(); tween.kill(); gsap.set(track, { clearProps: 'x' }); };
+      return () => {
+        ScrollTrigger.removeEventListener('refreshInit', sizePin);
+        tween.scrollTrigger && tween.scrollTrigger.kill(); tween.kill();
+        gsap.set(track, { clearProps: 'x' });
+        pin.style.height = '';
+      };
     });
   }
   buildHorizontalScroll('hscrollPin', 'hscrollTrack', 'hscrollBar');
