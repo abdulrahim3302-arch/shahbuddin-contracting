@@ -10,6 +10,13 @@
   --text-muted: #6E6A61;
   --text-faint: #A39D91;
   --font-display: 'Playfair Display', Georgia, serif;
+  /* Dusk scene: dome -> slideshow -> quote photo share this palette */
+  --dusk: #17120D;
+  --dusk-2: #231A12;
+  --dusk-text: #F2E6D0;
+  --dusk-muted: rgba(242,230,208,0.62);
+  --dusk-line: rgba(242,230,208,0.24);
+  --gold: #E0A858;
   --font-body: 'Inter', system-ui, sans-serif;
 }
 
@@ -299,7 +306,10 @@ body.is-loading { overflow: hidden; }
 }
 .dome-shape {
   width: 100%; height: 120vh; pointer-events: auto;
-  background: var(--offwhite); border-radius: 50% 50% 0 0;
+  background: var(--dusk); border-radius: 50% 50% 0 0;
+  /* thin gold rim + a soft sunset glow spilling up onto the hero, so the arc
+     reads clearly even against the dark photo */
+  box-shadow: inset 0 1px 0 rgba(224,168,88,0.55), 0 -26px 80px rgba(224,168,88,0.16);
   display: flex; flex-direction: column; align-items: center;
   padding-top: var(--dome-pad);
 }
@@ -310,14 +320,14 @@ body.is-loading { overflow: hidden; }
 .dome-curve { width: 100vw; height: auto; overflow: visible; flex-shrink: 0; }
 .dome-curve-label {
   font-family: 'Instrument Serif', var(--font-display); font-weight: 400;
-  letter-spacing: 0.05em; text-transform: uppercase; fill: var(--text);
+  letter-spacing: 0.05em; text-transform: uppercase; fill: var(--dusk-text);
 }
 .dome-center {
   margin-top: 14px; display: flex; align-items: center; gap: 16px;
-  font-size: 11px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted);
+  font-size: 11px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--dusk-muted);
 }
-.dome-mini-mark { width: 22px; height: 22px; color: var(--sky-deep); }
-.dome-drop-line { width: 1px; height: 48px; background: rgba(22,21,26,0.38); margin-top: 16px; }
+.dome-mini-mark { width: 22px; height: 22px; color: var(--gold); }
+.dome-drop-line { width: 1px; height: 48px; background: var(--dusk-line); margin-top: 16px; }
 @media (max-width: 768px) {
   :root { --dome-pad: 130px; --dome-tail: 88px; }
   .dome-center-wrap { width: 200vw; }
@@ -351,56 +361,51 @@ body.is-loading { overflow: hidden; }
    padding as the gap under the drop line. Same background as the dome, so
    there is no seam. */
 .slideshow {
-  background: var(--offwhite); padding: 50px 0 90px; position: relative; z-index: 4;
+  background: var(--dusk); padding: 50px 0 110px; position: relative; z-index: 4;
   margin-top: calc(-1 * max(0px, 110vh - var(--dome-pad) - var(--dome-svg-h) - var(--dome-tail)));
 }
 .slideshow-inner { max-width: 900px; margin: 0 auto; padding: 0 24px; text-align: center; }
 .slideshow-headline {
   font-family: var(--font-display); font-weight: 600; text-transform: uppercase;
   font-size: clamp(34px, 9vw, 150px); line-height: 0.96; letter-spacing: -2px;
-  color: var(--text); margin-bottom: 40px; overflow: hidden;
+  color: var(--dusk-text); margin-bottom: 40px; overflow: hidden;
 }
 .slideshow-frame {
   position: relative; width: min(26vw, 420px); min-width: 220px; aspect-ratio: 16/10;
-  margin: 0 auto 34px; overflow: hidden; background: var(--offwhite-2);
+  margin: 0 auto 34px; overflow: hidden; background: var(--dusk-2);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.35);
 }
 .slideshow-headline .sh-inner { display: block; will-change: transform; }
 .slideshow-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.9s ease; }
 .slideshow-img.is-active { opacity: 1; }
 .slideshow-controls { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 28px; }
 .slide-arrow {
-  width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border); background: none;
-  color: var(--text); font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--dusk-line); background: none;
+  color: var(--dusk-text); font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center;
   transition: border-color 0.25s ease, background 0.25s ease;
 }
-.slide-arrow:hover { border-color: var(--sky-deep); background: var(--offwhite-2); }
-.slide-index { font-family: var(--font-display); font-style: italic; font-size: 13px; color: var(--text-muted); min-width: 14px; }
-.slide-progress-track { width: 110px; height: 1px; background: var(--border); position: relative; }
-.slide-progress-fill { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: var(--sky-deep); }
-.slideshow-desc { font-size: 14.5px; color: var(--text-muted); line-height: 1.7; max-width: 440px; margin: 0 auto 16px; font-weight: 300; }
-.slideshow-tagline { display: block; font-size: 11px; font-weight: 600; letter-spacing: 2.4px; text-transform: uppercase; color: var(--sky-deep); }
+.slide-arrow:hover { border-color: var(--gold); background: rgba(224,168,88,0.12); }
+.slide-index { font-family: var(--font-display); font-style: italic; font-size: 13px; color: var(--dusk-muted); min-width: 14px; }
+.slide-progress-track { width: 110px; height: 1px; background: var(--dusk-line); position: relative; }
+.slide-progress-fill { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: var(--gold); }
+.slideshow-desc { font-size: 14.5px; color: var(--dusk-muted); line-height: 1.7; max-width: 440px; margin: 0 auto 16px; font-weight: 300; }
+.slideshow-tagline { display: block; font-size: 11px; font-weight: 600; letter-spacing: 2.4px; text-transform: uppercase; color: var(--gold); }
 @media (max-width: 768px) {
   .slideshow-headline { font-size: clamp(30px, 14vw, 56px); }
   .slideshow-frame { width: 80vw; }
   .slide-progress-track { width: 70px; }
 }
 
-/* ─── FULL-BLEED IMAGE TAKEOVER ─── */
-/* Pin duration = 100vh; the small centered frame scales up to fill the
-   viewport while the slideshow's background/headline fade out beneath it. */
-.dome-takeover { background: var(--offwhite); position: relative; z-index: 1; }
-.takeover-pin { height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.takeover-frame {
-  width: min(26vw, 420px); aspect-ratio: 16/10; overflow: hidden;
-  transform-origin: 50% 50%; will-change: transform;
-}
-.takeover-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
-@media (max-width: 768px) { .takeover-frame { width: 80vw; } }
-
 /* ─── QUOTE ─── */
 .quote-section { position: relative; min-height: 86vh; display: flex; align-items: flex-end; overflow: hidden; }
 .quote-media { position: absolute; inset: 0; }
 .quote-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* The slideshow's dusk background melts into the top of the photo, so dome ->
+   slideshow -> photo reads as one continuous scene. */
+.quote-media::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 42%; z-index: 1;
+  background: linear-gradient(to bottom, var(--dusk) 0%, rgba(23,18,13,0.72) 38%, rgba(23,18,13,0) 100%);
+}
 .quote-scrim { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20,19,16,0.25) 0%, rgba(20,19,16,0.82) 100%); }
 .quote-content { position: relative; z-index: 2; max-width: 760px; margin-left: auto; padding: 0 max(24px, 6vw) 90px; text-align: right; }
 .quote-mark { display: block; font-family: var(--font-display); font-size: clamp(60px, 9vw, 120px); color: rgba(255,255,255,0.85); line-height: 0.6; margin-bottom: 10px; }
@@ -660,8 +665,8 @@ body.is-loading { overflow: hidden; }
 .hs-tall { width: min(38vw, 440px); height: min(74vh, 640px); }
 .hs-wide { width: min(52vw, 660px); height: min(56vh, 480px); }
 .hs-mid  { width: min(32vw, 380px); height: min(64vh, 560px); }
-.hs-fig img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.7s cubic-bezier(0.22,1,0.36,1); }
-.hs-fig:hover img { transform: scale(1.05); }
+.hs-fig img, .hs-fig video { width: 100%; height: 100%; object-fit: cover; object-position: 28% 50%; display: block; transition: transform 0.7s cubic-bezier(0.22,1,0.36,1); }
+.hs-fig:hover img, .hs-fig:hover video { transform: scale(1.05); }
 .hs-fig figcaption {
   position: absolute; left: 0; right: 0; bottom: 0; padding: 20px 22px;
   display: flex; align-items: baseline; gap: 12px;

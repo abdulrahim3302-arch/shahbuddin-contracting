@@ -188,13 +188,13 @@ const PROJECTS = [
 // panel will autoplay it (muted/looped) while in view; left blank, the
 // panel just shows the poster image.
 const PROCESS_STAGES = [
-  { title: 'Earthworks', desc: 'The plot is cleared, excavated, and levelled to the depth required for the foundation.', poster: 'assets/photos/about-construction.jpg', video: '' },
-  { title: 'Blinding', desc: 'A thin layer of lean concrete is laid to give the foundation a clean, level base to build on.', poster: 'assets/photos/detail-structure.jpg', video: '' },
-  { title: 'Foundations', desc: 'Reinforcement is fixed and the foundation is cast to carry the full structural load.', poster: 'assets/photos/hero-facade.jpg', video: '' },
-  { title: 'Columns', desc: 'Vertical columns rise floor by floor, forming the structural grid of the building.', poster: 'assets/photos/dusk-building.jpg', video: '' },
-  { title: 'Slabs', desc: 'Each floor slab is cast in turn, locking the columns together at every level.', poster: 'assets/photos/about-construction.jpg', video: '' },
-  { title: 'Block & Plaster', desc: 'Block walls fill the frame and are plastered to a smooth, consistent finish.', poster: 'assets/photos/detail-structure.jpg', video: '' },
-  { title: 'Finishing', desc: 'Tiling, carpentry, gypsum, and painting are carried through to final handover.', poster: 'assets/photos/hero-facade.jpg', video: '' }
+  { title: 'Earthworks', desc: 'The plot is cleared, excavated, and levelled to the depth required for the foundation.', poster: 'assets/generated/stages/p1-earthworks.jpg', video: 'assets/generated/stages/p1-earthworks.mp4' },
+  { title: 'Blinding', desc: 'A thin layer of lean concrete is laid to give the foundation a clean, level base to build on.', poster: 'assets/generated/stages/p2-blinding.jpg', video: 'assets/generated/stages/p2-blinding.mp4' },
+  { title: 'Foundations', desc: 'Reinforcement is fixed and the foundation is cast to carry the full structural load.', poster: 'assets/generated/stages/p3-foundations.jpg', video: 'assets/generated/stages/p3-foundations.mp4' },
+  { title: 'Columns', desc: 'Vertical columns rise floor by floor, forming the structural grid of the building.', poster: 'assets/generated/stages/p4-columns.jpg', video: 'assets/generated/stages/p4-columns.mp4' },
+  { title: 'Slabs', desc: 'Each floor slab is cast in turn, locking the columns together at every level.', poster: 'assets/generated/stages/p5-slabs.jpg', video: 'assets/generated/stages/p5-slabs.mp4' },
+  { title: 'Block & Plaster', desc: 'Block walls fill the frame and are plastered to a smooth, consistent finish.', poster: 'assets/generated/stages/p6-blockplaster.jpg', video: 'assets/generated/stages/p6-blockplaster.mp4' },
+  { title: 'Finishing', desc: 'Tiling, carpentry, gypsum, and painting are carried through to final handover.', poster: 'assets/generated/stages/p7-finishing.jpg', video: 'assets/generated/stages/p7-finishing.mp4' }
 ];
 
 (function renderProcessStages() {
@@ -506,9 +506,9 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
     if (!headline || !imgA || !imgB) return;
 
     const SLIDES = [
-      { headline: 'Real-Life Location', image: 'assets/photos/hero-facade.jpg', desc: 'Based in Bahrain, every project is run by a team that knows the site, the suppliers, and the regulations first-hand.', tagline: 'Built On Site, Not Outsourced' },
-      { headline: 'Built To Stay', image: 'assets/photos/about-construction.jpg', desc: 'Structural work is engineered and executed for long-term integrity, not just to pass handover.', tagline: 'Structure First, Finish Second' },
-      { headline: 'One Accountable Team', image: 'assets/photos/detail-structure.jpg', desc: 'Civil, structural, and finishing trades are coordinated under a single point of responsibility.', tagline: 'One Contractor, Every Trade' }
+      { headline: 'Real-Life Location', image: 'assets/generated/slides/s1-location.jpg', desc: 'Based in Bahrain, every project is run by a team that knows the site, the suppliers, and the regulations first-hand.', tagline: 'Built On Site, Not Outsourced' },
+      { headline: 'Built To Stay', image: 'assets/generated/slides/s2-builttostay.jpg', desc: 'Structural work is engineered and executed for long-term integrity, not just to pass handover.', tagline: 'Structure First, Finish Second' },
+      { headline: 'One Accountable Team', image: 'assets/generated/slides/s3-team.jpg', desc: 'Civil, structural, and finishing trades are coordinated under a single point of responsibility.', tagline: 'One Contractor, Every Trade' }
     ];
     const DURATION = 5000;
     let index = 0, imgToggle = true, timer = null, progressTween = null;
@@ -588,33 +588,9 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
     if (prevBtn) prevBtn.addEventListener('click', () => { clearInterval(timer); prev(); if (!prefersReducedMotion) timer = setInterval(next, DURATION); });
   })();
 
-  // ─── FULL-BLEED IMAGE TAKEOVER: small frame scales to fill the viewport ───
-  (function imageTakeover() {
-    const pin = document.getElementById('takeoverPin');
-    const frame = document.getElementById('takeoverFrame');
-    if (!pin || !frame) return;
-    gsap.to(frame, {
-      width: '100vw', aspectRatio: 'auto', height: '100vh',
-      ease: 'none',
-      scrollTrigger: { trigger: pin, start: 'top bottom', end: 'bottom top', scrub: 0.6 }
-    });
-  })();
-
-  // ─── QUOTE BAND: the crane loads are lowered into place, then keep swaying (CSS) ───
-  (function lowerLoads() {
-    const band = document.getElementById('quoteBand');
-    const loads = document.querySelectorAll('.hang-wrap');
-    if (!band || !loads.length) return;
-    gsap.set(loads, { yPercent: -108 });
-    gsap.to(loads, {
-      yPercent: 0, duration: 2.1, ease: 'power3.out', stagger: 0.28,
-      scrollTrigger: { trigger: band, start: 'top 82%', once: true }
-    });
-  })();
-
-  // ─── PROCESS: autoplay each stage's video only while its panel is in view ───
+  // ─── Autoplay clips only while on screen (process stages + gallery); pause otherwise ───
   (function processVideoAutoplay() {
-    const videos = document.querySelectorAll('.process-panel-media-el');
+    const videos = document.querySelectorAll('.process-panel-media-el, video[data-inview]');
     if (!videos.length) return;
     const io = new IntersectionObserver(entries => {
       entries.forEach(entry => {
