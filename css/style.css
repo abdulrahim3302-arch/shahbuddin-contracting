@@ -301,12 +301,12 @@ body.is-loading { overflow: hidden; }
 :root { --quote-h: max(560px, 86vh); --dome-pad: 140px; --dome-tail: 100px; --dome-svg-h: 14vw; }
 .dome-center-wrap {
   position: absolute; left: 50%; bottom: -10%; z-index: 3;
-  width: 148vw; max-width: 2200px;
+  width: 104vw; max-width: 2200px;
   transform: translateX(-50%);
   pointer-events: none; /* the wrapper's invisible box must never block the hero's buttons */
 }
 .dome-shape {
-  width: 100%; height: 120vh; pointer-events: auto;
+  width: 100%; height: 100vh; pointer-events: auto;
   position: relative; isolation: isolate; --dome-sx: 1;
   display: flex; flex-direction: column; align-items: center;
   padding-top: var(--dome-pad);
@@ -315,9 +315,9 @@ body.is-loading { overflow: hidden; }
    (scaleX) and widen as it rises, without squashing the headline inside. */
 .dome-shape::before {
   content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background: var(--dome-sky); border-radius: 50% 50% 0 0;
+  background: var(--dome-sky); border-radius: 50% 50% 0 0 / 90% 90% 0 0;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), 0 -26px 80px rgba(120,140,170,0.25);
-  transform: scaleX(var(--dome-sx)); transform-origin: 50% 100%;
+  
 }
 /* Two concentric-ish arcs of giant type, drawn inside a 1000-unit-wide viewBox
    that is exactly one viewport wide, so the text always sits well inside the
@@ -336,7 +336,7 @@ body.is-loading { overflow: hidden; }
 .dome-drop-line { width: 1px; height: 48px; background: var(--dusk-line); margin-top: 16px; }
 @media (max-width: 768px) {
   :root { --dome-pad: 130px; --dome-tail: 88px; }
-  .dome-center-wrap { width: 200vw; }
+  .dome-center-wrap { width: 118vw; }
   .dome-center { font-size: 9.5px; letter-spacing: 2px; gap: 10px; }
   .dome-drop-line { height: 36px; }
 }
@@ -368,7 +368,7 @@ body.is-loading { overflow: hidden; }
    there is no seam. */
 .slideshow {
   background: var(--dome-sky); padding: 50px 0 280px; position: relative; z-index: 4; overflow: hidden;
-  margin-top: calc(-1 * max(0px, 110vh - var(--dome-pad) - var(--dome-svg-h) - var(--dome-tail)));
+  margin-top: calc(-1 * max(0px, 90vh - var(--dome-pad) - var(--dome-svg-h) - var(--dome-tail)));
 }
 /* Mirror of the quote photo's top edge. Same height variable + object-fit as
    the photo => identical crop and scale; flipped, its bottom row equals the
@@ -851,40 +851,39 @@ body.is-loading { overflow: hidden; }
   background: linear-gradient(to bottom, #6A829F 0%, rgba(106,130,159,0.55) 35%, rgba(106,130,159,0) 100%);
 }
 
-/* ─── SHOWCASE: pinned portfolio reel ─── */
-.showcase { background: #121110; color: var(--dusk-text); }
-.showcase-pin { position: relative; }
-.showcase-stage {
-  position: relative; min-height: 100vh; padding: 120px 6vw 80px;
-  display: grid; grid-template-columns: minmax(180px, 1fr) minmax(0, 2.4fr) minmax(200px, 1fr); gap: 3vw; align-items: center;
-}
-.showcase-head { position: absolute; top: 124px; left: 6vw; right: 6vw; display: flex; justify-content: space-between; gap: 20px; font-size: 11px; letter-spacing: 2.4px; text-transform: uppercase; }
-.showcase-eyebrow { color: var(--gold); font-weight: 600; }
-.showcase-note { color: var(--dusk-muted); letter-spacing: 1.2px; text-align: right; }
-.showcase-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
-.sc-item { display: flex; gap: 14px; align-items: baseline; opacity: 0.38; transition: opacity 0.4s ease, transform 0.4s ease; }
-.sc-item.is-active { opacity: 1; transform: translateX(10px); }
-.sc-i { font-family: var(--font-display); font-style: italic; font-size: 14px; color: var(--gold); min-width: 22px; }
-.sc-t { font-family: var(--font-display); font-size: clamp(16px, 1.7vw, 24px); }
-.showcase-frame { position: relative; justify-self: center; width: 100%; aspect-ratio: 16 / 10; overflow: hidden; background: #1d1a16; box-shadow: 0 40px 90px rgba(0,0,0,0.5); }
-.sc-fig { position: absolute; inset: 0; overflow: hidden; }
-.sc-fig img { width: 100%; height: 100%; object-fit: cover; display: block; will-change: transform; }
-.showcase-info { display: flex; flex-direction: column; gap: 12px; }
-.showcase-num { font-family: var(--font-display); font-size: clamp(64px, 9vw, 150px); line-height: 0.9; color: transparent; -webkit-text-stroke: 1px var(--dusk-line); }
-.showcase-title { font-family: var(--font-display); font-weight: 500; font-size: clamp(22px, 2.4vw, 36px); line-height: 1.1; }
-.showcase-meta { font-size: 12px; letter-spacing: 1.8px; text-transform: uppercase; color: var(--dusk-muted); }
-.showcase-progress { position: absolute; left: 6vw; right: 6vw; bottom: 44px; height: 1px; background: var(--dusk-line); }
-.showcase-progress span { display: block; height: 100%; width: 0; background: var(--gold); }
+
+/* ─── PROJECT WHEEL ─── */
+.wheel { background: #121110; color: var(--dusk-text); }
+.wheel-pin { position: relative; }
+.wheel-stage { position: relative; min-height: 100vh; padding: 120px 6vw 80px; overflow: hidden; }
+.wheel-head { position: absolute; top: 124px; left: 6vw; right: 6vw; z-index: 20; display: flex; justify-content: space-between; gap: 20px; font-size: 11px; letter-spacing: 2.4px; text-transform: uppercase; }
+.wheel-eyebrow { color: var(--gold); font-weight: 600; }
+.wheel-hint { color: var(--dusk-muted); }
+.wheel-hint b { color: var(--dusk-text); font-weight: 500; letter-spacing: 2px; }
+.wheel-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.wheel-rim { fill: none; stroke: rgba(242,230,208,0.28); stroke-width: 1; }
+.wheel-ticks { fill: none; stroke: rgba(242,230,208,0.32); stroke-width: 14; stroke-dasharray: 1.5 26; }
+.wheel-hub { fill: #121110; stroke: rgba(242,230,208,0.28); }
+.wheel-spoke { stroke: rgba(242,230,208,0.2); stroke-width: 1; }
+.wheel-cards { position: relative; display: grid; gap: 28px; }
+.wc-card { position: relative; }
+.wc-media { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #1b1814; border: 1px solid rgba(242,230,208,0.2); display: flex; align-items: center; justify-content: center; }
+.wc-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.wc-empty { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--dusk-muted); }
+.wc-num { position: absolute; left: 14px; top: 10px; font-family: var(--font-display); font-style: italic; font-size: 18px; color: var(--gold); }
+.wc-cap { display: flex; flex-direction: column; gap: 4px; padding-top: 14px; }
+.wc-cap h3 { font-family: var(--font-display); font-weight: 500; font-size: clamp(20px, 2.2vw, 32px); }
+.wc-cap span { font-size: 11px; letter-spacing: 1.8px; text-transform: uppercase; color: var(--dusk-muted); }
+.wheel-progress { position: absolute; left: 6vw; right: 6vw; bottom: 36px; height: 1px; background: var(--dusk-line); z-index: 20; }
+.wheel-progress span { display: block; height: 100%; width: 0; background: var(--gold); }
 @media (min-width: 901px) {
-  .showcase-pin.is-pinned { height: calc(100vh + var(--n, 6) * 90vh); }
-  .showcase-pin.is-pinned .showcase-stage { position: sticky; top: 0; height: 100vh; min-height: 0; }
+  .wheel-pin.is-wheel { height: calc(100vh + (var(--n, 6) - 1) * 100vh); }
+  .wheel-pin.is-wheel .wheel-stage { position: sticky; top: 0; height: 100vh; min-height: 0; padding: 0; }
+  .wheel-pin.is-wheel .wheel-cards { position: absolute; inset: 0; display: block; }
+  .wheel-pin.is-wheel .wc-card { position: absolute; left: 0; top: 0; will-change: transform, opacity; }
 }
 @media (max-width: 900px), (prefers-reduced-motion: reduce) {
-  .showcase-stage { grid-template-columns: 1fr; padding: 130px 24px 70px; gap: 28px; }
-  .showcase-head { position: static; flex-direction: column; }
-  .showcase-note { text-align: left; }
-  .showcase-list { display: none; }
-  .showcase-frame { aspect-ratio: auto; display: flex; flex-direction: column; gap: 14px; background: none; box-shadow: none; overflow: visible; }
-  .sc-fig { position: relative; aspect-ratio: 16 / 10; }
-  .showcase-progress { display: none; }
+  .wheel-stage { padding: 130px 24px 80px; }
+  .wheel-head { position: static; margin-bottom: 28px; }
+  .wheel-svg, .wheel-progress, .wheel-hint { display: none; }
 }

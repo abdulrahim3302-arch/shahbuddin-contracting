@@ -77,9 +77,9 @@ const navbar = document.getElementById('navbar');
     // rather than writing NaN into the path.
     if (!W || !Hv) return false;
     const mobile = W <= 768;
-    const domeW = Math.min((mobile ? 2 : 1.48) * W, 2200);
-    const a = domeW / 2, b = 0.6 * Hv;                 // dome ellipse semi-axes
-    const span = W * 0.9;                              // target text length
+    const domeW = Math.min((mobile ? 1.18 : 1.04) * W, 2200);
+    const a = domeW / 2, b = 0.9 * Hv;                 // dome ellipse semi-axes
+    const span = W * (mobile ? 0.8 : 0.66);                              // target text length
     const x0 = span / 2;                               // text half-length
     const edgeDrop = (x) => b * (1 - Math.sqrt(Math.max(0, 1 - Math.pow(x / a, 2))));
     const D = Math.max(8, edgeDrop(x0));               // edge drop at the text ends
@@ -94,7 +94,7 @@ const navbar = document.getElementById('navbar');
     label.style.letterSpacing = (fs * 0.05) + 'px';
 
     const y0 = fs * 0.95;                              // apex baseline
-    const xp = W * 0.53;                               // arc runs a little past the text
+    const xp = Math.min(W * 0.53, R * 0.98);           // arc runs a little past the text
     const yp = y0 + (R - Math.sqrt(R * R - xp * xp));
     path.setAttribute('d', `M ${W / 2 - xp} ${yp} A ${R} ${R} 0 0 1 ${W / 2 + xp} ${yp}`);
 
@@ -183,76 +183,101 @@ const PROJECTS = [
 })();
 
 
-// ─── SHOWCASE: pinned portfolio reel ───
-// EDIT HERE. These are typology slots using concept imagery; swap `image` for real
-// project photos (and `title`/`meta` for the project name/location) as they arrive.
-const SHOWCASE = [
-  { title: 'Villas & Residences', meta: 'Structure to handover', image: 'assets/generated/quote-villa.jpg' },
-  { title: 'Structural Frames', meta: 'Columns, beams & cores', image: 'assets/generated/stages/p4-columns.jpg' },
-  { title: 'Slabs & Levels', meta: 'Floor by floor', image: 'assets/generated/stages/p5-slabs.jpg' },
-  { title: 'Heavy Lifting', meta: 'Logistics & site cranes', image: 'assets/generated/stages/crane.jpg' },
-  { title: 'Fit-Out & Finishing', meta: 'Tiling, gypsum, paint', image: 'assets/generated/stages/p7-finishing.jpg' },
-  { title: 'Site to Handover', meta: 'One accountable team', image: 'assets/generated/slides/s1-location.jpg' }
-];
-
-(function showcase() {
-  const pin = document.getElementById('showcasePin');
-  const frame = document.getElementById('showcaseFrame');
-  const list = document.getElementById('showcaseList');
-  if (!pin || !frame || !list) return;
-  const n = SHOWCASE.length;
+// ─── PROJECT WHEEL ───
+// A wheel whose hub sits below the fold. Each project hangs off a spoke. Scrolling
+// spins the wheel; the spoke that arrives at 12 o'clock grows to full size while the
+// others stay small. Scroll positions plateau on each spoke so the wheel always
+// settles on exactly one project.
+(function projectWheel() {
+  const section = document.getElementById('projects');
+  const pin = document.getElementById('wheelPin');
+  const stage = document.getElementById('wheelStage');
+  const cardsEl = document.getElementById('wheelCards');
+  const svg = document.getElementById('wheelSvg');
+  if (!section || !pin || !stage || !cardsEl || !svg) return;
+  const n = PROJECTS.length;
   const pad = (i) => String(i + 1).padStart(2, '0');
-  frame.innerHTML = SHOWCASE.map((p, i) =>
-    `<figure class="sc-fig"><img src="${p.image}" alt="${p.title}" loading="lazy" decoding="async" /></figure>`).join('');
-  list.innerHTML = SHOWCASE.map((p, i) =>
-    `<li class="sc-item" data-i="${i}"><span class="sc-i">${pad(i)}</span><span class="sc-t">${p.title}</span></li>`).join('');
-  const num = document.getElementById('showcaseNum');
-  const title = document.getElementById('showcaseTitle');
-  const meta = document.getElementById('showcaseMeta');
-  const bar = document.getElementById('showcaseBar');
-  const figs = frame.querySelectorAll('.sc-fig');
-  const items = list.querySelectorAll('.sc-item');
-  let current = -1;
-  function setActive(i) {
-    if (i === current) return;
-    current = i;
-    items.forEach((el, k) => el.classList.toggle('is-active', k === i));
-    num.textContent = pad(i); title.textContent = SHOWCASE[i].title; meta.textContent = SHOWCASE[i].meta;
-    gsap.fromTo([title, meta, num], { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: 'power3.out', stagger: 0.06, overwrite: true });
-  }
-  setActive(0);
+  cardsEl.innerHTML = PROJECTS.map((p, i) => {
+    const title = p.title || '[ Project Name ]';
+    const cat = p.category || '[ Project Type ]';
+    const loc = [p.location, p.year].filter(Boolean).join(' · ') || '[ Location · Year ]';
+    const media = p.image
+      ? `<img src="${p.image}" alt="${title}" loading="lazy" decoding="async" />`
+      : '<span class="wc-empty">Photo to be added</span>';
+    return `<article class="wc-card" data-i="${i}">
+      <div class="wc-media">${media}<span class="wc-num">${pad(i)}</span></div>
+      <div class="wc-cap"><h3>${title}</h3><span>${cat}</span><span>${loc}</span></div>
+    </article>`;
+  }).join('');
+  const cards = [...cardsEl.querySelectorAll('.wc-card')];
+  const counter = document.getElementById('wheelCount');
+  const bar = document.getElementById('wheelBar');
+  const step = 360 / n;
+  const ease = (t) => t * t * (3 - 2 * t);
 
-  // Small-screen / reduced-motion: plain stack, nothing pinned.
+  // SVG: static rim + spokes redrawn each frame; ticks ring rotates with the wheel.
+  const NS = 'http://www.w3.org/2000/svg';
+  const mk = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+  const rim = mk('circle', { class: 'wheel-rim' });
+  const ticks = mk('circle', { class: 'wheel-ticks' });
+  const hub = mk('circle', { class: 'wheel-hub' });
+  const spokes = cards.map(() => mk('line', { class: 'wheel-spoke' }));
+  svg.append(ticks, rim, ...spokes, hub);
+
+  let rot = 0;                       // degrees the wheel has turned
+  function layout() {
+    const W = stage.clientWidth, H = stage.clientHeight;
+    const R = H * 0.72, cx = W / 2, cy = H * 1.1;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    rim.setAttribute('cx', cx); rim.setAttribute('cy', cy); rim.setAttribute('r', R);
+    ticks.setAttribute('cx', cx); ticks.setAttribute('cy', cy); ticks.setAttribute('r', R * 0.9);
+    ticks.style.transformOrigin = `${cx}px ${cy}px`;
+    ticks.style.transform = `rotate(${rot}deg)`;
+    hub.setAttribute('cx', cx); hub.setAttribute('cy', cy); hub.setAttribute('r', R * 0.14);
+    const cardW = Math.min(H * 0.66, W * 0.4);
+    cards.forEach((c, i) => {
+      let a = i * step - rot;                     // angle from 12 o'clock
+      a = ((a + 540) % 360) - 180;                // wrap to -180..180
+      const t = Math.max(0, 1 - Math.abs(a) / step);   // 1 on the active spoke, 0 a step away
+      const k = ease(t);
+      const rad = a * Math.PI / 180;
+      const x = cx + R * Math.sin(rad), y = cy - R * Math.cos(rad);
+      const sc = 0.42 + 0.58 * k;
+      c.style.width = cardW + 'px';
+      c.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) scale(${sc})`;
+      c.style.opacity = 0.45 + 0.55 * k;
+      c.style.zIndex = Math.round(k * 10);
+      c.classList.toggle('is-active', t > 0.6);
+      spokes[i].setAttribute('x1', cx); spokes[i].setAttribute('y1', cy);
+      spokes[i].setAttribute('x2', x); spokes[i].setAttribute('y2', y);
+    });
+    const cur = Math.round((((rot / step) % n) + n) % n);
+    if (counter) counter.textContent = `${pad(cur)} / ${pad(n)}`;
+  }
+
   gsap.matchMedia().add('(min-width: 901px) and (prefers-reduced-motion: no-preference)', () => {
     pin.style.setProperty('--n', n);
-    pin.classList.add('is-pinned');
-    gsap.set(figs, { clipPath: (i) => i === 0 ? 'inset(0% 0% 0% 0%)' : 'inset(100% 0% 0% 0%)' });
-    gsap.set(frame, { width: '58%' });
-    const imgs = frame.querySelectorAll('img');
-    gsap.set(imgs, { scale: (i) => i === 0 ? 1.15 : 1.3 });
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: pin, start: 'top top', end: 'bottom bottom', scrub: 0.6,
-        onUpdate: (self) => {
-          const p = self.progress;
-          bar.style.width = (p * 100) + '%';
-          setActive(Math.min(n - 1, Math.max(0, Math.round(p * (n - 1) + (p > 0.995 ? 0 : -0.0)))));
-        }
+    pin.classList.add('is-wheel');
+    layout();
+    const onResize = () => layout();
+    window.addEventListener('resize', onResize);
+    const st = ScrollTrigger.create({
+      trigger: pin, start: 'top top', end: 'bottom bottom', scrub: 0.5,
+      onUpdate: (self) => {
+        const u = self.progress * (n - 1);
+        const i = Math.min(n - 2, Math.floor(u)), f = u - i;
+        // hold on the spoke for the first/last 28% of each segment, spin in between
+        const m = Math.min(1, Math.max(0, (f - 0.28) / 0.44));
+        rot = (i + ease(m)) * step;
+        if (self.progress >= 1) rot = (n - 1) * step;
+        layout();
+        if (bar) bar.style.width = (self.progress * 100) + '%';
       }
     });
-    // 1) the window opens from a narrow slot to a wide frame
-    tl.to(frame, { width: '100%', duration: 0.6, ease: 'power2.inOut' }, 0)
-      .to(imgs[0], { scale: 1, duration: 0.6, ease: 'none' }, 0);
-    // 2) each next image wipes up over the previous one while the old one drifts
-    for (let i = 1; i < n; i++) {
-      const at = 0.6 + (i - 1) * 1;
-      tl.to(figs[i], { clipPath: 'inset(0% 0% 0% 0%)', duration: 1, ease: 'power2.inOut' }, at)
-        .to(imgs[i], { scale: 1, duration: 1, ease: 'power2.out' }, at)
-        .to(imgs[i - 1], { yPercent: -10, duration: 1, ease: 'none' }, at);
-    }
     return () => {
-      pin.classList.remove('is-pinned'); pin.style.removeProperty('--n');
-      gsap.set([figs, frame, imgs], { clearProps: 'all' });
+      st.kill(); window.removeEventListener('resize', onResize);
+      pin.classList.remove('is-wheel'); pin.style.removeProperty('--n');
+      cards.forEach(c => c.removeAttribute('style'));
     };
   });
 })();
@@ -546,9 +571,8 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
     // yPercent is relative to the element's OWN height (120vh), so yPercent:100
     // always pushes it fully clear of the fold no matter the viewport size —
     // unlike a fixed vh guess, which under-hid it on shorter viewports.
-    gsap.set(dome, { yPercent: 100, scale: mobileDome() ? 0.7 : 0.55, transformOrigin: '50% 100%' });
-    gsap.set(curve, { scale: 0.42, rotation: -2, transformOrigin: '50% 0%' });
-    gsap.set([center, dropLine], { opacity: 0, y: 14 });
+    gsap.set(dome, { yPercent: 100, scale: mobileDome() ? 0.8 : 0.68, transformOrigin: '50% 100%' });
+        gsap.set([center, dropLine], { opacity: 0, y: 14 });
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -556,7 +580,6 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
       }
     });
     tl.to(dome, { yPercent: 0, scale: 1, duration: 1, ease: 'none' }, 0)
-      .to(curve, { scale: 1, rotation: 0, duration: 1, ease: 'none' }, 0)
       .to(center, { opacity: 1, y: 0, duration: 0.3, ease: 'none' }, 0.55)
       .to(dropLine, { opacity: 1, y: 0, duration: 0.3, ease: 'none' }, 0.7);
 
