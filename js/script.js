@@ -546,8 +546,8 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
     // yPercent is relative to the element's OWN height (120vh), so yPercent:100
     // always pushes it fully clear of the fold no matter the viewport size —
     // unlike a fixed vh guess, which under-hid it on shorter viewports.
-    gsap.set(dome, { yPercent: 100, '--dome-sx': mobileDome() ? 0.55 : 0.36 });
-    gsap.set(curve, { scale: 0.3, rotation: -2, transformOrigin: '50% 0%' });
+    gsap.set(dome, { yPercent: 100, scale: mobileDome() ? 0.7 : 0.55, transformOrigin: '50% 100%' });
+    gsap.set(curve, { scale: 0.42, rotation: -2, transformOrigin: '50% 0%' });
     gsap.set([center, dropLine], { opacity: 0, y: 14 });
 
     const tl = gsap.timeline({
@@ -555,9 +555,8 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
         trigger: wrap, start: 'top top', end: '+=120%', pin: true, scrub: 0.6
       }
     });
-    tl.to(dome, { yPercent: 0, duration: 1, ease: 'none' }, 0)
-      .to(dome, { '--dome-sx': 1, duration: 1, ease: 'power2.in' }, 0)
-      .to(curve, { scale: 1, rotation: 0, duration: 1, ease: 'power2.in' }, 0)
+    tl.to(dome, { yPercent: 0, scale: 1, duration: 1, ease: 'none' }, 0)
+      .to(curve, { scale: 1, rotation: 0, duration: 1, ease: 'none' }, 0)
       .to(center, { opacity: 1, y: 0, duration: 0.3, ease: 'none' }, 0.55)
       .to(dropLine, { opacity: 1, y: 0, duration: 0.3, ease: 'none' }, 0.7);
 
