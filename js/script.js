@@ -182,6 +182,81 @@ const PROJECTS = [
   applyStagger();
 })();
 
+
+// ─── SHOWCASE: pinned portfolio reel ───
+// EDIT HERE. These are typology slots using concept imagery; swap `image` for real
+// project photos (and `title`/`meta` for the project name/location) as they arrive.
+const SHOWCASE = [
+  { title: 'Villas & Residences', meta: 'Structure to handover', image: 'assets/generated/quote-villa.jpg' },
+  { title: 'Structural Frames', meta: 'Columns, beams & cores', image: 'assets/generated/stages/p4-columns.jpg' },
+  { title: 'Slabs & Levels', meta: 'Floor by floor', image: 'assets/generated/stages/p5-slabs.jpg' },
+  { title: 'Heavy Lifting', meta: 'Logistics & site cranes', image: 'assets/generated/stages/crane.jpg' },
+  { title: 'Fit-Out & Finishing', meta: 'Tiling, gypsum, paint', image: 'assets/generated/stages/p7-finishing.jpg' },
+  { title: 'Site to Handover', meta: 'One accountable team', image: 'assets/generated/slides/s1-location.jpg' }
+];
+
+(function showcase() {
+  const pin = document.getElementById('showcasePin');
+  const frame = document.getElementById('showcaseFrame');
+  const list = document.getElementById('showcaseList');
+  if (!pin || !frame || !list) return;
+  const n = SHOWCASE.length;
+  const pad = (i) => String(i + 1).padStart(2, '0');
+  frame.innerHTML = SHOWCASE.map((p, i) =>
+    `<figure class="sc-fig"><img src="${p.image}" alt="${p.title}" loading="lazy" decoding="async" /></figure>`).join('');
+  list.innerHTML = SHOWCASE.map((p, i) =>
+    `<li class="sc-item" data-i="${i}"><span class="sc-i">${pad(i)}</span><span class="sc-t">${p.title}</span></li>`).join('');
+  const num = document.getElementById('showcaseNum');
+  const title = document.getElementById('showcaseTitle');
+  const meta = document.getElementById('showcaseMeta');
+  const bar = document.getElementById('showcaseBar');
+  const figs = frame.querySelectorAll('.sc-fig');
+  const items = list.querySelectorAll('.sc-item');
+  let current = -1;
+  function setActive(i) {
+    if (i === current) return;
+    current = i;
+    items.forEach((el, k) => el.classList.toggle('is-active', k === i));
+    num.textContent = pad(i); title.textContent = SHOWCASE[i].title; meta.textContent = SHOWCASE[i].meta;
+    gsap.fromTo([title, meta, num], { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: 'power3.out', stagger: 0.06, overwrite: true });
+  }
+  setActive(0);
+
+  // Small-screen / reduced-motion: plain stack, nothing pinned.
+  gsap.matchMedia().add('(min-width: 901px) and (prefers-reduced-motion: no-preference)', () => {
+    pin.style.setProperty('--n', n);
+    pin.classList.add('is-pinned');
+    gsap.set(figs, { clipPath: (i) => i === 0 ? 'inset(0% 0% 0% 0%)' : 'inset(100% 0% 0% 0%)' });
+    gsap.set(frame, { width: '58%' });
+    const imgs = frame.querySelectorAll('img');
+    gsap.set(imgs, { scale: (i) => i === 0 ? 1.15 : 1.3 });
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: pin, start: 'top top', end: 'bottom bottom', scrub: 0.6,
+        onUpdate: (self) => {
+          const p = self.progress;
+          bar.style.width = (p * 100) + '%';
+          setActive(Math.min(n - 1, Math.max(0, Math.round(p * (n - 1) + (p > 0.995 ? 0 : -0.0)))));
+        }
+      }
+    });
+    // 1) the window opens from a narrow slot to a wide frame
+    tl.to(frame, { width: '100%', duration: 0.6, ease: 'power2.inOut' }, 0)
+      .to(imgs[0], { scale: 1, duration: 0.6, ease: 'none' }, 0);
+    // 2) each next image wipes up over the previous one while the old one drifts
+    for (let i = 1; i < n; i++) {
+      const at = 0.6 + (i - 1) * 1;
+      tl.to(figs[i], { clipPath: 'inset(0% 0% 0% 0%)', duration: 1, ease: 'power2.inOut' }, at)
+        .to(imgs[i], { scale: 1, duration: 1, ease: 'power2.out' }, at)
+        .to(imgs[i - 1], { yPercent: -10, duration: 1, ease: 'none' }, at);
+    }
+    return () => {
+      pin.classList.remove('is-pinned'); pin.style.removeProperty('--n');
+      gsap.set([figs, frame, imgs], { clearProps: 'all' });
+    };
+  });
+})();
+
 // ─── PROCESS STAGES ───
 // EDIT HERE to update the construction stages shown in the horizontal
 // Process section. `video` is optional — set it to a real file and the
@@ -471,7 +546,7 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
     // yPercent is relative to the element's OWN height (120vh), so yPercent:100
     // always pushes it fully clear of the fold no matter the viewport size —
     // unlike a fixed vh guess, which under-hid it on shorter viewports.
-    gsap.set(dome, { yPercent: 100, '--dome-sx': mobileDome() ? 0.62 : 0.5 });
+    gsap.set(dome, { yPercent: 100, '--dome-sx': mobileDome() ? 0.55 : 0.36 });
     gsap.set(curve, { scale: 0.3, rotation: -2, transformOrigin: '50% 0%' });
     gsap.set([center, dropLine], { opacity: 0, y: 14 });
 
@@ -480,8 +555,9 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
         trigger: wrap, start: 'top top', end: '+=120%', pin: true, scrub: 0.6
       }
     });
-    tl.to(dome, { yPercent: 0, '--dome-sx': 1, duration: 1, ease: 'none' }, 0)
-      .to(curve, { scale: 1, rotation: 0, duration: 1, ease: 'none' }, 0)
+    tl.to(dome, { yPercent: 0, duration: 1, ease: 'none' }, 0)
+      .to(dome, { '--dome-sx': 1, duration: 1, ease: 'power2.in' }, 0)
+      .to(curve, { scale: 1, rotation: 0, duration: 1, ease: 'power2.in' }, 0)
       .to(center, { opacity: 1, y: 0, duration: 0.3, ease: 'none' }, 0.55)
       .to(dropLine, { opacity: 1, y: 0, duration: 0.3, ease: 'none' }, 0.7);
 

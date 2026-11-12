@@ -18,7 +18,7 @@
 <link rel="apple-touch-icon" href="assets/favicon-180.png">
 <meta name="theme-color" content="#16151A">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=37">
+<link rel="stylesheet" href="css/style.css?v=39">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.16/dist/lenis.min.js"></script>
@@ -195,6 +195,26 @@
       </div>
     </div>
     <div class="hscroll-progress" aria-hidden="true"><span id="processHscrollBar"></span></div>
+  </div>
+</section>
+
+<!-- ─── SHOWCASE: pinned portfolio reel ─── -->
+<section class="showcase" id="showcase" data-nav="dark">
+  <div class="showcase-pin" id="showcasePin">
+    <div class="showcase-stage">
+      <div class="showcase-head">
+        <span class="showcase-eyebrow">Selected Work</span>
+        <span class="showcase-note">Concept imagery &middot; real project photography is added from site records</span>
+      </div>
+      <ol class="showcase-list" id="showcaseList" data-generated></ol>
+      <div class="showcase-frame" id="showcaseFrame" data-generated></div>
+      <div class="showcase-info">
+        <span class="showcase-num" id="showcaseNum">01</span>
+        <h3 class="showcase-title" id="showcaseTitle"></h3>
+        <p class="showcase-meta" id="showcaseMeta"></p>
+      </div>
+      <div class="showcase-progress" aria-hidden="true"><span id="showcaseBar"></span></div>
+    </div>
   </div>
 </section>
 
@@ -513,6 +533,6 @@
   </div>
 </footer>
 
-<script src="js/script.js?v=31"></script>
+<script src="js/script.js?v=33"></script>
 </body>
 </html>
