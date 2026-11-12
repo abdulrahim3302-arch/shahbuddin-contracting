@@ -345,7 +345,7 @@ body.is-loading { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .dome-center-wrap { position: relative; left: auto; bottom: auto; transform: none; width: 100%; max-width: none; }
   .dome-shape { height: auto; padding-bottom: 24px; border-radius: 50% 50% 0 0 / 90px 90px 0 0; }
-  .slideshow { margin-top: 0 !important; }
+  .slideshow { margin-top: 0 !important; background: var(--dome-sky); }
 }
 
 /* ─── THREE REASONS ─── */
@@ -367,7 +367,15 @@ body.is-loading { overflow: hidden; }
    padding as the gap under the drop line. Same background as the dome, so
    there is no seam. */
 .slideshow {
-  background: var(--dome-sky); padding: 50px 0 280px; position: relative; z-index: 4; overflow: hidden;
+  /* The top is shaped as the dome's own ellipse (JS sets --dome-a/--dome-b) so the
+     dome keeps widening past the hero's edge until it leaves the screen, instead of
+     meeting a flat slate surface. Below the ellipse's widest point it's solid. */
+  --dome-d: calc(var(--dome-pad) + var(--dome-svg-h) + var(--dome-tail));
+  --cap-h: max(1px, calc(var(--dome-b, 800px) - var(--dome-d)));
+  background:
+    radial-gradient(ellipse var(--dome-a, 50vw) var(--dome-b, 800px) at 50% var(--cap-h), var(--dome-sky) 99.4%, transparent 100%) top / 100% var(--cap-h) no-repeat,
+    linear-gradient(var(--dome-sky), var(--dome-sky)) 0 var(--cap-h) / 100% 100% no-repeat;
+  padding: 50px 0 280px; position: relative; z-index: 4; overflow: hidden;
   margin-top: calc(-1 * max(0px, 90vh - var(--dome-pad) - var(--dome-svg-h) - var(--dome-tail)));
 }
 /* Mirror of the quote photo's top edge. Same height variable + object-fit as

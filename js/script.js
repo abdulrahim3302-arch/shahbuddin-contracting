@@ -79,6 +79,8 @@ const navbar = document.getElementById('navbar');
     const mobile = W <= 768;
     const domeW = Math.min((mobile ? 1.18 : 1.04) * W, 2200);
     const a = domeW / 2, b = 0.9 * Hv;                 // dome ellipse semi-axes
+    document.documentElement.style.setProperty('--dome-a', a + 'px');
+    document.documentElement.style.setProperty('--dome-b', b + 'px');
     const span = W * (mobile ? 0.8 : 0.66);                              // target text length
     const x0 = span / 2;                               // text half-length
     const edgeDrop = (x) => b * (1 - Math.sqrt(Math.max(0, 1 - Math.pow(x / a, 2))));
