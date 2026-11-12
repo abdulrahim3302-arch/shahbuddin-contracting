@@ -230,14 +230,14 @@ const PROJECTS = [
     const w = mobile ? Math.round(W * 0.46) : tablet ? 280 : 350, h = Math.round(w * 0.72);
     const rand = rng(11);
     const zones = mobile ? [0.0, 1.0] : [0.04, 0.58, 0.30, 0.76, 0.12, 0.48, 0.68, 0.22, 0.54, 0.02, 0.8, 0.36];
-    const stepY = mobile ? h * 1.15 : h * 1.5;
+    const stepY = mobile ? h * 0.78 : h * 0.6;   // tight: ~4-6 photos on screen at once
     const placed = [];
     let maxY = 0;
     els.forEach((el, i) => {
       let x = zones[i % zones.length] * (W - w) + (rand() - 0.5) * (mobile ? W * 0.04 : W * 0.06);
       x = Math.max(0, Math.min(W - w, x));
       let y = i * stepY + rand() * (mobile ? 24 : 70);
-      const gap = mobile ? 18 : 46;
+      const gap = mobile ? 14 : 34;
       for (let t = 0; t < 40; t++) {
         const hit = placed.some(r => x < r.x + w + gap && x + w + gap > r.x && y < r.y + h + gap && y + h + gap > r.y);
         if (!hit) break;
@@ -805,7 +805,32 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
           onUpdate: (self) => { if (bar) bar.style.width = (Math.min(1, self.progress / HOLD_AT) * 100) + '%'; }
         }
       });
+      // Depth: parallax layers of construction props behind the track.
+      const vp = pin.querySelector('.hscroll-viewport');
+      const mk = (cls, f, html) => {
+        const d = document.createElement('div');
+        d.className = 'hs-deco ' + cls; d.setAttribute('aria-hidden', 'true'); d.innerHTML = html;
+        vp.insertBefore(d, vp.firstChild); d.dataset.f = f; return d;
+      };
+      const R = 'assets/generated/';
+      const craneImg = R + 'projects/crane.png';
+      const far = mk('hs-deco-far', 0.2,
+        [10, 50, 88].map(p => `<img class="hs-far-crane" style="left:${p}%" src="${craneImg}" alt="" loading="lazy">`).join(''));
+      const mid = mk('hs-deco-mid', 0.55,
+        [14, 46, 83].map((p, i) => `<span class="hs-hang" style="left:${p}%;--dl:${-i * 1.7}s"><img src="${R}rebar-${'abc'[i]}.png?v=2" alt="" loading="lazy"></span>`).join('') +
+        [28, 72].map((p, i) => `<span class="hs-crane-rig" style="left:${p}%"><img class="hs-rig-crane" src="${craneImg}" alt="" loading="lazy"><span class="hs-hang hs-rig-load" style="--dl:${-i * 2.3}s"><img src="${R}rebar-${'ca'[i]}.png?v=2" alt="" loading="lazy"></span></span>`).join(''));
+      const decos = [far, mid];
+      const sizeDeco = () => decos.forEach(d => { d.style.width = Math.round(window.innerWidth + getDistance() * d.dataset.f) + 'px'; });
+      sizeDeco(); ScrollTrigger.addEventListener('refreshInit', sizeDeco);
+      const decoTweens = decos.map(d => gsap.to(d, {
+        x: () => -getDistance() * d.dataset.f, ease: (t) => Math.min(1, t / HOLD_AT),
+        scrollTrigger: { trigger: pin, start: 'top top', end: () => '+=' + Math.round(getDistance() * (1 + EXTRA_HOLD)), scrub: 0.5, invalidateOnRefresh: true }
+      }));
+
       return () => {
+        ScrollTrigger.removeEventListener('refreshInit', sizeDeco);
+        decoTweens.forEach(t => { t.scrollTrigger && t.scrollTrigger.kill(); t.kill(); });
+        decos.forEach(d => d.remove());
         ScrollTrigger.removeEventListener('refreshInit', sizePin);
         tween.scrollTrigger && tween.scrollTrigger.kill(); tween.kill();
         gsap.set(track, { clearProps: 'x' });

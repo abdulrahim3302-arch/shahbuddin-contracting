@@ -935,3 +935,17 @@ body.is-loading { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .pg-crane { animation: none; } .pg-dozer { transform: translateX(8vw); } }
 
 .pg-crane-b { display: none; }
+
+/* depth layers behind the horizontal tracks */
+.hscroll-track { position: relative; z-index: 1; }
+.hs-deco { position: absolute; top: 0; left: 0; height: 100%; pointer-events: none; z-index: 0; will-change: transform; }
+.hs-deco-far { background: repeating-linear-gradient(90deg, rgba(22,21,26,0.045) 0 1px, transparent 1px 120px), repeating-linear-gradient(0deg, rgba(22,21,26,0.045) 0 1px, transparent 1px 120px); }
+.hs-far-crane { position: absolute; bottom: 0; height: 82vh; width: auto; opacity: 0.11; filter: grayscale(1); }
+.hs-hang { position: absolute; top: 0; display: block; transform-origin: 50% 0; animation: hsSway 6.5s ease-in-out infinite; animation-delay: var(--dl, 0s); }
+.hs-hang img { display: block; height: 18vh; width: auto; }
+.hs-crane-rig { position: absolute; top: -2vh; height: 66vh; display: block; }
+.hs-rig-crane { height: 100%; width: auto; display: block; opacity: 0.38; }
+.hs-rig-load { left: 94%; top: 37%; margin-left: -9px; }
+.hs-rig-load img { height: 11vh; opacity: 0.85; }
+@keyframes hsSway { 0%,100% { rotate: -3deg; } 50% { rotate: 3deg; } }
+@media (prefers-reduced-motion: reduce) { .hs-hang { animation: none; } }
