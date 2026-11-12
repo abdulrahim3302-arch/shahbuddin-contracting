@@ -18,7 +18,7 @@
 <link rel="apple-touch-icon" href="assets/favicon-180.png">
 <meta name="theme-color" content="#16151A">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=41">
+<link rel="stylesheet" href="css/style.css?v=43">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.16/dist/lenis.min.js"></script>
@@ -198,22 +198,37 @@
   </div>
 </section>
 
-<!-- ─── PROJECT WHEEL ─── -->
-<section class="wheel" id="projects" data-nav="dark">
-  <div class="wheel-pin" id="wheelPin">
-    <div class="wheel-stage" id="wheelStage">
-      <div class="wheel-head">
-        <span class="wheel-eyebrow">Our Work</span>
-        <span class="wheel-hint">Scroll to spin &middot; <b id="wheelCount">01 / 06</b></span>
-      </div>
-      <svg class="wheel-svg" id="wheelSvg" aria-hidden="true"></svg>
-      <div class="wheel-cards" id="wheelCards" data-generated>
-        <!-- Rendered from the PROJECTS array in js/script.js — add real projects there. -->
-      </div>
-      <div class="wheel-progress" aria-hidden="true"><span id="wheelBar"></span></div>
+<!-- ─── PROJECTS: immersive scattered gallery ─── -->
+<section class="pg" id="projects" data-nav="dark">
+  <div class="pg-bg" aria-hidden="true">
+    <video id="pgVideo" muted loop playsinline preload="none" poster="assets/generated/projects/bg-poster.jpg">
+      <source data-src="assets/generated/projects/bg.mp4" type="video/mp4">
+    </video>
+    <div class="pg-bg-scrim"></div>
+  </div>
+  <div class="pg-inner">
+    <header class="pg-head">
+      <span class="pg-eyebrow">Our Work</span>
+      <h2>OUR PROJECTS</h2>
+      <p>Delivering quality through every structure.</p>
+    </header>
+    <div class="pg-field" id="pgField" data-generated>
+      <!-- Rendered from the PROJECTS array in js/script.js — add real projects there. -->
     </div>
   </div>
 </section>
+
+<div class="pg-modal" id="pgModal" role="dialog" aria-modal="true" aria-label="Project preview" hidden>
+  <div class="pg-backdrop" id="pgBackdrop"></div>
+  <figure class="pg-hero" id="pgHero"><img id="pgHeroImg" alt="" /></figure>
+  <div class="pg-detail" id="pgDetail">
+    <span class="pg-detail-cat" id="pgDCat"></span>
+    <h3 id="pgDName"></h3>
+    <p id="pgDLoc"></p>
+    <small id="pgDNote"></small>
+  </div>
+  <button class="pg-min" id="pgMin" type="button" aria-label="Minimize project view"><span aria-hidden="true">&#8600;</span> Minimize</button>
+</div>
 
 <!-- ─── STRIP ─── -->
 <div class="strip" data-nav="dark">
@@ -508,6 +523,6 @@
   </div>
 </footer>
 
-<script src="js/script.js?v=39"></script>
+<script src="js/script.js?v=41"></script>
 </body>
 </html>

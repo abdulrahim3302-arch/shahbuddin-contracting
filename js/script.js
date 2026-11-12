@@ -163,6 +163,12 @@ const PROJECTS = [
   { title: '', category: '', location: '', year: '', image: '', description: '' },
   { title: '', category: '', location: '', year: '', image: '', description: '' },
   { title: '', category: '', location: '', year: '', image: '', description: '' },
+  { title: '', category: '', location: '', year: '', image: '', description: '' },
+  { title: '', category: '', location: '', year: '', image: '', description: '' },
+  { title: '', category: '', location: '', year: '', image: '', description: '' },
+  { title: '', category: '', location: '', year: '', image: '', description: '' },
+  { title: '', category: '', location: '', year: '', image: '', description: '' },
+  { title: '', category: '', location: '', year: '', image: '', description: '' },
   { title: '', category: '', location: '', year: '', image: '', description: '' }
 ];
 
@@ -185,103 +191,146 @@ const PROJECTS = [
 })();
 
 
-// ─── PROJECT WHEEL ───
-// A wheel whose hub sits below the fold. Each project hangs off a spoke. Scrolling
-// spins the wheel; the spoke that arrives at 12 o'clock grows to full size while the
-// others stay small. Scroll positions plateau on each spoke so the wheel always
-// settles on exactly one project.
-(function projectWheel() {
-  const section = document.getElementById('projects');
-  const pin = document.getElementById('wheelPin');
-  const stage = document.getElementById('wheelStage');
-  const cardsEl = document.getElementById('wheelCards');
-  const svg = document.getElementById('wheelSvg');
-  if (!section || !pin || !stage || !cardsEl || !svg) return;
-  const n = PROJECTS.length;
-  const pad = (i) => String(i + 1).padStart(2, '0');
-  cardsEl.innerHTML = PROJECTS.map((p, i) => {
-    const title = p.title || '[ Project Name ]';
-    const cat = p.category || '[ Project Type ]';
-    const loc = [p.location, p.year].filter(Boolean).join(' · ') || '[ Location · Year ]';
-    const media = p.image
-      ? `<img src="${p.image}" alt="${title}" loading="lazy" decoding="async" />`
-      : '<span class="wc-empty">Photo to be added</span>';
-    return `<article class="wc-card" data-i="${i}">
-      <div class="wc-media">${media}<span class="wc-num">${pad(i)}</span></div>
-      <div class="wc-cap"><h3>${title}</h3><span>${cat}</span><span>${loc}</span></div>
-    </article>`;
-  }).join('');
-  const cards = [...cardsEl.querySelectorAll('.wc-card')];
-  const counter = document.getElementById('wheelCount');
-  const bar = document.getElementById('wheelBar');
-  const step = 360 / n;
-  const ease = (t) => t * t * (3 - 2 * t);
-
-  // SVG: static rim + spokes redrawn each frame; ticks ring rotates with the wheel.
-  const NS = 'http://www.w3.org/2000/svg';
-  const mk = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
-  const rim = mk('circle', { class: 'wheel-rim' });
-  const ticks = mk('circle', { class: 'wheel-ticks' });
-  const hub = mk('circle', { class: 'wheel-hub' });
-  const spokes = cards.map(() => mk('line', { class: 'wheel-spoke' }));
-  svg.append(ticks, rim, ...spokes, hub);
-
-  let rot = 0;                       // degrees the wheel has turned
-  function layout() {
-    const W = stage.clientWidth, H = stage.clientHeight;
-    const R = H * 0.72, cx = W / 2, cy = H * 1.1;
-    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-    rim.setAttribute('cx', cx); rim.setAttribute('cy', cy); rim.setAttribute('r', R);
-    ticks.setAttribute('cx', cx); ticks.setAttribute('cy', cy); ticks.setAttribute('r', R * 0.9);
-    ticks.style.transformOrigin = `${cx}px ${cy}px`;
-    ticks.style.transform = `rotate(${rot}deg)`;
-    hub.setAttribute('cx', cx); hub.setAttribute('cy', cy); hub.setAttribute('r', R * 0.14);
-    const cardW = Math.min(H * 0.66, W * 0.4);
-    cards.forEach((c, i) => {
-      let a = i * step - rot;                     // angle from 12 o'clock
-      a = ((a + 540) % 360) - 180;                // wrap to -180..180
-      const t = Math.max(0, 1 - Math.abs(a) / step);   // 1 on the active spoke, 0 a step away
-      const k = ease(t);
-      const rad = a * Math.PI / 180;
-      const x = cx + R * Math.sin(rad), y = cy - R * Math.cos(rad);
-      const sc = 0.42 + 0.58 * k;
-      c.style.width = cardW + 'px';
-      c.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) scale(${sc})`;
-      c.style.opacity = 0.45 + 0.55 * k;
-      c.style.zIndex = Math.round(k * 10);
-      c.classList.toggle('is-active', t > 0.6);
-      spokes[i].setAttribute('x1', cx); spokes[i].setAttribute('y1', cy);
-      spokes[i].setAttribute('x2', x); spokes[i].setAttribute('y2', y);
-    });
-    const cur = Math.round((((rot / step) % n) + n) % n);
-    if (counter) counter.textContent = `${pad(cur)} / ${pad(n)}`;
-  }
-
-  gsap.matchMedia().add('(min-width: 901px) and (prefers-reduced-motion: no-preference)', () => {
-    pin.style.setProperty('--n', n);
-    pin.classList.add('is-wheel');
-    layout();
-    const onResize = () => layout();
-    window.addEventListener('resize', onResize);
-    const st = ScrollTrigger.create({
-      trigger: pin, start: 'top top', end: 'bottom bottom', scrub: 0.5,
-      onUpdate: (self) => {
-        const u = self.progress * (n - 1);
-        const i = Math.min(n - 2, Math.floor(u)), f = u - i;
-        // hold on the spoke for the first/last 28% of each segment, spin in between
-        const m = Math.min(1, Math.max(0, (f - 0.28) / 0.44));
-        rot = (i + ease(m)) * step;
-        if (self.progress >= 1) rot = (n - 1) * step;
-        layout();
-        if (bar) bar.style.width = (self.progress * 100) + '%';
-      }
-    });
-    return () => {
-      st.kill(); window.removeEventListener('resize', onResize);
-      pin.classList.remove('is-wheel'); pin.style.removeProperty('--n');
-      cards.forEach(c => c.removeAttribute('style'));
+// ─── PROJECTS: immersive scattered gallery ───
+// Temporary imagery: `image` points at existing site/concept pictures flagged
+// `concept: true`. Replace with real project photos (and fill title/category/location)
+// in the PROJECTS array above — the gallery lays itself out from whatever is there.
+(function projectGallery() {
+  const field = document.getElementById('pgField');
+  const modal = document.getElementById('pgModal');
+  if (!field || !modal) return;
+  const CONCEPT = [
+    'assets/photos/dusk-building.jpg', 'assets/generated/stages/p3-foundations.jpg', 'assets/generated/quote-villa.jpg',
+    'assets/photos/detail-structure.jpg', 'assets/generated/stages/p5-slabs.jpg', 'assets/photos/hero-facade.jpg',
+    'assets/generated/stages/crane.jpg', 'assets/generated/stages/p4-columns.jpg', 'assets/photos/about-construction.jpg',
+    'assets/generated/stages/p6-blockplaster.jpg', 'assets/generated/slides/s2-builttostay.jpg', 'assets/generated/stages/p1-earthworks.jpg'
+  ];
+  const items = CONCEPT.map((src, i) => {
+    const p = PROJECTS[i] || {};
+    return {
+      title: p.title || '[ Project Name ]', category: p.category || '[ Category ]',
+      location: [p.location, p.year].filter(Boolean).join(' · ') || '[ Location ]',
+      image: p.image || src, concept: !p.image
     };
   });
+  field.innerHTML = items.map((p, i) =>
+    `<button class="pg-item" type="button" data-i="${i}" aria-label="Open ${p.title}">
+      <span class="pg-frame"><img src="${p.image}" alt="${p.concept ? 'Concept image' : p.title}" loading="lazy" decoding="async" />
+        <span class="pg-info"><b>${p.title}</b><span>${p.location}</span><span>${p.category}</span></span>
+        <span class="pg-cta">View +</span></span>
+    </button>`).join('');
+  const els = [...field.querySelectorAll('.pg-item')];
+
+  // Seeded random so the "random" arrangement is stable between loads and resizes.
+  function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function layout() {
+    const W = field.clientWidth;
+    if (!W) return;
+    const mobile = W < 700, tablet = W < 1100;
+    const w = mobile ? Math.round(W * 0.4) : tablet ? 210 : 250, h = Math.round(w * 0.72);
+    const rand = rng(11);
+    const zones = mobile ? [0.0, 0.58] : [0.04, 0.58, 0.30, 0.76, 0.12, 0.48, 0.68, 0.22, 0.54, 0.02, 0.8, 0.36];
+    const stepY = mobile ? h * 1.15 : h * 1.5;
+    const placed = [];
+    let maxY = 0;
+    els.forEach((el, i) => {
+      let x = zones[i % zones.length] * (W - w) + (rand() - 0.5) * (mobile ? W * 0.04 : W * 0.06);
+      x = Math.max(0, Math.min(W - w, x));
+      let y = i * stepY + rand() * (mobile ? 24 : 70);
+      const gap = mobile ? 18 : 46;
+      for (let t = 0; t < 40; t++) {
+        const hit = placed.some(r => x < r.x + w + gap && x + w + gap > r.x && y < r.y + h + gap && y + h + gap > r.y);
+        if (!hit) break;
+        y += 30;
+      }
+      placed.push({ x, y });
+      maxY = Math.max(maxY, y + h);
+      el.style.cssText += `;left:${x}px;top:${y}px;width:${w}px;height:${h}px;--d:${(rand() * -9).toFixed(2)}s`;
+    });
+    field.style.height = (maxY + 40) + 'px';
+  }
+  layout();
+  let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { layout(); if (window.ScrollTrigger) ScrollTrigger.refresh(); }, 150); });
+
+  // Fade + rise as they enter the viewport
+  const io = new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('in'), Math.random() * 180); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+  els.forEach(el => io.observe(el));
+
+  // Continuous background video: load when near, play only while the section is on screen.
+  const video = document.getElementById('pgVideo');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (video && !reduce) {
+    const src = video.querySelector('source[data-src]');
+    const vio = new IntersectionObserver((es) => es.forEach(e => {
+      if (e.isIntersecting) {
+        if (src && !src.src) { src.src = src.dataset.src; video.load(); }
+        const p = video.play(); if (p && p.catch) p.catch(() => {});
+      } else video.pause();
+    }), { rootMargin: '200px 0px' });
+    vio.observe(document.getElementById('projects'));
+  }
+
+  // ── Enlarged view: the photo flies from its thumbnail to a large centred frame ──
+  const backdrop = document.getElementById('pgBackdrop'), hero = document.getElementById('pgHero');
+  const heroImg = document.getElementById('pgHeroImg'), detail = document.getElementById('pgDetail');
+  const minBtn = document.getElementById('pgMin');
+  const dur = reduce ? 0.01 : 0.75;
+  let openEl = null, busy = false;
+
+  function target() {
+    const vw = window.innerWidth, vh = window.innerHeight, mobile = vw < 700;
+    const infoH = mobile ? 130 : 110;
+    let w = Math.min(vw * (mobile ? 0.92 : 0.8), 1180);
+    let h = w / 1.5;
+    const maxH = vh - infoH - (mobile ? 90 : 120);
+    if (h > maxH) { h = maxH; w = h * 1.5; }
+    const left = (vw - w) / 2, top = Math.max(64, (vh - h - infoH) / 2);
+    return { left, top, w, h, infoTop: top + h + 18 };
+  }
+  function place(el, r) { gsap.set(el, { left: r.left, top: r.top, width: r.width, height: r.height }); }
+
+  function open(el) {
+    if (busy || openEl) return;
+    busy = true; openEl = el;
+    const p = items[+el.dataset.i], r = el.querySelector('.pg-frame').getBoundingClientRect(), t = target();
+    heroImg.src = p.image; heroImg.alt = p.title;
+    document.getElementById('pgDName').textContent = p.title;
+    document.getElementById('pgDLoc').textContent = p.location;
+    document.getElementById('pgDCat').textContent = p.category;
+    document.getElementById('pgDNote').textContent = p.concept ? 'Concept imagery — project photography to be added.' : '';
+    modal.hidden = false;
+    place(hero, r);
+    gsap.set(detail, { left: t.left, top: t.infoTop, width: t.w, opacity: 0, y: 10 });
+    gsap.set(minBtn, { left: t.left + t.w - minBtn.offsetWidth, top: t.infoTop, opacity: 0 });
+    el.classList.add('is-open');
+    if (window.__lenis) window.__lenis.stop();
+    document.documentElement.style.overflow = 'hidden';
+    gsap.to(backdrop, { opacity: 1, duration: dur * 0.7, ease: 'power2.out' });
+    gsap.to(hero, { left: t.left, top: t.top, width: t.w, height: t.h, duration: dur, ease: 'power3.inOut',
+      onComplete: () => { busy = false; minBtn.focus({ preventScroll: true }); } });
+    gsap.to([detail, minBtn], { opacity: 1, y: 0, duration: 0.5, delay: dur * 0.7, ease: 'power2.out' });
+  }
+
+  function close() {
+    if (busy || !openEl) return;
+    busy = true;
+    const el = openEl, r = el.querySelector('.pg-frame').getBoundingClientRect();
+    gsap.to([detail, minBtn], { opacity: 0, duration: 0.25 });
+    gsap.to(backdrop, { opacity: 0, duration: dur * 0.8, ease: 'power2.inOut' });
+    gsap.to(hero, { left: r.left, top: r.top, width: r.width, height: r.height, duration: dur, ease: 'power3.inOut',
+      onComplete: () => {
+        el.classList.remove('is-open'); modal.hidden = true; openEl = null; busy = false;
+        document.documentElement.style.overflow = '';
+        if (window.__lenis) window.__lenis.start();
+        el.focus({ preventScroll: true });
+      } });
+  }
+
+  els.forEach(el => el.addEventListener('click', () => open(el)));
+  minBtn.addEventListener('click', close);
+  backdrop.addEventListener('click', close);
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  window.addEventListener('resize', () => { if (openEl && !busy) { const t = target(); place(hero, { left: t.left, top: t.top, width: t.w, height: t.h }); gsap.set(detail, { left: t.left, top: t.infoTop, width: t.w }); gsap.set(minBtn, { left: t.left + t.w - minBtn.offsetWidth, top: t.infoTop }); } });
 })();
 
 // ─── PROCESS STAGES ───
