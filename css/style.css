@@ -865,7 +865,7 @@ body.is-loading { overflow: hidden; }
 .pg-bg { position: sticky; top: 0; height: 100vh; margin-bottom: -100vh; z-index: 0; overflow: hidden; pointer-events: none; }
 .pg-bg video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .pg-bg-scrim { position: absolute; inset: 0; background:
-  linear-gradient(180deg, rgba(13,14,16,0.55) 0%, rgba(13,14,16,0.25) 40%, rgba(13,14,16,0.55) 100%); }
+  linear-gradient(180deg, rgba(13,14,16,0.6) 0%, rgba(13,14,16,0.36) 45%, rgba(13,14,16,0.62) 100%); }
 .pg-inner { position: relative; z-index: 1; padding: 140px 6vw 160px; }
 .pg-head { max-width: 560px; }
 .pg-eyebrow { display: block; font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
@@ -923,3 +923,15 @@ body.is-loading { overflow: hidden; }
 @media (max-width: 1024px) { .pg-inner { padding: 120px 5vw 130px; } }
 @media (max-width: 700px) { .pg-info b { font-size: 12px; } .pg-info { padding: 20px 8px 8px; } }
 @media (prefers-reduced-motion: reduce) { .pg-frame { animation: none; } .pg-item { transition: opacity 0.2s ease; transform: none; } }
+
+/* construction props living in the fixed background layer */
+.pg-crane { position: absolute; bottom: 0; width: auto; transform-origin: 50% 100%; filter: brightness(0.62) contrast(1.05) saturate(0.9); animation: pgSway 11s ease-in-out infinite; }
+.pg-crane-a { right: -3vw; height: 96vh; opacity: 0.92; }
+.pg-crane-b { left: -6vw; height: 66vh; opacity: 0.5; transform: scaleX(-1); animation-name: pgSwayB; animation-delay: -4s; filter: brightness(0.45) contrast(1.05) saturate(0.8) blur(0.6px); }
+@keyframes pgSway { 0%,100% { rotate: -0.5deg; } 50% { rotate: 0.6deg; } }
+@keyframes pgSwayB { 0%,100% { rotate: 0.4deg; } 50% { rotate: -0.5deg; } }
+.pg-dozer { position: absolute; left: 0; bottom: 2.5vh; width: min(34vw, 460px); height: auto; filter: brightness(0.8) drop-shadow(0 16px 18px rgba(0,0,0,0.55)); transform: translateX(110vw); will-change: transform; }
+@media (max-width: 700px) { .pg-crane-a { height: 62vh; right: -14vw; opacity: 0.6; } .pg-crane-b { display: none; } .pg-dozer { width: 52vw; } }
+@media (prefers-reduced-motion: reduce) { .pg-crane { animation: none; } .pg-dozer { transform: translateX(8vw); } }
+
+.pg-crane-b { display: none; }

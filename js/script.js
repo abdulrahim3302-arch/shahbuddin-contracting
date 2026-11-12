@@ -227,9 +227,9 @@ const PROJECTS = [
     const W = field.clientWidth;
     if (!W) return;
     const mobile = W < 700, tablet = W < 1100;
-    const w = mobile ? Math.round(W * 0.4) : tablet ? 210 : 250, h = Math.round(w * 0.72);
+    const w = mobile ? Math.round(W * 0.46) : tablet ? 280 : 350, h = Math.round(w * 0.72);
     const rand = rng(11);
-    const zones = mobile ? [0.0, 0.58] : [0.04, 0.58, 0.30, 0.76, 0.12, 0.48, 0.68, 0.22, 0.54, 0.02, 0.8, 0.36];
+    const zones = mobile ? [0.0, 1.0] : [0.04, 0.58, 0.30, 0.76, 0.12, 0.48, 0.68, 0.22, 0.54, 0.02, 0.8, 0.36];
     const stepY = mobile ? h * 1.15 : h * 1.5;
     const placed = [];
     let maxY = 0;
@@ -255,6 +255,13 @@ const PROJECTS = [
   // Fade + rise as they enter the viewport
   const io = new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('in'), Math.random() * 180); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
   els.forEach(el => io.observe(el));
+
+  // Bulldozer crosses the fixed background (right to left, blade first) as the section scrolls.
+  const dozer = document.getElementById('pgDozer');
+  if (dozer && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    gsap.fromTo(dozer, { x: () => window.innerWidth * 1.05 }, { x: () => -dozer.offsetWidth * 1.2, ease: 'none',
+      scrollTrigger: { trigger: '#projects', start: 'top top', end: 'bottom bottom', scrub: 0.6, invalidateOnRefresh: true } });
+  }
 
   // Continuous background video: load when near, play only while the section is on screen.
   const video = document.getElementById('pgVideo');
