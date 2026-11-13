@@ -1022,3 +1022,10 @@ body.is-loading { overflow: hidden; }
 @keyframes abDrive { from { transform: translateX(110vw); } to { transform: translateX(-30vw); } }
 @media (max-width: 700px) { .ab-crane, .ab-load { display: none; } .ab-dozer { width: 36vw; } }
 @media (prefers-reduced-motion: reduce) { .ab-crane, .ab-load, .ab-hang, .ab-dozer { animation: none; } .ab-dozer { transform: translateX(60vw); } }
+
+.svx-tx { display: flex; flex-direction: column; gap: 2px; }
+.svx-brief { font-size: 11.5px; letter-spacing: 1.3px; text-transform: uppercase; opacity: 0.5; transition: opacity 0.4s ease; }
+.svx-item.is-active .svx-brief { opacity: 0.95; }
+.svx-t { font-size: clamp(24px, 2.9vw, 46px); }
+.svx-list { gap: 10px; }
+@media (max-width: 900px) { .svx-brief { display: none; } }

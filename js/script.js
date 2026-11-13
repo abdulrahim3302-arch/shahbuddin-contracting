@@ -388,17 +388,22 @@ const PROJECTS = [
     gsap.fromTo([label, text], { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', stagger: 0.08, overwrite: true });
   }
   count.textContent = '01 / ' + pad2(n - 1);
+  // Clicking changes the screen immediately; on desktop it also moves the scroll to that
+  // service's spot (the scroll handler is paused while that glide runs so it can't undo the click).
+  let lock = false, lockT;
   items.forEach((el) => el.addEventListener('click', () => {
     const i = +el.dataset.i;
+    show(i);
     if (pinned && st) {
       const y = st.start + (st.end - st.start) * (i / (n - 1)) * 0.999;
-      if (window.__lenis) window.__lenis.scrollTo(y, { duration: 1.1 }); else window.scrollTo({ top: y, behavior: 'smooth' });
-    } else show(i);
+      lock = true; clearTimeout(lockT); lockT = setTimeout(() => { lock = false; }, 1300);
+      if (window.__lenis) window.__lenis.scrollTo(y, { duration: 1, onComplete: () => { lock = false; } }); else window.scrollTo({ top: y, behavior: 'smooth' });
+    }
   }));
   gsap.matchMedia().add('(min-width: 901px)', () => {
     pin.style.setProperty('--n', n); pin.classList.add('is-pinned'); pinned = true;
     st = ScrollTrigger.create({ trigger: pin, start: 'top top', end: 'bottom bottom',
-      onUpdate: (self) => show(Math.min(n - 1, Math.max(0, Math.round(self.progress * (n - 1))))) });
+      onUpdate: (self) => { if (!lock) show(Math.min(n - 1, Math.max(0, Math.round(self.progress * (n - 1))))); } });
     return () => { st && st.kill(); st = null; pinned = false; pin.classList.remove('is-pinned'); pin.style.removeProperty('--n'); };
   });
 })();
