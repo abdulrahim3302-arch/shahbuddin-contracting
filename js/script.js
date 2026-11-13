@@ -78,7 +78,7 @@ const navbar = document.getElementById('navbar');
     if (!W || !Hv) return false;
     const mobile = W <= 768;
     const domeW = Math.min((mobile ? 1.18 : 1.04) * W, 2200);
-    const a = domeW / 2, b = 0.9 * Hv;                 // dome ellipse semi-axes
+    const a = domeW / 2, b = (mobile ? 0.58 : 0.9) * Hv;   // must match the CSS vertical radius (90% desktop / 58% mobile)                 // dome ellipse semi-axes
     document.documentElement.style.setProperty('--dome-a', a + 'px');
     document.documentElement.style.setProperty('--dome-b', b + 'px');
     const span = W * (mobile ? 0.8 : 0.66);                              // target text length
@@ -198,29 +198,49 @@ const PROJECTS = [
 })();
 
 
+// ─── VIDEO PLAYBACK HELPER (phones) ───
+// Muted + inline autoplay is allowed on iOS/Android, but a browser can still refuse it (Low Power
+// Mode, data saver, background tab). When play() is rejected we remember the video and retry on the
+// visitor's first touch/click/key, which always counts as permission.
+const __pendingVideos = new Set();
+function playVideo(v) {
+  if (!v) return;
+  v.muted = true; v.defaultMuted = true; v.playsInline = true;
+  v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('webkit-playsinline', '');
+  const p = v.play();
+  if (p && p.catch) p.catch(() => __pendingVideos.add(v));
+}
+['touchstart', 'touchend', 'pointerdown', 'click', 'keydown'].forEach((evt) =>
+  window.addEventListener(evt, () => {
+    if (!__pendingVideos.size) return;
+    const list = [...__pendingVideos]; __pendingVideos.clear();
+    list.forEach((v) => { if (v.isConnected) playVideo(v); });
+  }, { passive: true }));
+
 // ─── HERO FILM: construction → villa → interior, crossfading, looping ───
+// The still photo under the videos is the fallback, so nothing looks broken if a phone blocks autoplay.
 (function heroFilm() {
   const a = document.getElementById('heroVideoA'), b = document.getElementById('heroVideoB');
   if (!a || !b) return;
-  const conn = navigator.connection || {};
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || conn.saveData) return;
   const CLIPS = ['assets/generated/hero/clip1-villa.mp4?v=2', 'assets/generated/hero/clip2-interior.mp4?v=2'];
   let i = 0, cur = a, idle = b;
+  [a, b].forEach((v) => { v.muted = true; v.playsInline = true; v.preload = 'auto'; });
   function load(v, n) { v.src = CLIPS[n % CLIPS.length]; v.load(); }
-  function start(v) { const p = v.play(); if (p && p.catch) p.catch(() => {}); }
-  load(cur, 0);
-  cur.addEventListener('canplay', function first() { cur.removeEventListener('canplay', first); start(cur); cur.classList.add('is-on'); load(idle, 1); }, { once: false });
+  function onPlaying(v) { v.addEventListener('playing', () => { v.classList.add('is-on'); }, { once: true }); }
+  load(cur, 0); onPlaying(cur); playVideo(cur);
+  cur.addEventListener('loadeddata', () => { load(idle, 1); }, { once: true });
   function swap() {
     i++;
-    const next = idle;
-    start(next); next.classList.add('is-on'); cur.classList.remove('is-on');
-    const old = cur; cur = next; idle = old;
-    setTimeout(() => load(idle, i + 1), 1500);
-    cur.onended = swap; 
+    const next = idle, old = cur;
+    next.addEventListener('playing', () => { next.classList.add('is-on'); old.classList.remove('is-on'); }, { once: true });
+    next.currentTime = 0; playVideo(next);
+    cur = next; idle = old;
+    cur.onended = swap;
+    setTimeout(() => load(idle, i + 1), 1800);
   }
   a.onended = swap; b.onended = swap;
-  // pause the film once the hero is scrolled away
-  const io = new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) { if (cur.paused && cur.readyState > 2) start(cur); } else cur.pause(); }), { threshold: 0.05 });
+  // pause the film once the hero is scrolled away, resume when it returns
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { if (cur.paused) playVideo(cur); } else cur.pause(); }), { threshold: 0.05 });
   io.observe(document.getElementById('home'));
 })();
 
@@ -289,12 +309,12 @@ const PROJECTS = [
   // Continuous background video: load when near, play only while the section is on screen.
   const video = document.getElementById('pgVideo');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (video && !reduce) {
+  if (video) {
     const src = video.querySelector('source[data-src]');
     const vio = new IntersectionObserver((es) => es.forEach(e => {
       if (e.isIntersecting) {
         if (src && !src.src) { src.src = src.dataset.src; video.load(); }
-        const p = video.play(); if (p && p.catch) p.catch(() => {});
+        playVideo(video);
       } else video.pause();
     }), { rootMargin: '200px 0px' });
     vio.observe(document.getElementById('projects'));
@@ -825,7 +845,7 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
     if (!videos.length) return;
     const io = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.play().catch(() => {});
+        if (entry.isIntersecting) playVideo(entry.target);
         else entry.target.pause();
       });
     }, { threshold: 0.4 });
