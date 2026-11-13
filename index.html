@@ -18,7 +18,7 @@
 <link rel="apple-touch-icon" href="assets/favicon-180.png">
 <meta name="theme-color" content="#16151A">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=49">
+<link rel="stylesheet" href="css/style.css?v=50">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.16/dist/lenis.min.js"></script>
@@ -256,6 +256,15 @@
 
 <!-- ─── ABOUT ─── -->
 <section class="about reveal" id="about">
+  <div class="about-deco" aria-hidden="true">
+    <span class="ab-grid"></span>
+    <img class="ab-crane" src="assets/generated/projects/crane.png" alt="" loading="lazy" decoding="async">
+    <span class="ab-load"><img src="assets/generated/rebar-b.png?v=2" alt="" loading="lazy"></span>
+    <span class="ab-hang ab-hang-1"><img src="assets/generated/rebar-a.png?v=2" alt="" loading="lazy"></span>
+    <span class="ab-hang ab-hang-2"><img src="assets/generated/rebar-c.png?v=2" alt="" loading="lazy"></span>
+    <img class="ab-dozer" src="assets/generated/projects/dozer.png" alt="" loading="lazy" decoding="async">
+    <span class="ab-ground"></span>
+  </div>
   <div class="container about-grid">
     <div class="about-figure">
       <div class="about-diagram" data-mask>
@@ -275,64 +284,35 @@
   </div>
 </section>
 
-<!-- ─── SERVICES ─── -->
-<section class="services" id="services">
-  <div class="container">
-    <div class="section-head-row reveal">
-      <div>
-        <div class="section-label">What We Do</div>
-        <h2 class="section-title" data-mask>Services</h2>
+<!-- ─── SERVICES: full-screen, one service at a time ─── -->
+<section class="svx" id="services" data-nav="dark">
+  <div class="svx-pin" id="svxPin">
+    <div class="svx-stage">
+      <div class="svx-bg is-active"><img src="assets/services/s01.jpg" alt="" loading="eager" decoding="async"></div>
+      <div class="svx-bg"><img src="assets/services/s02.jpg" alt="" loading="lazy" decoding="async"></div>
+      <div class="svx-bg"><img src="assets/services/s03.jpg" alt="" loading="lazy" decoding="async"></div>
+      <div class="svx-bg"><img src="assets/services/s04.jpg" alt="" loading="lazy" decoding="async"></div>
+      <div class="svx-bg"><img src="assets/services/s05.jpg" alt="" loading="lazy" decoding="async"></div>
+      <div class="svx-bg"><img src="assets/services/s06.jpg" alt="" loading="lazy" decoding="async"></div>
+      <div class="svx-bg"><img src="assets/services/s07.jpg" alt="" loading="lazy" decoding="async"></div>
+      <div class="svx-bg"><img src="assets/services/s08.jpg" alt="" loading="lazy" decoding="async"></div>
+      <div class="svx-scrim" aria-hidden="true"></div>
+      <div class="svx-head"><span>What We Do</span><span class="svx-count" id="svxCount">01 / 08</span></div>
+      <ul class="svx-list" id="svxList">
+        <li><button type="button" class="svx-item is-active" data-i="0"><span class="svx-n">01</span><span class="svx-t">Building Construction</span></button></li>
+        <li><button type="button" class="svx-item" data-i="1"><span class="svx-n">02</span><span class="svx-t">Villa Construction</span></button></li>
+        <li><button type="button" class="svx-item" data-i="2"><span class="svx-n">03</span><span class="svx-t">General Maintenance</span></button></li>
+        <li><button type="button" class="svx-item" data-i="3"><span class="svx-n">04</span><span class="svx-t">Civil Works</span></button></li>
+        <li><button type="button" class="svx-item" data-i="4"><span class="svx-n">05</span><span class="svx-t">Structural Works</span></button></li>
+        <li><button type="button" class="svx-item" data-i="5"><span class="svx-n">06</span><span class="svx-t">Finishing Works</span></button></li>
+        <li><button type="button" class="svx-item" data-i="6"><span class="svx-n">07</span><span class="svx-t">Gypsum &amp; Ceiling</span></button></li>
+        <li><button type="button" class="svx-item" data-i="7"><span class="svx-n">08</span><span class="svx-t">Painting &amp; Decoration</span></button></li>
+      </ul>
+      <div class="svx-caption" id="svxCaption">
+        <span class="svx-cap-label" id="svxLabel">Building Construction</span>
+        <p class="svx-cap-text" id="svxText">Full-scale construction of residential and commercial buildings, from foundation to finish.</p>
       </div>
-      <p class="section-desc">Full-service construction and maintenance capability, delivered by an in-house team and trusted specialist partners.</p>
-    </div>
-    <div class="services-interactive" id="servicesInteractive">
-      <div class="services-list-col">
-        <div class="service-row is-active reveal" data-img="assets/photos/about-construction.jpg" tabindex="0">
-          <span class="sv-index">01</span>
-          <h3>Building Construction</h3>
-          <p class="sv-desc">Full-scale construction of residential and commercial buildings, from foundation to finish.</p>
-        </div>
-        <div class="service-row reveal" data-img="assets/photos/detail-structure.jpg" tabindex="0">
-          <span class="sv-index">02</span>
-          <h3>Villa Construction</h3>
-          <p class="sv-desc">Private villa builds managed end-to-end, with close client and design-team collaboration.</p>
-        </div>
-        <div class="service-row reveal" data-img="assets/photos/hero-facade.jpg" tabindex="0">
-          <span class="sv-index">03</span>
-          <h3>General Maintenance</h3>
-          <p class="sv-desc">Ongoing building maintenance covering civil, MEP, and finishing trades after handover.</p>
-        </div>
-        <div class="service-row reveal" data-img="assets/photos/dusk-building.jpg" tabindex="0">
-          <span class="sv-index">04</span>
-          <h3>Civil Works</h3>
-          <p class="sv-desc">Groundworks, block work, and civil construction executed to a consistent site standard.</p>
-        </div>
-        <div class="service-row reveal" data-img="assets/photos/about-construction.jpg" tabindex="0">
-          <span class="sv-index">05</span>
-          <h3>Structural Works</h3>
-          <p class="sv-desc">Structural concrete and steelwork, engineered and executed for long-term integrity.</p>
-        </div>
-        <div class="service-row reveal" data-img="assets/photos/detail-structure.jpg" tabindex="0">
-          <span class="sv-index">06</span>
-          <h3>Finishing Works</h3>
-          <p class="sv-desc">Tiling, carpentry, and detailed finishing carried through to a consistent standard.</p>
-        </div>
-        <div class="service-row reveal" data-img="assets/photos/hero-facade.jpg" tabindex="0">
-          <span class="sv-index">07</span>
-          <h3>Gypsum &amp; Ceiling</h3>
-          <p class="sv-desc">Gypsum partitions and ceiling systems, installed with clean, precise detailing.</p>
-        </div>
-        <div class="service-row reveal" data-img="assets/photos/dusk-building.jpg" tabindex="0">
-          <span class="sv-index">08</span>
-          <h3>Painting &amp; Decoration</h3>
-          <p class="sv-desc">Interior and exterior painting and decorative finishing for a polished result.</p>
-        </div>
-      </div>
-      <div class="services-preview-col" aria-hidden="true">
-        <div class="services-preview-frame">
-          <img id="servicePreviewImg" src="assets/photos/about-construction.jpg" alt="" loading="lazy" decoding="async" width="2000" height="1333" />
-        </div>
-      </div>
+      <a class="svx-cta" href="#contact" aria-label="Request a quote"><span>Request<br>a Quote</span></a>
     </div>
   </div>
 </section>
@@ -527,6 +507,6 @@
   </div>
 </footer>
 
-<script src="js/script.js?v=48"></script>
+<script src="js/script.js?v=49"></script>
 </body>
 </html>

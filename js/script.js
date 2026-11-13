@@ -361,6 +361,55 @@ const PROJECTS = [
   window.addEventListener('resize', () => { if (openEl && !busy) { const t = target(items[+openEl.dataset.i]); place(hero, { left: t.left, top: t.top, width: t.w, height: t.h }); gsap.set(detail, { left: t.left, top: t.infoTop, width: t.w }); gsap.set(minBtn, { left: t.left + t.w - minBtn.offsetWidth, top: t.infoTop }); } });
 })();
 
+// ─── SERVICES: full-screen, one at a time (scroll steps through; click jumps) ───
+(function servicesFull() {
+  const pin = document.getElementById('svxPin');
+  if (!pin) return;
+  const items = [...pin.querySelectorAll('.svx-item')], bgs = [...pin.querySelectorAll('.svx-bg')];
+  const label = document.getElementById('svxLabel'), text = document.getElementById('svxText'), count = document.getElementById('svxCount');
+  const DESC = [
+    'Full-scale construction of residential and commercial buildings, from foundation to finish.',
+    'Private villa builds managed end-to-end, with close client and design-team collaboration.',
+    'Ongoing building maintenance covering civil, MEP and finishing trades after handover.',
+    'Groundworks, block work and civil construction executed to a consistent site standard.',
+    'Structural concrete and steelwork, engineered and executed for long-term integrity.',
+    'Tiling, carpentry and detailed finishing carried through to a consistent standard.',
+    'Gypsum partitions and ceiling systems, installed with clean, precise detailing.',
+    'Interior and exterior painting and decorative finishing for a polished result.'
+  ];
+  const n = items.length, pad2 = (i) => String(i + 1).padStart(2, '0');
+  let cur = 0, pinned = false, st = null;
+  function show(i) {
+    if (i === cur) return;
+    cur = i;
+    items.forEach((el, k) => el.classList.toggle('is-active', k === i));
+    bgs.forEach((el, k) => el.classList.toggle('is-active', k === i));
+    label.innerHTML = items[i].querySelector('.svx-t').innerHTML; text.textContent = DESC[i]; count.textContent = pad2(i) + ' / ' + pad2(n - 1);
+    gsap.fromTo([label, text], { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', stagger: 0.08, overwrite: true });
+  }
+  count.textContent = '01 / ' + pad2(n - 1);
+  items.forEach((el) => el.addEventListener('click', () => {
+    const i = +el.dataset.i;
+    if (pinned && st) {
+      const y = st.start + (st.end - st.start) * (i / (n - 1)) * 0.999;
+      if (window.__lenis) window.__lenis.scrollTo(y, { duration: 1.1 }); else window.scrollTo({ top: y, behavior: 'smooth' });
+    } else show(i);
+  }));
+  gsap.matchMedia().add('(min-width: 901px)', () => {
+    pin.style.setProperty('--n', n); pin.classList.add('is-pinned'); pinned = true;
+    st = ScrollTrigger.create({ trigger: pin, start: 'top top', end: 'bottom bottom',
+      onUpdate: (self) => show(Math.min(n - 1, Math.max(0, Math.round(self.progress * (n - 1))))) });
+    return () => { st && st.kill(); st = null; pinned = false; pin.classList.remove('is-pinned'); pin.style.removeProperty('--n'); };
+  });
+})();
+
+// ─── ABOUT: slow grid drift (the props animate in CSS) ───
+(function aboutMotion() {
+  const grid = document.querySelector('.ab-grid');
+  if (!grid || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  gsap.fromTo(grid, { y: -40 }, { y: 40, ease: 'none', scrollTrigger: { trigger: '#about', start: 'top bottom', end: 'bottom top', scrub: true } });
+})();
+
 // ─── PROCESS STAGES ───
 // EDIT HERE to update the construction stages shown in the horizontal
 // Process section. `video` is optional — set it to a real file and the

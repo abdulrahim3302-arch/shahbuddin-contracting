@@ -953,3 +953,72 @@ body.is-loading { overflow: hidden; }
 /* hero film: two stacked videos crossfade; the still photo stays underneath as poster/fallback */
 .hero-bg-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.2s ease; }
 .hero-bg-video.is-on { opacity: 1; }
+
+/* ─── SERVICES: full-screen ─── */
+.svx { background: #0f0e0c; color: #fff; --svx-gold: #F4E3BF; }
+.svx-pin { position: relative; }
+.svx-stage { position: relative; height: 100vh; min-height: 560px; overflow: hidden; }
+.svx-bg { position: absolute; inset: 0; opacity: 0; transition: opacity 1s ease; }
+.svx-bg img { width: 100%; height: 100%; object-fit: cover; display: block; transform: scale(1.08); transition: transform 2.2s cubic-bezier(.2,.7,.2,1); }
+.svx-bg.is-active { opacity: 1; }
+.svx-bg.is-active img { transform: scale(1); }
+.svx-scrim { position: absolute; inset: 0; background:
+  linear-gradient(90deg, rgba(8,8,8,0.1) 35%, rgba(8,8,8,0.62) 100%),
+  linear-gradient(0deg, rgba(8,8,8,0.62) 0%, rgba(8,8,8,0) 45%),
+  linear-gradient(180deg, rgba(8,8,8,0.4) 0%, rgba(8,8,8,0) 22%); }
+.svx-head { position: absolute; top: 120px; left: 6vw; right: 6vw; display: flex; justify-content: flex-start; gap: 22px; font-size: 11px; letter-spacing: 2.6px; text-transform: uppercase; }
+.svx-head span:first-child { color: var(--svx-gold); font-weight: 600; }
+.svx-count { color: rgba(255,255,255,0.8); }
+.svx-list { position: absolute; right: 8vw; top: 50%; transform: translateY(-50%); list-style: none; display: flex; flex-direction: column; gap: 6px; padding-left: 28px; border-left: 1px solid rgba(255,255,255,0.28); }
+.svx-item { display: flex; align-items: baseline; gap: 14px; background: none; border: 0; padding: 4px 0; cursor: pointer; text-align: left; color: rgba(255,255,255,0.5); transition: color 0.4s ease, transform 0.4s ease; position: relative; }
+.svx-item::before { content: ''; position: absolute; left: -29px; top: 50%; width: 1px; height: 0; background: #fff; transition: height 0.4s ease, top 0.4s ease; }
+.svx-n { font-size: 11px; letter-spacing: 2px; opacity: 0; transition: opacity 0.4s ease; }
+.svx-t { font-family: 'Instrument Serif', var(--font-display); font-size: clamp(26px, 3.3vw, 52px); line-height: 1.12; text-transform: uppercase; letter-spacing: 0.01em; }
+.svx-item:hover { color: rgba(255,255,255,0.85); }
+.svx-item.is-active { color: #fff; transform: translateX(-6px); }
+.svx-item.is-active::before { height: 100%; top: 0; }
+.svx-item.is-active .svx-n { opacity: 1; }
+.svx-item:focus-visible { outline: 2px solid var(--svx-gold); outline-offset: 4px; }
+.svx-caption { position: absolute; left: 9vw; bottom: 9vh; max-width: min(46vw, 720px); }
+.svx-cap-label { display: block; font-size: 12px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; margin-bottom: 14px; }
+.svx-cap-text { font-family: 'Instrument Serif', var(--font-display); font-size: clamp(22px, 2.5vw, 38px); line-height: 1.18; text-transform: uppercase; }
+.svx-cta { position: absolute; right: 8vw; bottom: 8vh; width: 150px; height: 150px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.55); display: flex; align-items: center; justify-content: center; text-align: center; color: #fff; text-decoration: none; font-size: 11px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; line-height: 1.5; transition: background 0.4s ease, color 0.4s ease, transform 0.4s ease; }
+.svx-cta:hover { background: #fff; color: #111; transform: scale(1.05); }
+@media (min-width: 901px) {
+  .svx-pin.is-pinned { height: calc(100vh + (var(--n, 8) - 1) * 62vh); }
+  .svx-pin.is-pinned .svx-stage { position: sticky; top: 0; }
+}
+@media (max-width: 900px) {
+  .svx-list { right: 6vw; left: 6vw; top: 120px; transform: none; padding-left: 0; border-left: 0; flex-direction: row; flex-wrap: wrap; gap: 4px 16px; }
+  .svx-item::before { display: none; }
+  .svx-t { font-size: 17px; }
+  .svx-item.is-active { transform: none; text-decoration: underline; text-underline-offset: 6px; }
+  .svx-head { top: 92px; }
+  .svx-caption { left: 6vw; right: 6vw; max-width: none; bottom: 16vh; }
+  .svx-cap-text { font-size: 20px; }
+  .svx-cta { width: 104px; height: 104px; right: 6vw; bottom: 4vh; font-size: 9.5px; }
+}
+@media (prefers-reduced-motion: reduce) { .svx-bg, .svx-bg img { transition: none; } }
+
+/* ─── ABOUT: moving construction props ─── */
+.about { position: relative; overflow: hidden; }
+.about .container { position: relative; z-index: 1; }
+.about-deco { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.ab-grid { position: absolute; inset: -60px 0; background:
+  repeating-linear-gradient(90deg, rgba(22,21,26,0.045) 0 1px, transparent 1px 110px),
+  repeating-linear-gradient(0deg, rgba(22,21,26,0.045) 0 1px, transparent 1px 110px); will-change: transform; }
+.ab-crane { position: absolute; right: -2vw; top: 4%; height: 62%; width: auto; opacity: 0.2; filter: grayscale(0.6); transform-origin: 50% 100%; animation: abSway 12s ease-in-out infinite; }
+.ab-load { position: absolute; right: 5vw; top: 10%; display: block; transform-origin: 50% 0; animation: abSwing 5.5s ease-in-out infinite; opacity: 0.7; }
+.ab-load img { display: block; height: 15vh; width: auto; }
+.ab-hang { position: absolute; top: 0; display: block; transform-origin: 50% 0; animation: abSwing 6.5s ease-in-out infinite; opacity: 0.8; }
+.ab-hang img { display: block; height: 17vh; width: auto; }
+.ab-hang-1 { left: 3vw; }
+.ab-hang-2 { left: 47%; animation-delay: -2.4s; opacity: 0.55; }
+.ab-hang-2 img { height: 12vh; }
+.ab-ground { position: absolute; left: 0; right: 0; bottom: 0; height: 22px; background: repeating-linear-gradient(90deg, rgba(22,21,26,0.35) 0 14px, transparent 14px 28px); opacity: 0.18; }
+.ab-dozer { position: absolute; bottom: 14px; left: 0; width: min(20vw, 260px); height: auto; opacity: 0.9; animation: abDrive 38s linear infinite; }
+@keyframes abSway { 0%,100% { rotate: -0.6deg; } 50% { rotate: 0.7deg; } }
+@keyframes abSwing { 0%,100% { rotate: -3.5deg; } 50% { rotate: 3.5deg; } }
+@keyframes abDrive { from { transform: translateX(110vw); } to { transform: translateX(-30vw); } }
+@media (max-width: 700px) { .ab-crane, .ab-load { display: none; } .ab-dozer { width: 36vw; } }
+@media (prefers-reduced-motion: reduce) { .ab-crane, .ab-load, .ab-hang, .ab-dozer { animation: none; } .ab-dozer { transform: translateX(60vw); } }
