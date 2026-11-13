@@ -197,7 +197,7 @@ const PROJECTS = [
   if (!a || !b) return;
   const conn = navigator.connection || {};
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || conn.saveData) return;
-  const CLIPS = ['assets/generated/hero/clip1-villa.mp4', 'assets/generated/hero/clip2-interior.mp4'];
+  const CLIPS = ['assets/generated/hero/clip1-villa.mp4?v=2', 'assets/generated/hero/clip2-interior.mp4?v=2'];
   let i = 0, cur = a, idle = b;
   function load(v, n) { v.src = CLIPS[n % CLIPS.length]; v.load(); }
   function start(v) { const p = v.play(); if (p && p.catch) p.catch(() => {}); }
