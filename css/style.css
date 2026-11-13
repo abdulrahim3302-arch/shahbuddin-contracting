@@ -1029,3 +1029,21 @@ body.is-loading { overflow: hidden; }
 .svx-t { font-size: clamp(24px, 2.9vw, 46px); }
 .svx-list { gap: 10px; }
 @media (max-width: 900px) { .svx-brief { display: none; } }
+
+/* ─── TRUSTED BY: auto-scrolling logo marquee ─── */
+.trust { background: var(--offwhite); padding: 84px 0 96px; overflow: hidden; }
+.trust-head { text-align: center; margin-bottom: 44px; }
+.trust-eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); }
+.trust-marquee { position: relative; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 9%, #000 91%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 9%, #000 91%, transparent 100%); }
+.trust-track { list-style: none; display: flex; width: max-content; animation: trustScroll 52s linear infinite; }
+.trust-marquee:hover .trust-track { animation-play-state: paused; }
+.trust-card {
+  flex: 0 0 auto; width: 250px; height: 150px; margin-right: 24px; display: flex; align-items: center; justify-content: center;
+  background: #fff; border: 1px solid rgba(22,21,26,0.07); border-radius: 18px; box-shadow: 0 10px 30px rgba(22,21,26,0.05); padding: 22px 26px;
+}
+.trust-card img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; display: block; }
+.trust-card.is-gold { background: #82704c; padding: 14px; }
+.trust-card.is-gold img { max-height: 100%; }
+@keyframes trustScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (max-width: 700px) { .trust { padding: 60px 0 70px; } .trust-card { width: 190px; height: 118px; margin-right: 16px; padding: 16px 18px; } }
+@media (prefers-reduced-motion: reduce) { .trust-track { animation: none; flex-wrap: wrap; width: auto; justify-content: center; gap: 16px; padding: 0 24px; } .trust-card { margin-right: 0; } .trust-card:nth-child(n+9) { display: none; } .trust-marquee { -webkit-mask-image: none; mask-image: none; } }
