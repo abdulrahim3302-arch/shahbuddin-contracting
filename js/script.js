@@ -389,6 +389,22 @@ const PROJECTS = [
   }
   count.textContent = '01 / ' + pad2(n - 1);
   items.forEach((el) => el.addEventListener('click', () => show(+el.dataset.i)));
+
+  // "Holder" feel (desktop): the screen magnets into place as it arrives, then stays fixed for a
+  // short, deliberate scroll (~70% of a screen) before the page carries on. Nothing here depends
+  // on the services, so skipping past never means stepping through them.
+  const section = document.getElementById('services');
+  // Created after every other trigger exists (they sit above this section and add pin spacing).
+  const initHold = () => gsap.matchMedia().add('(min-width: 901px) and (prefers-reduced-motion: no-preference)', () => {
+    const hold = ScrollTrigger.create({ trigger: section, start: 'top top', end: () => '+=' + Math.round(window.innerHeight * 0.7), pin: true, pinSpacing: true, anticipatePin: 1, invalidateOnRefresh: true });
+    const magnet = ScrollTrigger.create({
+      trigger: section, start: 'top bottom', end: 'top top', invalidateOnRefresh: true,
+      snap: { snapTo: (p, self) => (self && self.direction < 0 ? (p < 0.96 ? 0 : 1) : (p > 0.03 ? 1 : 0)), duration: { min: 0.25, max: 0.7 }, delay: 0.08, ease: 'power2.inOut' }
+    });
+    return () => { hold.kill(); magnet.kill(); };
+  });
+  window.addEventListener('load', () => setTimeout(() => { initHold(); ScrollTrigger.sort(); ScrollTrigger.refresh(); }, 50));
+
 })();
 
 // ─── ABOUT: slow grid drift (the props animate in CSS) ───
