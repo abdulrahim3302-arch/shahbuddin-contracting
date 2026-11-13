@@ -395,7 +395,9 @@ const PROJECTS = [
     const i = +el.dataset.i;
     show(i);
     if (pinned && st) {
-      const y = st.start + (st.end - st.start) * (i / (n - 1)) * 0.999;
+      // measure the pin's real position right now (earlier pins above can shift the page after load)
+      const top = pin.getBoundingClientRect().top + window.scrollY, range = pin.offsetHeight - window.innerHeight;
+      const y = top + range * (i / (n - 1)) * 0.999 + (i === 0 ? 2 : 0);
       lock = true; clearTimeout(lockT); lockT = setTimeout(() => { lock = false; }, 1300);
       if (window.__lenis) window.__lenis.scrollTo(y, { duration: 1, onComplete: () => { lock = false; } }); else window.scrollTo({ top: y, behavior: 'smooth' });
     }
