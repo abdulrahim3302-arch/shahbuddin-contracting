@@ -191,6 +191,32 @@ const PROJECTS = [
 })();
 
 
+// ─── HERO FILM: construction → villa → interior, crossfading, looping ───
+(function heroFilm() {
+  const a = document.getElementById('heroVideoA'), b = document.getElementById('heroVideoB');
+  if (!a || !b) return;
+  const conn = navigator.connection || {};
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || conn.saveData) return;
+  const CLIPS = ['assets/generated/hero/clip1-villa.mp4', 'assets/generated/hero/clip2-interior.mp4'];
+  let i = 0, cur = a, idle = b;
+  function load(v, n) { v.src = CLIPS[n % CLIPS.length]; v.load(); }
+  function start(v) { const p = v.play(); if (p && p.catch) p.catch(() => {}); }
+  load(cur, 0);
+  cur.addEventListener('canplay', function first() { cur.removeEventListener('canplay', first); start(cur); cur.classList.add('is-on'); load(idle, 1); }, { once: false });
+  function swap() {
+    i++;
+    const next = idle;
+    start(next); next.classList.add('is-on'); cur.classList.remove('is-on');
+    const old = cur; cur = next; idle = old;
+    setTimeout(() => load(idle, i + 1), 1500);
+    cur.onended = swap; 
+  }
+  a.onended = swap; b.onended = swap;
+  // pause the film once the hero is scrolled away
+  const io = new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) { if (cur.paused && cur.readyState > 2) start(cur); } else cur.pause(); }), { threshold: 0.05 });
+  io.observe(document.getElementById('home'));
+})();
+
 // ─── PROJECTS: immersive scattered gallery ───
 // Temporary imagery: `image` points at existing site/concept pictures flagged
 // `concept: true`. Replace with real project photos (and fill title/category/location)
