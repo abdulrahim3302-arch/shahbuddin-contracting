@@ -39,18 +39,9 @@ const navbar = document.getElementById('navbar');
     }
     return 'light';
   }
-  // The cloud banks sit above their section (pointer-events:none, so they never show up in
-  // elementsFromPoint). Once their bright body reaches the nav corners, treat that as light.
-  const clouds = document.querySelector('.pg-clouds');
-  function cloudsBehindNav() {
-    if (!clouds) return false;
-    const r = clouds.getBoundingClientRect();
-    return r.top + r.height * 0.34 < 56 && r.bottom > 56;
-  }
   function sample() {
-    const cl = cloudsBehindNav();
-    navbar.setAttribute('data-left-bg', cl ? 'light' : bgAt(70, 56));
-    navbar.setAttribute('data-right-bg', cl ? 'light' : bgAt(window.innerWidth - 70, 56));
+    navbar.setAttribute('data-left-bg', bgAt(70, 56));
+    navbar.setAttribute('data-right-bg', bgAt(window.innerWidth - 70, 56));
   }
   // Sample on scroll/resize/load (so it is never stale) and on a light frame
   // loop (so it also follows scrubbed animations that keep moving after the
@@ -293,15 +284,6 @@ const PROJECTS = [
   if (dozer && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     gsap.fromTo(dozer, { x: () => window.innerWidth * 1.05 }, { x: () => -dozer.offsetWidth * 1.2, ease: 'none',
       scrollTrigger: { trigger: '#projects', start: 'top top', end: 'bottom bottom', scrub: 0.6, invalidateOnRefresh: true } });
-  }
-
-
-  // Cloud banks rise as the section ends (slightly different speeds for depth)
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const ca = document.querySelector('.pg-cloud-a'), cb = document.querySelector('.pg-cloud-b');
-    const trig = { trigger: '#projects', start: 'bottom 130%', end: 'bottom top', scrub: 0.6 };
-    if (ca) gsap.fromTo(ca, { yPercent: 22 }, { yPercent: -6, ease: 'none', scrollTrigger: trig });
-    if (cb) gsap.fromTo(cb, { yPercent: 40 }, { yPercent: -12, ease: 'none', scrollTrigger: trig });
   }
 
   // Continuous background video: load when near, play only while the section is on screen.
