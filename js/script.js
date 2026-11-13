@@ -226,7 +226,7 @@ const PROJECTS = [
   const modal = document.getElementById('pgModal');
   if (!field || !modal) return;
   const CONCEPT = [
-    'assets/photos/dusk-building.jpg', 'assets/generated/stages/p3-foundations.jpg', 'assets/generated/quote-villa.jpg',
+    'assets/photos/dusk-building.jpg', 'assets/generated/stages/p3-foundations.jpg?v=2', 'assets/generated/quote-villa.jpg',
     'assets/photos/detail-structure.jpg', 'assets/generated/stages/p5-slabs.jpg', 'assets/photos/hero-facade.jpg',
     'assets/generated/stages/crane.jpg', 'assets/generated/stages/p4-columns.jpg', 'assets/photos/about-construction.jpg',
     'assets/generated/stages/p6-blockplaster.jpg', 'assets/generated/slides/s2-builttostay.jpg', 'assets/generated/stages/p1-earthworks.jpg'
@@ -374,7 +374,7 @@ const PROJECTS = [
 const PROCESS_STAGES = [
   { title: 'Earthworks', desc: 'The plot is cleared, excavated, and levelled to the depth required for the foundation.', poster: 'assets/generated/stages/p1-earthworks.jpg', video: 'assets/generated/stages/p1-earthworks.mp4' },
   { title: 'Blinding', desc: 'A thin layer of lean concrete is laid to give the foundation a clean, level base to build on.', poster: 'assets/generated/stages/p2-blinding.jpg?v=2', video: 'assets/generated/stages/p2-blinding.mp4?v=2' },
-  { title: 'Foundations', desc: 'Reinforcement is fixed and the foundation is cast to carry the full structural load.', poster: 'assets/generated/stages/p3-foundations.jpg', video: 'assets/generated/stages/p3-foundations.mp4' },
+  { title: 'Foundations', desc: 'Reinforcement is fixed and the foundation is cast to carry the full structural load.', poster: 'assets/generated/stages/p3-foundations.jpg?v=2', video: 'assets/generated/stages/p3-foundations.mp4?v=2' },
   { title: 'Columns', desc: 'Vertical columns rise floor by floor, forming the structural grid of the building.', poster: 'assets/generated/stages/p4-columns.jpg', video: 'assets/generated/stages/p4-columns.mp4' },
   { title: 'Slabs', desc: 'Each floor slab is cast in turn, locking the columns together at every level.', poster: 'assets/generated/stages/p5-slabs.jpg', video: 'assets/generated/stages/p5-slabs.mp4' },
   { title: 'Block & Plaster', desc: 'Block walls fill the frame and are plastered to a smooth, consistent finish.', poster: 'assets/generated/stages/p6-blockplaster.jpg', video: 'assets/generated/stages/p6-blockplaster.mp4' },
