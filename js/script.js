@@ -361,7 +361,7 @@ const PROJECTS = [
   window.addEventListener('resize', () => { if (openEl && !busy) { const t = target(items[+openEl.dataset.i]); place(hero, { left: t.left, top: t.top, width: t.w, height: t.h }); gsap.set(detail, { left: t.left, top: t.infoTop, width: t.w }); gsap.set(minBtn, { left: t.left + t.w - minBtn.offsetWidth, top: t.infoTop }); } });
 })();
 
-// ─── SERVICES: full-screen, one at a time (scroll steps through; click jumps) ───
+// ─── SERVICES: one full screen; clicking a service changes the whole screen ───
 (function servicesFull() {
   const pin = document.getElementById('svxPin');
   if (!pin) return;
@@ -378,7 +378,7 @@ const PROJECTS = [
     'Interior and exterior painting and decorative finishing for a polished result.'
   ];
   const n = items.length, pad2 = (i) => String(i + 1).padStart(2, '0');
-  let cur = 0, pinned = false, st = null;
+  let cur = 0;
   function show(i) {
     if (i === cur) return;
     cur = i;
@@ -388,26 +388,7 @@ const PROJECTS = [
     gsap.fromTo([label, text], { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', stagger: 0.08, overwrite: true });
   }
   count.textContent = '01 / ' + pad2(n - 1);
-  // Clicking changes the screen immediately; on desktop it also moves the scroll to that
-  // service's spot (the scroll handler is paused while that glide runs so it can't undo the click).
-  let lock = false, lockT;
-  items.forEach((el) => el.addEventListener('click', () => {
-    const i = +el.dataset.i;
-    show(i);
-    if (pinned && st) {
-      // measure the pin's real position right now (earlier pins above can shift the page after load)
-      const top = pin.getBoundingClientRect().top + window.scrollY, range = pin.offsetHeight - window.innerHeight;
-      const y = top + range * (i / (n - 1)) * 0.999 + (i === 0 ? 2 : 0);
-      lock = true; clearTimeout(lockT); lockT = setTimeout(() => { lock = false; }, 1300);
-      if (window.__lenis) window.__lenis.scrollTo(y, { duration: 1, onComplete: () => { lock = false; } }); else window.scrollTo({ top: y, behavior: 'smooth' });
-    }
-  }));
-  gsap.matchMedia().add('(min-width: 901px)', () => {
-    pin.style.setProperty('--n', n); pin.classList.add('is-pinned'); pinned = true;
-    st = ScrollTrigger.create({ trigger: pin, start: 'top top', end: 'bottom bottom',
-      onUpdate: (self) => { if (!lock) show(Math.min(n - 1, Math.max(0, Math.round(self.progress * (n - 1))))); } });
-    return () => { st && st.kill(); st = null; pinned = false; pin.classList.remove('is-pinned'); pin.style.removeProperty('--n'); };
-  });
+  items.forEach((el) => el.addEventListener('click', () => show(+el.dataset.i)));
 })();
 
 // ─── ABOUT: slow grid drift (the props animate in CSS) ───
@@ -915,7 +896,6 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
       };
     });
   }
-  buildHorizontalScroll('hscrollPin', 'hscrollTrack', 'hscrollBar');
   buildHorizontalScroll('processHscrollPin', 'processHscrollTrack', 'processHscrollBar');
 
   // ─── MASK "PULL UP" REVEALS ───
@@ -942,7 +922,7 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   const railFill = document.getElementById('scrollRailFill');
   // Order matches document order (process now sits right after the dome,
   // before about/services/projects) so the counter climbs monotonically.
-  const railEls = ['home', 'process', 'about', 'services', 'projects', 'why', 'onsite', 'contact']
+  const railEls = ['home', 'process', 'projects', 'about', 'services', 'contact']
     .map(id => document.getElementById(id)).filter(Boolean);
   if (railCount || railFill) {
     ScrollTrigger.create({

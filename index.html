@@ -18,7 +18,7 @@
 <link rel="apple-touch-icon" href="assets/favicon-180.png">
 <meta name="theme-color" content="#16151A">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=51">
+<link rel="stylesheet" href="css/style.css?v=53">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.16/dist/lenis.min.js"></script>
@@ -74,7 +74,7 @@
 <div class="scroll-rail" id="scrollRail" aria-hidden="true">
   <span class="scroll-rail-count" id="scrollRailCount">00</span>
   <span class="scroll-rail-track"><span class="scroll-rail-fill" id="scrollRailFill"></span></span>
-  <span class="scroll-rail-total" id="scrollRailTotal">07</span>
+  <span class="scroll-rail-total" id="scrollRailTotal">05</span>
 </div>
 
 <main id="main">
@@ -327,97 +327,6 @@
   </div>
 </section>
 
-<!-- ─── WHY US ─── -->
-<section class="why" id="why">
-  <div class="container">
-    <div class="section-head-row reveal">
-      <div>
-        <div class="section-label">Why Shahbuddin</div>
-        <h2 class="section-title" data-mask>Built On Discipline</h2>
-      </div>
-    </div>
-    <div class="manifesto-list" id="manifestoList">
-      <div class="manifesto-row">
-        <span class="mf-index">01</span>
-        <h3 class="mf-title">Quality</h3>
-        <p class="mf-desc">Work is checked against a consistent standard at every stage, not just at handover.</p>
-      </div>
-      <div class="manifesto-row">
-        <span class="mf-index">02</span>
-        <h3 class="mf-title">Reliability</h3>
-        <p class="mf-desc">Schedules are set and tracked so clients know what to expect and when.</p>
-      </div>
-      <div class="manifesto-row">
-        <span class="mf-index">03</span>
-        <h3 class="mf-title">Professional Execution</h3>
-        <p class="mf-desc">Every trade on site is coordinated under a single point of accountability.</p>
-      </div>
-      <div class="manifesto-row">
-        <span class="mf-index">04</span>
-        <h3 class="mf-title">Project Management</h3>
-        <p class="mf-desc">Budgets and timelines are managed closely from tender through to handover.</p>
-      </div>
-      <div class="manifesto-row">
-        <span class="mf-index">05</span>
-        <h3 class="mf-title">Attention to Detail</h3>
-        <p class="mf-desc">Finishing work is treated with the same care as structural work.</p>
-      </div>
-      <div class="manifesto-row">
-        <span class="mf-index">06</span>
-        <h3 class="mf-title">Client Satisfaction</h3>
-        <p class="mf-desc">We stay engaged with clients throughout the build, not only at the start.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── ON SITE: pinned horizontal scroll gallery ─── -->
-<section class="hscroll" id="onsite">
-  <div class="hscroll-pin" id="hscrollPin">
-    <div class="hscroll-viewport">
-      <div class="hscroll-track" id="hscrollTrack">
-
-        <div class="hs-panel hs-panel-intro">
-          <div class="section-label">On Site</div>
-          <h2 class="section-title" data-mask>Craft in<br>Motion</h2>
-          <p class="hs-intro-desc">A closer look at the standard we hold on every site &mdash; from structure through to finish.</p>
-          <span class="hs-hint" aria-hidden="true">Scroll &rarr;</span>
-        </div>
-
-        <figure class="hs-panel hs-fig hs-tall">
-          <img loading="lazy" decoding="async" src="assets/photos/about-construction.jpg" alt="Reinforcement and slab works in progress on site" width="2000" height="1333" />
-          <figcaption><span class="hs-num">01</span>Structural Works</figcaption>
-        </figure>
-
-        <figure class="hs-panel hs-fig hs-wide">
-          <img loading="lazy" decoding="async" src="assets/photos/detail-structure.jpg" alt="Facade detail on a completed structure" width="2000" height="1333" />
-          <figcaption><span class="hs-num">02</span>Facade &amp; Detail</figcaption>
-        </figure>
-
-        <figure class="hs-panel hs-fig hs-mid">
-          <video muted loop playsinline preload="none" data-inview poster="assets/generated/stages/crane.jpg" aria-label="A tower crane lowering a bundle of reinforcement steel at sunset" width="1280" height="720">
-            <source src="assets/generated/stages/crane.mp4" type="video/mp4">
-          </video>
-          <figcaption><span class="hs-num">03</span>Lifting &amp; Logistics</figcaption>
-        </figure>
-
-        <figure class="hs-panel hs-fig hs-tall">
-          <img loading="lazy" decoding="async" src="assets/photos/dusk-building.jpg" alt="Finished building exterior at dusk" width="2400" height="2400" />
-          <figcaption><span class="hs-num">04</span>Finishing &amp; Handover</figcaption>
-        </figure>
-
-        <div class="hs-panel hs-panel-end">
-          <h3 data-mask>Let&rsquo;s build<br><em>together.</em></h3>
-          <a href="#contact" class="btn-secondary hs-end-btn">Start a Project</a>
-        </div>
-
-      </div>
-    </div>
-    <div class="hscroll-progress" aria-hidden="true"><span id="hscrollBar"></span></div>
-  </div>
-</section>
-
-<!-- ─── CONTACT ─── -->
 <section class="contact" id="contact" data-nav="dark">
   <img class="contact-bg-photo" src="assets/photos/dusk-building.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" width="2400" height="2400" />
   <div class="contact-bg-grid" aria-hidden="true"></div>
@@ -507,6 +416,6 @@
   </div>
 </footer>
 
-<script src="js/script.js?v=51"></script>
+<script src="js/script.js?v=53"></script>
 </body>
 </html>
