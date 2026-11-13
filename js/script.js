@@ -158,18 +158,25 @@ function applyStagger() {
 // hover preview will show that photo; leave it empty ('') and the row keeps an
 // honest "photo to be added" placeholder instead of inventing imagery.
 const PROJECTS = [
-  { title: '', category: '', location: '', year: '', image: '', description: '' },
-  { title: '', category: '', location: '', year: '', image: '', description: '' },
-  { title: '', category: '', location: '', year: '', image: '', description: '' },
-  { title: '', category: '', location: '', year: '', image: '', description: '' },
-  { title: '', category: '', location: '', year: '', image: '', description: '' },
-  { title: '', category: '', location: '', year: '', image: '', description: '' },
-  { title: '', category: '', location: '', year: '', image: '', description: '' },
-  { title: '', category: '', location: '', year: '', image: '', description: '' },
-  { title: '', category: '', location: '', year: '', image: '', description: '' },
-  { title: '', category: '', location: '', year: '', image: '', description: '' },
-  { title: '', category: '', location: '', year: '', image: '', description: '' },
-  { title: '', category: '', location: '', year: '', image: '', description: '' }
+  { title: 'Project 1', category: '', location: '', year: '', image: 'assets/projects/p01.jpg', thumb: 'assets/projects/p01-t.jpg', w: 1650, h: 2200, description: '' },
+  { title: 'Project 2', category: '', location: '', year: '', image: 'assets/projects/p02.jpg', thumb: 'assets/projects/p02-t.jpg', w: 2200, h: 1650, description: '' },
+  { title: 'Project 3', category: '', location: '', year: '', image: 'assets/projects/p03.jpg', thumb: 'assets/projects/p03-t.jpg', w: 1650, h: 2200, description: '' },
+  { title: 'Project 4', category: '', location: '', year: '', image: 'assets/projects/p04.jpg', thumb: 'assets/projects/p04-t.jpg', w: 1650, h: 2200, description: '' },
+  { title: 'Project 5', category: '', location: '', year: '', image: 'assets/projects/p05.jpg', thumb: 'assets/projects/p05-t.jpg', w: 1650, h: 2200, description: '' },
+  { title: 'Project 6', category: '', location: '', year: '', image: 'assets/projects/p06.jpg', thumb: 'assets/projects/p06-t.jpg', w: 1650, h: 2200, description: '' },
+  { title: 'Project 7', category: '', location: '', year: '', image: 'assets/projects/p07.jpg', thumb: 'assets/projects/p07-t.jpg', w: 2200, h: 1846, description: '' },
+  { title: 'Project 8', category: '', location: '', year: '', image: 'assets/projects/p08.jpg', thumb: 'assets/projects/p08-t.jpg', w: 2200, h: 1521, description: '' },
+  { title: 'Project 9', category: '', location: '', year: '', image: 'assets/projects/p09.jpg', thumb: 'assets/projects/p09-t.jpg', w: 2200, h: 1490, description: '' },
+  { title: 'Project 10', category: '', location: '', year: '', image: 'assets/projects/p10.jpg', thumb: 'assets/projects/p10-t.jpg', w: 1237, h: 2200, description: '' },
+  { title: 'Project 11', category: '', location: '', year: '', image: 'assets/projects/p11.jpg', thumb: 'assets/projects/p11-t.jpg', w: 1290, h: 1718, description: '' },
+  { title: 'Project 12', category: '', location: '', year: '', image: 'assets/projects/p12.jpg', thumb: 'assets/projects/p12-t.jpg', w: 1290, h: 1715, description: '' },
+  { title: 'Project 13', category: '', location: '', year: '', image: 'assets/projects/p13.jpg', thumb: 'assets/projects/p13-t.jpg', w: 838, h: 896, description: '' },
+  { title: 'Project 14', category: '', location: '', year: '', image: 'assets/projects/p14.jpg', thumb: 'assets/projects/p14-t.jpg', w: 444, h: 536, description: '' },
+  { title: 'Project 15', category: '', location: '', year: '', image: 'assets/projects/p15.jpg', thumb: 'assets/projects/p15-t.jpg', w: 426, h: 544, description: '' },
+  { title: 'Project 16', category: '', location: '', year: '', image: 'assets/projects/p16.jpg', thumb: 'assets/projects/p16-t.jpg', w: 666, h: 410, description: '' },
+  { title: 'Project 17', category: '', location: '', year: '', image: 'assets/projects/p17.jpg', thumb: 'assets/projects/p17-t.jpg', w: 662, h: 402, description: '' },
+  { title: 'Project 18', category: '', location: '', year: '', image: 'assets/projects/p18.jpg', thumb: 'assets/projects/p18-t.jpg', w: 920, h: 596, description: '' },
+  { title: 'Project 19', category: '', location: '', year: '', image: 'assets/projects/p19.jpg', thumb: 'assets/projects/p19-t.jpg', w: 808, h: 520, description: '' }
 ];
 
 (function renderProjects() {
@@ -218,31 +225,21 @@ const PROJECTS = [
 })();
 
 // ─── PROJECTS: immersive scattered gallery ───
-// Temporary imagery: `image` points at existing site/concept pictures flagged
-// `concept: true`. Replace with real project photos (and fill title/category/location)
-// in the PROJECTS array above — the gallery lays itself out from whatever is there.
+// Photos come from the PROJECTS array above (assets/projects). Add title/category/location
+// there as the details arrive; empty fields are simply hidden. The gallery lays itself out
+// from however many entries exist.
 (function projectGallery() {
   const field = document.getElementById('pgField');
   const modal = document.getElementById('pgModal');
   if (!field || !modal) return;
-  const CONCEPT = [
-    'assets/photos/dusk-building.jpg', 'assets/generated/stages/p3-foundations.jpg?v=2', 'assets/generated/quote-villa.jpg',
-    'assets/photos/detail-structure.jpg', 'assets/generated/stages/p5-slabs.jpg', 'assets/photos/hero-facade.jpg',
-    'assets/generated/stages/crane.jpg', 'assets/generated/stages/p4-columns.jpg', 'assets/photos/about-construction.jpg',
-    'assets/generated/stages/p6-blockplaster.jpg', 'assets/generated/slides/s2-builttostay.jpg', 'assets/generated/stages/p1-earthworks.jpg'
-  ];
-  const items = CONCEPT.map((src, i) => {
-    const p = PROJECTS[i] || {};
-    return {
-      title: p.title || '[ Project Name ]', category: p.category || '[ Category ]',
-      location: [p.location, p.year].filter(Boolean).join(' · ') || '[ Location ]',
-      image: p.image || src, concept: !p.image
-    };
-  });
+  const items = PROJECTS.map((p, i) => ({
+    title: p.title || ('Project ' + (i + 1)), category: p.category || '', location: [p.location, p.year].filter(Boolean).join(' · '),
+    image: p.image, thumb: p.thumb || p.image, w: p.w || 1500, h: p.h || 1000
+  }));
   field.innerHTML = items.map((p, i) =>
     `<button class="pg-item" type="button" data-i="${i}" aria-label="Open ${p.title}">
-      <span class="pg-frame"><img src="${p.image}" alt="${p.concept ? 'Concept image' : p.title}" loading="lazy" decoding="async" />
-        <span class="pg-info"><b>${p.title}</b><span>${p.location}</span><span>${p.category}</span></span>
+      <span class="pg-frame"><img src="${p.thumb}" alt="${p.title}" loading="lazy" decoding="async" />
+        <span class="pg-info"><b>${p.title}</b>${p.location ? `<span>${p.location}</span>` : ''}${p.category ? `<span>${p.category}</span>` : ''}</span>
         <span class="pg-cta">View +</span></span>
     </button>`).join('');
   const els = [...field.querySelectorAll('.pg-item')];
@@ -310,14 +307,13 @@ const PROJECTS = [
   const dur = reduce ? 0.01 : 0.75;
   let openEl = null, busy = false;
 
-  function target() {
+  function target(p) {
     const vw = window.innerWidth, vh = window.innerHeight, mobile = vw < 700;
-    const infoH = mobile ? 130 : 110;
-    let w = Math.min(vw * (mobile ? 0.92 : 0.8), 1180);
-    let h = w / 1.5;
-    const maxH = vh - infoH - (mobile ? 90 : 120);
-    if (h > maxH) { h = maxH; w = h * 1.5; }
-    const left = (vw - w) / 2, top = Math.max(64, (vh - h - infoH) / 2);
+    const infoH = mobile ? 120 : 100, ar = (p && p.w && p.h) ? p.w / p.h : 1.5;
+    const maxW = Math.min(vw * (mobile ? 0.92 : 0.82), 1280), maxH = vh - infoH - (mobile ? 80 : 110);
+    let w = maxW, h = w / ar;
+    if (h > maxH) { h = maxH; w = h * ar; }
+    const left = (vw - w) / 2, top = Math.max(60, (vh - h - infoH) / 2);
     return { left, top, w, h, infoTop: top + h + 18 };
   }
   function place(el, r) { gsap.set(el, { left: r.left, top: r.top, width: r.width, height: r.height }); }
@@ -325,12 +321,11 @@ const PROJECTS = [
   function open(el) {
     if (busy || openEl) return;
     busy = true; openEl = el;
-    const p = items[+el.dataset.i], r = el.querySelector('.pg-frame').getBoundingClientRect(), t = target();
+    const p = items[+el.dataset.i], r = el.querySelector('.pg-frame').getBoundingClientRect(), t = target(p);
     heroImg.src = p.image; heroImg.alt = p.title;
     document.getElementById('pgDName').textContent = p.title;
-    document.getElementById('pgDLoc').textContent = p.location;
-    document.getElementById('pgDCat').textContent = p.category;
-    document.getElementById('pgDNote').textContent = p.concept ? 'Concept imagery — project photography to be added.' : '';
+    const setTxt = (id, v) => { const e = document.getElementById(id); e.textContent = v; e.style.display = v ? '' : 'none'; };
+    setTxt('pgDLoc', p.location); setTxt('pgDCat', p.category); setTxt('pgDNote', '');
     modal.hidden = false;
     place(hero, r);
     gsap.set(detail, { left: t.left, top: t.infoTop, width: t.w, opacity: 0, y: 10 });
@@ -363,7 +358,7 @@ const PROJECTS = [
   minBtn.addEventListener('click', close);
   backdrop.addEventListener('click', close);
   window.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
-  window.addEventListener('resize', () => { if (openEl && !busy) { const t = target(); place(hero, { left: t.left, top: t.top, width: t.w, height: t.h }); gsap.set(detail, { left: t.left, top: t.infoTop, width: t.w }); gsap.set(minBtn, { left: t.left + t.w - minBtn.offsetWidth, top: t.infoTop }); } });
+  window.addEventListener('resize', () => { if (openEl && !busy) { const t = target(items[+openEl.dataset.i]); place(hero, { left: t.left, top: t.top, width: t.w, height: t.h }); gsap.set(detail, { left: t.left, top: t.infoTop, width: t.w }); gsap.set(minBtn, { left: t.left + t.w - minBtn.offsetWidth, top: t.infoTop }); } });
 })();
 
 // ─── PROCESS STAGES ───
