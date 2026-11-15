@@ -1002,7 +1002,7 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
       '',
       get('message')
     ].join('\n');
-    window.location.href = `mailto:Shahbuddin3917@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = `mailto:abdurrahim@scc-bh.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     if (note) note.textContent = 'Opening your email app with the enquiry ready to send…';
   });
 })();
