@@ -258,7 +258,7 @@ function playVideo(v) {
   }));
   field.innerHTML = items.map((p, i) =>
     `<button class="pg-item" type="button" data-i="${i}" aria-label="Open ${p.title}">
-      <span class="pg-frame"><img src="${p.thumb}" alt="${p.title}" loading="lazy" decoding="async" />
+      <span class="pg-frame"><img src="${p.thumb}" alt="${p.title} — construction project by Shahbuddin Contracting, Bahrain" loading="lazy" decoding="async" />
         <span class="pg-info"><b>${p.title}</b>${p.location ? `<span>${p.location}</span>` : ''}${p.category ? `<span>${p.category}</span>` : ''}</span>
         <span class="pg-cta">View +</span></span>
     </button>`).join('');
@@ -342,7 +342,7 @@ function playVideo(v) {
     if (busy || openEl) return;
     busy = true; openEl = el;
     const p = items[+el.dataset.i], r = el.querySelector('.pg-frame').getBoundingClientRect(), t = target(p);
-    heroImg.src = p.image; heroImg.alt = p.title;
+    heroImg.src = p.image; heroImg.alt = p.title + ' — construction project by Shahbuddin Contracting, Bahrain';
     document.getElementById('pgDName').textContent = p.title;
     const setTxt = (id, v) => { const e = document.getElementById(id); e.textContent = v; e.style.display = v ? '' : 'none'; };
     setTxt('pgDLoc', p.location); setTxt('pgDCat', p.category); setTxt('pgDNote', '');
